@@ -10,6 +10,7 @@
 #include "wait.h"
 #include "globals.h"
 #include "joy.h"
+#include "list.h"
 
 void moveGuy() {
     unsigned char joy;
@@ -84,10 +85,34 @@ void moveGuy() {
     }
 }
 
+// void main() {
+//     createMapStatus();
+
+//     printList("Sleep", entitySleepList);
+//     printList("Active", entityActiveList);
+//     printList("Temp", entityTempActiveList);
+
+//     activateEntities(20, 0);
+//     deactivateEntities(20, 0);
+//     tempActiveToActiveEntities();
+
+//     printList("Sleep", entitySleepList);
+//     printList("Active", entityActiveList);
+//     printList("Temp", entityTempActiveList);
+
+//     activateEntities(20, 0);
+//     deactivateEntities(20, 0);
+//     tempActiveToActiveEntities();
+
+//     printList("Sleep", entitySleepList);
+//     printList("Active", entityActiveList);
+//     printList("Temp", entityTempActiveList);
+// }
+
 void main() {
-    unsigned char i;
     unsigned char count = 0;
     short scrollX, scrollY;
+    Entity *entity;
 
     init();
     initTiles();
@@ -109,23 +134,23 @@ void main() {
 
         moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
 
-        // Activate every entity
-        // This is too slow when there is a large number of entities
-        // for (i=0; i<ENTITY_COUNT; i++) {
-        //     moveEntity(i, (guy.x+8) >> 4, (guy.y+8) >> 4);
-        // }
+        if (count == 0) {
+            // activation/deactivation phase
+            activateEntities(guy.currentTileX, guy.currentTileY);
+            deactivateEntities(guy.currentTileX, guy.currentTileY);
+            tempActiveToActiveEntities();
+        } else {
+            // Move active entities phase
+            entity = entityActiveList;
 
-        // Alternate between activating even OR odd entities
-        // This alternates frames and make the game run more smoothly
-        // We move the Entities twice as far to make up for their skipped frames
-        for (i=count; i<ENTITY_COUNT; i+=AI_SKIP) {
-            if (entityList[i].health > 0) {
-                moveEntity(i, guy.currentTileX, guy.currentTileY, scrollX, scrollY);
-            }
+            while(entity) {
+                moveEntity(entity, guy.currentTileX, guy.currentTileY, scrollX, scrollY);   
+                entity = entity->next;
+            };
         }
 
         count++;
-        if (count == AI_SKIP) {
+        if (count == 2) {
             count = 0;
         }
 

@@ -1,73 +1,157 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "map.h"
 #include "sprites.h"
 #include "globals.h"
 #include "ai.h"
 #include "tiles.h"
+#include "list.h"
 
-extern unsigned char mapStatus[MAP_MAX][MAP_MAX];
-
-void toggleEntity(unsigned char entityId, unsigned char show) {
-    unsigned long spriteAddr = SPRITE1_ADDR + ((entityId+1) * 8);
+void toggleEntity(unsigned char spriteId, unsigned char show) {
+    unsigned long spriteAddr = SPRITE1_ADDR + (spriteId * 8);
 
     toggleSprite(spriteAddr, show);
 }
 
-void moveEntity(unsigned char entityId, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY) {
+void activateEntities(unsigned char guyTileX, unsigned char guyTileY) {
+    Entity *entity;
+    Entity *nextEntity;
+
+    entity = entitySleepList;
+    entityTempActiveList = 0;
+    
+    // Make sure we have at least 1 sleeping entity or there is nothing to do
+    if (!entity) {
+        return;
+    }
+
+    do {
+        nextEntity = entity->next;
+
+        // Activate this entity if it is within range
+        if (abs(guyTileX - entity->currentTileX) <= DIST_MAX_X && abs(guyTileY - entity->currentTileY) <= DIST_MAX_Y) {
+            toggleEntity(entity->spriteId, 1);
+            entity->visible = 1;
+            // printf("Moving entity to tempActive from sleep: %i\n", entity->spriteId);
+            // moveEntityFromSleepToTempActiveList(entity);
+            moveEntityToList(entity, &entityTempActiveList, &entitySleepList);
+        } 
+        // else {
+        //     // printf("Out of range: %i x:%i y:%i\n", entity->spriteId, entity->currentTileX, entity->currentTileY);
+        // }
+
+        entity = nextEntity;
+    } while (entity);
+}
+
+void deactivateEntities(unsigned char guyTileX, unsigned char guyTileY) {
+    Entity *entity;
+    Entity *nextEntity;
+
+    entity = entityActiveList;
+    
+    // Make sure we have at least 1 active entity or there is nothing to do
+    if (!entity) {
+        // printf("No active entities to deactivate\n");
+        return;
+    }
+
+    do {
+        nextEntity = entity->next;
+
+        // Deactivate this entity if it is out of range
+        if (abs(guyTileX - entity->currentTileX) > DIST_MAX_X || abs(guyTileY - entity->currentTileY) > DIST_MAX_Y) {
+            toggleEntity(entity->spriteId, 0);
+            entity->visible = 0;
+            // printf("Moving entity to sleep from active: %i\n", entity->spriteId);
+            moveEntityToList(entity, &entitySleepList, &entityActiveList);
+        }
+
+        entity = nextEntity;
+    } while (entity);
+}
+
+void tempActiveToActiveEntities() {
+    Entity *entity;
+    Entity *nextEntity;
+
+    entity = entityTempActiveList;
+    
+    // Now for the final step, move the entityTempActiveList into the activeList
+
+    // Make sure we have at least 1 active entity or there is nothing to do
+    if (!entity) {
+        // printf("No tempActive entities to copy to active\n");
+        return;
+    }
+
+    do {
+        nextEntity = entity->next;
+        
+        // printf("Moving entity to active from tempActive: %i\n", entity->spriteId);
+        moveEntityToList(entity, &entityActiveList, &entityTempActiveList);
+
+        entity = nextEntity;
+    } while (entity);
+
+    entityTempActiveList = 0;
+}
+
+void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY) {
     unsigned char newTileX, newTileY;
     signed char tileXChange = 0, tileYChange = 0;
     unsigned char distX, distY;
 
-    distX = abs(guyTileX - entityList[entityId].currentTileX);
+    distX = abs(guyTileX - entity->currentTileX);
     // Don't activate this entity if its too far away from the player
     if (distX > DIST_MAX_X) {
         // Hide the sprite if currently visible
-        if (entityList[entityId].visible) {
-            toggleEntity(entityId, 0);
-            entityList[entityId].visible = 0;
+        if (entity->visible) {
+            toggleEntity(entity->spriteId, 0);
+            entity->visible = 0;
         }
         return;
     }
 
-    distY = abs(guyTileY - entityList[entityId].currentTileY);
+    distY = abs(guyTileY - entity->currentTileY);
     // Don't activate this entity if its too far away from the player
     if (distY > DIST_MAX_Y) {
         // Hide the sprite if currently visible
-        if (entityList[entityId].visible) {
-            toggleEntity(entityId, 0);
-            entityList[entityId].visible = 0;
+        if (entity->visible) {
+            toggleEntity(entity->spriteId, 0);
+            entity->visible = 0;
         }
         return;
     }
 
-    if (!entityList[entityId].hasTarget) {
+    if (!entity->hasTarget) {
         // Try to move X towards the guy
-        if (entityList[entityId].currentTileX < guyTileX) {
+        if (entity->currentTileX < guyTileX) {
             tileXChange = 1;
-        } else if (entityList[entityId].currentTileX > guyTileX) {
+        } else if (entity->currentTileX > guyTileX) {
             tileXChange = -1;
         }
 
         // Try to move Y towards guy
-        if (entityList[entityId].currentTileY < guyTileY) {
+        if (entity->currentTileY < guyTileY) {
             tileYChange = 1;
-        } else if (entityList[entityId].currentTileY > guyTileY) {
+        } else if (entity->currentTileY > guyTileY) {
             tileYChange = -1;
         }
 
         // If X direction is blocked, don't move that axis
-        if (tileXChange != 0 && mapStatus[entityList[entityId].currentTileY][entityList[entityId].currentTileX+tileXChange] != 0) {
+        if (tileXChange != 0 && mapStatus[entity->currentTileY][entity->currentTileX+tileXChange] != 0) {
             tileXChange = 0;
         }
 
         // If Y direction is blocked, don't move that axis
-        if (tileYChange != 0 && mapStatus[entityList[entityId].currentTileY+tileYChange][entityList[entityId].currentTileX] != 0) {
+        if (tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX] != 0) {
             tileYChange = 0;
         }
 
         // If diagonal, check for blocking tiles
-        if (tileXChange !=0 && tileYChange != 0 && mapStatus[entityList[entityId].currentTileY+tileYChange][entityList[entityId].currentTileX+tileXChange] != 0) {
+        if (tileXChange !=0 && tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX+tileXChange] != 0) {
             // Move whichever direction is farther to close the gap
             if (distX > distY) {
                 tileYChange = 0;
@@ -78,75 +162,75 @@ void moveEntity(unsigned char entityId, unsigned char guyTileX, unsigned char gu
 
         if (tileXChange !=0 || tileYChange !=0) {
             // Set the new start and target for the entity
-            entityList[entityId].startTileX = entityList[entityId].currentTileX;
-            entityList[entityId].startTileY = entityList[entityId].currentTileY;
-            entityList[entityId].targetTileX = entityList[entityId].currentTileX+tileXChange;
-            entityList[entityId].targetTileY = entityList[entityId].currentTileY+tileYChange;
+            entity->startTileX = entity->currentTileX;
+            entity->startTileY = entity->currentTileY;
+            entity->targetTileX = entity->currentTileX+tileXChange;
+            entity->targetTileY = entity->currentTileY+tileYChange;
     
             // Claim the tile and now entity has a target
-            mapStatus[entityList[entityId].targetTileY][entityList[entityId].targetTileX] = ENTITY_CLAIM;
-            entityList[entityId].hasTarget = 1;
+            mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_CLAIM;
+            entity->hasTarget = 1;
         }
     } else {
         // Try to move X towards the target
-        if (entityList[entityId].currentTileX < entityList[entityId].targetTileX) {
+        if (entity->currentTileX < entity->targetTileX) {
             tileXChange = 1;
-        } else if (entityList[entityId].currentTileX > entityList[entityId].targetTileX) {
+        } else if (entity->currentTileX > entity->targetTileX) {
             tileXChange = -1;
         }
 
         // Try to move Y towards target
-        if (entityList[entityId].currentTileY < entityList[entityId].targetTileY) {
+        if (entity->currentTileY < entity->targetTileY) {
             tileYChange = 1;
-        } else if (entityList[entityId].currentTileY > entityList[entityId].targetTileY) {
+        } else if (entity->currentTileY > entity->targetTileY) {
             tileYChange = -1;
         }
     }
 
     if (tileXChange != 0) {
-        entityList[entityId].x+= tileXChange * AI_SPEED;
+        entity->x+= tileXChange * AI_SPEED;
     } else {
-        if (entityList[entityId].x+8 < ((entityList[entityId].currentTileX)<<4)+8) {
-            entityList[entityId].x+= AI_SPEED;
-        } else if (entityList[entityId].x+8 > ((entityList[entityId].currentTileX)<<4)+8) {
-            entityList[entityId].x-= AI_SPEED;
+        if (entity->x+8 < ((entity->currentTileX)<<4)+8) {
+            entity->x+= AI_SPEED;
+        } else if (entity->x+8 > ((entity->currentTileX)<<4)+8) {
+            entity->x-= AI_SPEED;
         }
     }
 
     if (tileYChange != 0) {
-        entityList[entityId].y+= tileYChange * AI_SPEED;
+        entity->y+= tileYChange * AI_SPEED;
     } else {
-        if (entityList[entityId].y+8 < ((entityList[entityId].currentTileY)<<4)+8) {
-            entityList[entityId].y+= AI_SPEED;
-        } else if (entityList[entityId].y+8 > ((entityList[entityId].currentTileY)<<4)+8) {
-            entityList[entityId].y-= AI_SPEED;
+        if (entity->y+8 < ((entity->currentTileY)<<4)+8) {
+            entity->y+= AI_SPEED;
+        } else if (entity->y+8 > ((entity->currentTileY)<<4)+8) {
+            entity->y-= AI_SPEED;
         }
     }
 
     // If moved towards another tile...
     if (tileXChange != 0 || tileYChange != 0) {
         // Get the new tile
-        newTileX = (entityList[entityId].x + 8) >> 4;
-        newTileY = (entityList[entityId].y + 8) >> 4;
+        newTileX = (entity->x + 8) >> 4;
+        newTileY = (entity->y + 8) >> 4;
 
         // Update the current tile
-        entityList[entityId].currentTileX = newTileX;
-        entityList[entityId].currentTileY = newTileY;
+        entity->currentTileX = newTileX;
+        entity->currentTileY = newTileY;
 
         // See if the entity has moved to its target tile
-        if (entityList[entityId].targetTileX == newTileX && entityList[entityId].targetTileY == newTileY) {
+        if (entity->targetTileX == newTileX && entity->targetTileY == newTileY) {
             // Clear the old tile and mark the new tile as blocked
-            mapStatus[entityList[entityId].startTileY][entityList[entityId].startTileX] = 0; // Remove target blocker (can be diff) from actual new tile
-            mapStatus[entityList[entityId].targetTileY][entityList[entityId].targetTileX] = ENTITY_TILE_START + entityId; // Block new tile
-            entityList[entityId].hasTarget = 0; // Will need new target
+            mapStatus[entity->startTileY][entity->startTileX] = 0; // Remove target blocker (can be diff) from actual new tile
+            mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_TILE_START + entity->spriteId; // Block new tile
+            entity->hasTarget = 0; // Will need new target
         }
     }
 
     // Show the sprite if currently not visible
-    if (!entityList[entityId].visible) {
-        toggleEntity(entityId, 1);
-        entityList[entityId].visible = 1;
+    if (!entity->visible) {
+        toggleEntity(entity->spriteId, 1);
+        entity->visible = 1;
     }
 
-    moveSpriteId(entityId+1, entityList[entityId].x, entityList[entityId].y, scrollX, scrollY);
+    moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
 }

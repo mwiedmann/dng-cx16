@@ -16,6 +16,9 @@ typedef struct Entity {
     unsigned char hasTarget;
     unsigned char visible;
     unsigned char health;
+    unsigned char spriteId;
+    struct Entity *next;
+    struct Entity *prev;
 } Entity;
 
 typedef struct Guy {
