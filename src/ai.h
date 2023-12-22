@@ -7,6 +7,7 @@
 #define DIST_MAX_X 10  // In tiles
 #define DIST_MAX_Y 8
 
+void toggleEntity(unsigned char spriteId, unsigned char show);
 void activateEntities(unsigned char guyTileX, unsigned char guyTileY);
 void deactivateEntities(unsigned char guyTileX, unsigned char guyTileY);
 void tempActiveToActiveEntities();

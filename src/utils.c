@@ -1,3 +1,4 @@
+#include <cx16.h>
 #include <cbm.h>
 #include <string.h>
 

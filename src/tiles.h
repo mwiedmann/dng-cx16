@@ -3,10 +3,11 @@
 
 #define TILE_EMPTY 0
 #define TILE_SOLID 1
-#define TILE_INNER_SQUARE_1 2
-#define TILE_INNER_SQUARE_2 3
+#define TILE_ENTITY 2
+#define TILE_GUY 3
 
 #define ENTITY_TILE_START 100
+#define ENTITY_TILE_END 228
 #define ENTITY_CLAIM 254
 #define GUY_CLAIM 255
 

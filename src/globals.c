@@ -1,7 +1,10 @@
+#include <cx16.h>
+
 #include "map.h"
 #include "globals.h"
 
-unsigned char mapStatus[MAP_MAX][MAP_MAX];
+// Point this array to hi-ram
+unsigned char (*mapStatus)[MAP_MAX] = (unsigned char (*)[MAP_MAX])BANK_RAM;
 
 Entity entityList[ENTITY_COUNT];
 

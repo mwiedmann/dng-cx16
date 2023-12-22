@@ -11,11 +11,13 @@
 #include "globals.h"
 #include "joy.h"
 #include "list.h"
+#include "utils.h"
 
 void moveGuy() {
     unsigned char joy;
     unsigned short prevX=0, prevY=0;
     unsigned char tile, tempTileX, tempTileY;
+    Entity *entity;
 
     guy.currentTileX = (guy.x+8)>>4;
     guy.currentTileY = (guy.y+8)>>4;
@@ -46,7 +48,7 @@ void moveGuy() {
 
     // Check if new tile is open...move back if not
     tile = mapStatus[(guy.y+8)>>4][tempTileX];
-    if (tile > 0 && tile <= ENTITY_CLAIM) {
+    if (tile > 0 && tile < ENTITY_TILE_START) {
         guy.x = prevX;
         tempTileX = guy.currentTileX;
     }
@@ -67,9 +69,26 @@ void moveGuy() {
 
     // Check if new tile is open...move back if not
     tile = mapStatus[tempTileY][(guy.x+8)>>4];
-    if (tile > 0 && tile <= ENTITY_CLAIM) {
+    if (tile > 0 && tile < ENTITY_TILE_START) {
         guy.y = prevY;
         tempTileY = guy.currentTileY;
+    }
+
+    // See if moving into an Entity's tile...if so, attack it!
+    tile = mapStatus[tempTileY][tempTileX];
+    if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
+        entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
+        if (entity) {
+            entity->health = 0;
+            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_EMPTY;
+            if (entity->hasTarget) {
+                mapStatus[entity->targetTileY][entity->targetTileX] = TILE_EMPTY;
+            }
+            toggleEntity(entity->spriteId, 0);
+            deleteEntityFromList(entity, &entityActiveList);
+        } else {
+            while(1);
+        }
     }
 
     // See if guy has moved tiles
@@ -86,27 +105,20 @@ void moveGuy() {
 }
 
 // void main() {
-//     createMapStatus();
+//     unsigned char x,y;
 
-//     printList("Sleep", entitySleepList);
-//     printList("Active", entityActiveList);
-//     printList("Temp", entityTempActiveList);
+//     loadFileToBankedRAM("l0.bin", MAP_BANK, 0);
 
-//     activateEntities(20, 0);
-//     deactivateEntities(20, 0);
-//     tempActiveToActiveEntities();
+//     // mapStatus = (unsigned char (*)[MAP_MAX])BANK_RAM;
 
-//     printList("Sleep", entitySleepList);
-//     printList("Active", entityActiveList);
-//     printList("Temp", entityTempActiveList);
+//     // printf("%X\n", mapStatus);
 
-//     activateEntities(20, 0);
-//     deactivateEntities(20, 0);
-//     tempActiveToActiveEntities();
-
-//     printList("Sleep", entitySleepList);
-//     printList("Active", entityActiveList);
-//     printList("Temp", entityTempActiveList);
+//     for (y=0; y<2; y++) {
+//         for (x=0; x<10; x++) {
+//             printf("%u ", mapStatus[y][x]);
+//         }
+//         printf("\n");
+//     }
 // }
 
 void main() {

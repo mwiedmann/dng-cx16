@@ -49,3 +49,33 @@ void moveEntityToList(Entity *entity, Entity **to, Entity **from) {
     // Enity becomes the new head of the list
     *to = entity;
 }
+
+void deleteEntityFromList(Entity *entity, Entity **list) {
+    // If the entity is first in the list, point the list to the next entity (if any, could be 0)
+    if (*list == entity) {
+        *list = entity->next;
+    }
+
+    // Connect the entities around this entity together
+    if (entity->prev) {
+        entity->prev->next = entity->next;
+    }
+    if (entity->next) {
+        entity->next->prev = entity->prev;
+    }
+}
+
+Entity *getEntityById(unsigned char spriteId, Entity *list) {
+    Entity *entity;
+
+    entity = list;
+
+    while(entity) {
+        if (entity->spriteId == spriteId) {
+            return entity;
+        }
+        entity = entity->next;
+    }
+
+    return 0;
+}

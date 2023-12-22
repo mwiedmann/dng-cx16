@@ -1,43 +1,10 @@
 #include <cx16.h>
 #include "config.h"
+#include "utils.h"
 
 void initTiles() {
-    unsigned char x, y;
-    // Point to the TileBase address so we can write to VRAM
-    VERA.address = TILEBASE_ADDR;
-    VERA.address_hi = TILEBASE_ADDR>>16;
-    // Always set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
-
-    // Empty Tile
-    for (y=0; y<16; y++) {
-        for (x=0; x<16; x++) {
-            VERA.data0 = 0;
-        }
-    }
-
-    // Solid Tile
-    for (y=0; y<16; y++) {
-        for (x=0; x<16; x++) {
-            VERA.data0 = 1;
-        }
-    }
-
-    // Inner square 1
-    for (y=0; y<16; y++) {
-        for (x=0; x<16; x++) {
-            VERA.data0 = y > 1 && y < 14 && x > 1 && x < 14
-                ? 2 : 0;
-        }
-    }
-
-    // Inner square 2
-    for (y=0; y<16; y++) {
-        for (x=0; x<16; x++) {
-            VERA.data0 = y > 1 && y < 14 && x > 1 && x < 14
-                ? 3 : 0;
-        }
-    }
+    loadFileToVRAM("tiles.bin", TILEBASE_ADDR);
+    loadFileToVRAM("tiles.pal", PALETTE_ADDR);
 }
 
 void clearLayer0() {

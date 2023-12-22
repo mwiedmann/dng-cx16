@@ -4,16 +4,20 @@
 #include "tiles.h"
 #include "map.h"
 #include "globals.h"
+#include "utils.h"
 
 void createMapStatus() {
     unsigned char x,y,i;
     Entity *lastEntity = 0;
 
+    loadFileToBankedRAM("l0.bin", MAP_BANK, 0);
+    BANK_NUM = MAP_BANK;
+
+    entitySleepList = 0;
+
     for (y=0,i=0; y<MAP_MAX; y++) {
         for (x=0; x<MAP_MAX; x++) {
-            mapStatus[y][x] = y % 4 == 0 && x % 4 == 0 ? TILE_SOLID : TILE_EMPTY;
-
-            if (i < ENTITY_COUNT && x < 39 && mapStatus[y][x] == 0) {
+            if (mapStatus[y][x] == 2 /* Entity */) {
                 // Create an entity at this tile
                 entityList[i].spriteId = i+1;
                 entityList[i].x = x * 16;
@@ -37,6 +41,10 @@ void createMapStatus() {
 
                 mapStatus[y][x] = ENTITY_TILE_START + i+1;
                 i++;
+            } else if (mapStatus[y][x] == 3 /* Guy Start*/) {
+                mapStatus[y][x] = 0;
+                guy.x = x * 16;
+                guy.y = y * 16;
             }
         }
     }
@@ -59,8 +67,8 @@ void drawMap() {
         for (x=0; x<MAPBASE_TILE_HEIGHT; x++) {
             if (x < MAP_MAX && y < MAP_MAX) {
                 VERA.data0 = mapStatus[y][x] > 0 && mapStatus[y][x] < ENTITY_TILE_START
-                    ? mapStatus[y][x]
-                    : 0;
+                    ? TILE_SOLID
+                    : TILE_EMPTY;
             } else {
                 VERA.data0 = 0;
             }

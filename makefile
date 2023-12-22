@@ -9,3 +9,20 @@ run:
 	cd build && \
 	$(EMU) -prg DNG.PRG -run
 
+ldtk:
+	node tools/ldtk-convert.js
+
+gimp:
+	node tools/gimp-convert.js tiles
+
+zip:
+	cd build && \
+	rm ski.zip && \
+	zip ski.zip *
+
+all:
+	make ldtk
+	make gimp
+	make
+	make zip
+
