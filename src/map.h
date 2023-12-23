@@ -2,7 +2,9 @@
 #define MAP_H
 
 #define MAP_MAX 90
-#define GUY_MAX (MAP_MAX*16)-(16+GUY_SPEED_2) // Right edge - Sprite width and move speed
+#define MAP_PIXEL_MAX MAP_MAX*16
+#define MAP_SCROLL_MAX MAP_PIXEL_MAX - (15*16)
+#define GUY_MAX MAP_PIXEL_MAX-(16+GUY_SPEED_2) // Right edge - Sprite width and move speed
 
 typedef struct Entity {
     unsigned short x;

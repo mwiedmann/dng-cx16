@@ -137,8 +137,19 @@ void main() {
         moveGuy(count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
 
         scrollX = guy.x-112;
-        scrollY = guy.y-112;
+        if (scrollX < 0) {
+            scrollX = 0;
+        } else if (scrollX > MAP_SCROLL_MAX) {
+            scrollX = MAP_SCROLL_MAX;
+        }
 
+        scrollY = guy.y-112;
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else if (scrollY > MAP_SCROLL_MAX) {
+            scrollY = MAP_SCROLL_MAX;
+        }
+        
         VERA.layer0.vscroll = scrollY;
         // VERA.layer1.vscroll = scrollY;
         VERA.layer0.hscroll = scrollX;
