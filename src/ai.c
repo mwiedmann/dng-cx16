@@ -14,7 +14,7 @@ void toggleEntity(unsigned char spriteId, unsigned char show) {
     toggleSprite(spriteAddr, show);
 }
 
-void activateEntities(unsigned char guyTileX, unsigned char guyTileY) {
+void activateEntities(short scrollX, short scrollY) {
     Entity *entity;
     Entity *nextEntity;
 
@@ -29,8 +29,10 @@ void activateEntities(unsigned char guyTileX, unsigned char guyTileY) {
     do {
         nextEntity = entity->next;
 
-        // Activate this entity if it is within range
-        if (abs(guyTileX - entity->currentTileX) <= DIST_MAX_X && abs(guyTileY - entity->currentTileY) <= DIST_MAX_Y) {
+        // Activate this entity if it is on the screen
+        if (entity->x >= scrollX + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX || entity->y >= scrollY + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY) {
+            // Off screen
+        } else {
             toggleEntity(entity->spriteId, 1);
             entity->visible = 1;
             // printf("Moving entity to tempActive from sleep: %i\n", entity->spriteId);
@@ -45,7 +47,7 @@ void activateEntities(unsigned char guyTileX, unsigned char guyTileY) {
     } while (entity);
 }
 
-void deactivateEntities(unsigned char guyTileX, unsigned char guyTileY) {
+void deactivateEntities(short scrollX, short scrollY) {
     Entity *entity;
     Entity *nextEntity;
 
@@ -61,7 +63,8 @@ void deactivateEntities(unsigned char guyTileX, unsigned char guyTileY) {
         nextEntity = entity->next;
 
         // Deactivate this entity if it is out of range
-        if (abs(guyTileX - entity->currentTileX) > DIST_MAX_X || abs(guyTileY - entity->currentTileY) > DIST_MAX_Y) {
+        if (entity->x >= scrollX + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX || entity->y >= scrollY + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY) {
+            // Off screen
             toggleEntity(entity->spriteId, 0);
             entity->visible = 0;
             // printf("Moving entity to sleep from active: %i\n", entity->spriteId);

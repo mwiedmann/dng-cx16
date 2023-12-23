@@ -159,8 +159,8 @@ void main() {
 
         if (count == 0) {
             // activation/deactivation phase
-            activateEntities(guy.currentTileX, guy.currentTileY);
-            deactivateEntities(guy.currentTileX, guy.currentTileY);
+            activateEntities(scrollX, scrollY);
+            deactivateEntities(scrollX, scrollY);
             tempActiveToActiveEntities();
         } else {
             // Move active entities phase
