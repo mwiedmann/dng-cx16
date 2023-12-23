@@ -13,7 +13,7 @@
 #include "list.h"
 #include "utils.h"
 
-void moveGuy() {
+void moveGuy(unsigned char speed) {
     unsigned char joy;
     unsigned short prevX=0, prevY=0;
     unsigned char tile, tempTileX, tempTileY;
@@ -31,14 +31,14 @@ void moveGuy() {
     // }
 
     if (JOY_LEFT(joy)) {
-        if (guy.x >= GUY_SPEED) {
+        if (guy.x >= speed) {
             prevX = guy.x;
-            guy.x-= GUY_SPEED;
+            guy.x-= speed;
         }
     } else if (JOY_RIGHT(joy)) {
         if (guy.x <= GUY_MAX) {
             prevX = guy.x;
-            guy.x+= GUY_SPEED;
+            guy.x+= speed;
         }
     }
 
@@ -53,14 +53,14 @@ void moveGuy() {
     }
 
     if (JOY_UP(joy)) {
-        if (guy.y >= GUY_SPEED) {
+        if (guy.y >= speed) {
             prevY = guy.y;
-            guy.y-= GUY_SPEED;
+            guy.y-= speed;
         }
     } else if (JOY_DOWN(joy)) {
          if (guy.y <= GUY_MAX) {
             prevY = guy.y;
-            guy.y+= GUY_SPEED;
+            guy.y+= speed;
         }
     }
 
@@ -134,7 +134,7 @@ void main() {
     drawMap();
 
     while(1) {
-        moveGuy();
+        moveGuy(count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
 
         scrollX = guy.x-112;
         scrollY = guy.y-112;

@@ -4,7 +4,8 @@
 #include "map.h"
 
 #define ENTITY_COUNT 75
-#define GUY_SPEED 2
+#define GUY_SPEED_1 1
+#define GUY_SPEED_2 2
 
 extern unsigned char (*mapStatus)[MAP_MAX];
 
