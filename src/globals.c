@@ -13,4 +13,4 @@ Entity *entityActiveList = 0;
 
 Entity *entityTempActiveList = 0;
 
-Guy guy = { 320, 240 };
+Guy guy;

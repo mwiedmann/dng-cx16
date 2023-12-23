@@ -22,15 +22,13 @@ void moveGuy() {
     guy.currentTileX = (guy.x+8)>>4;
     guy.currentTileY = (guy.y+8)>>4;
 
-    mapStatus[guy.currentTileY][guy.currentTileX] = GUY_CLAIM;
-
     joy = joy_read(0);
 
     // Pause
-    if (JOY_BTN_1(joy)) {
-        waitForRelease();
-        waitForButtonPress();
-    }
+    // if (JOY_BTN_1(joy)) {
+    //     waitForRelease();
+    //     waitForButtonPress();
+    // }
 
     if (JOY_LEFT(joy)) {
         if (guy.x >= GUY_SPEED) {
@@ -45,12 +43,13 @@ void moveGuy() {
     }
 
     tempTileX = (guy.x+8)>>4;
-
-    // Check if new tile is open...move back if not
-    tile = mapStatus[(guy.y+8)>>4][tempTileX];
-    if (tile > 0 && tile < ENTITY_TILE_START) {
-        guy.x = prevX;
-        tempTileX = guy.currentTileX;
+    if (tempTileX != guy.currentTileX) {
+        // Check if new tile is open...move back if not
+        tile = mapStatus[guy.currentTileY][tempTileX];
+        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            guy.x = prevX;
+            tempTileX = guy.currentTileX;
+        }
     }
 
     if (JOY_UP(joy)) {
@@ -67,41 +66,41 @@ void moveGuy() {
 
     tempTileY = (guy.y+8)>>4;
 
-    // Check if new tile is open...move back if not
-    tile = mapStatus[tempTileY][(guy.x+8)>>4];
-    if (tile > 0 && tile < ENTITY_TILE_START) {
-        guy.y = prevY;
-        tempTileY = guy.currentTileY;
+    if (tempTileY != guy.currentTileY) {
+        // Check if new tile is open...move back if not
+        tile = mapStatus[tempTileY][guy.currentTileX];
+        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            guy.y = prevY;
+            tempTileY = guy.currentTileY;
+        }
     }
 
-    // See if moving into an Entity's tile...if so, attack it!
+    // See if on an Entity's tile...if so, attack it!
     tile = mapStatus[tempTileY][tempTileX];
     if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
         entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
         if (entity) {
             entity->health = 0;
-            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_EMPTY;
+            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
             if (entity->hasTarget) {
-                mapStatus[entity->targetTileY][entity->targetTileX] = TILE_EMPTY;
+                mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
             }
             toggleEntity(entity->spriteId, 0);
             deleteEntityFromList(entity, &entityActiveList);
-        } else {
-            while(1);
         }
     }
 
     // See if guy has moved tiles
     if (guy.currentTileX != tempTileX || guy.currentTileY != tempTileY) {
         // Open up the previous tile
-        mapStatus[guy.currentTileY][guy.currentTileX] = TILE_EMPTY;
-
-        // Block the current tile
-        mapStatus[tempTileY][tempTileX] = GUY_CLAIM;
+        mapStatus[guy.currentTileY][guy.currentTileX] = TILE_FLOOR;
 
         guy.currentTileX = tempTileX;
         guy.currentTileY = tempTileY;
     }
+
+    // Stamp the current tile with the guy
+    mapStatus[guy.currentTileY][guy.currentTileX] = GUY_CLAIM;
 }
 
 // void main() {
@@ -130,19 +129,20 @@ void main() {
     initTiles();
     spritesConfig();
     clearLayers();
+    drawOverlay();
     createMapStatus();
     drawMap();
 
     while(1) {
         moveGuy();
 
-        scrollX = guy.x-160;
-        scrollY = guy.y-120;
+        scrollX = guy.x-112;
+        scrollY = guy.y-112;
 
         VERA.layer0.vscroll = scrollY;
-        VERA.layer1.vscroll = scrollY;
+        // VERA.layer1.vscroll = scrollY;
         VERA.layer0.hscroll = scrollX;
-        VERA.layer1.hscroll = scrollX;
+        // VERA.layer1.hscroll = scrollX;
 
         moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
 

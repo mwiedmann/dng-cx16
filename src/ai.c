@@ -103,28 +103,6 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     signed char tileXChange = 0, tileYChange = 0;
     unsigned char distX, distY;
 
-    distX = abs(guyTileX - entity->currentTileX);
-    // Don't activate this entity if its too far away from the player
-    if (distX > DIST_MAX_X) {
-        // Hide the sprite if currently visible
-        if (entity->visible) {
-            toggleEntity(entity->spriteId, 0);
-            entity->visible = 0;
-        }
-        return;
-    }
-
-    distY = abs(guyTileY - entity->currentTileY);
-    // Don't activate this entity if its too far away from the player
-    if (distY > DIST_MAX_Y) {
-        // Hide the sprite if currently visible
-        if (entity->visible) {
-            toggleEntity(entity->spriteId, 0);
-            entity->visible = 0;
-        }
-        return;
-    }
-
     if (!entity->hasTarget) {
         // Try to move X towards the guy
         if (entity->currentTileX < guyTileX) {
@@ -141,17 +119,20 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         }
 
         // If X direction is blocked, don't move that axis
-        if (tileXChange != 0 && mapStatus[entity->currentTileY][entity->currentTileX+tileXChange] != 0) {
+        if (tileXChange != 0 && mapStatus[entity->currentTileY][entity->currentTileX+tileXChange] > TILE_FLOOR) {
             tileXChange = 0;
         }
 
         // If Y direction is blocked, don't move that axis
-        if (tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX] != 0) {
+        if (tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX] > TILE_FLOOR) {
             tileYChange = 0;
         }
 
         // If diagonal, check for blocking tiles
-        if (tileXChange !=0 && tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX+tileXChange] != 0) {
+        if (tileXChange !=0 && tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX+tileXChange] > TILE_FLOOR) {
+            distX = abs(guyTileX - entity->currentTileX);
+            distY = abs(guyTileY - entity->currentTileY);
+
             // Move whichever direction is farther to close the gap
             if (distX > distY) {
                 tileYChange = 0;
