@@ -29,15 +29,14 @@ void moveGuy(unsigned char speed) {
     //     waitForRelease();
     //     waitForButtonPress();
     // }
+    prevX = guy.x;
 
     if (JOY_LEFT(joy)) {
         if (guy.x >= speed) {
-            prevX = guy.x;
             guy.x-= speed;
         }
     } else if (JOY_RIGHT(joy)) {
         if (guy.x <= GUY_MAX) {
-            prevX = guy.x;
             guy.x+= speed;
         }
     }
@@ -52,14 +51,14 @@ void moveGuy(unsigned char speed) {
         }
     }
 
+    prevY = guy.y;
+
     if (JOY_UP(joy)) {
-        if (guy.y >= speed) {
-            prevY = guy.y;
+        if (guy.y >= speed) {      
             guy.y-= speed;
         }
     } else if (JOY_DOWN(joy)) {
          if (guy.y <= GUY_MAX) {
-            prevY = guy.y;
             guy.y+= speed;
         }
     }
@@ -80,13 +79,21 @@ void moveGuy(unsigned char speed) {
     if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
         entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
         if (entity) {
-            entity->health = 0;
-            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
-            if (entity->hasTarget) {
-                mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
+            entity->health -= 1;
+            if (entity->health == 0) {
+                mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
+                if (entity->hasTarget) {
+                    mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
+                }
+                toggleEntity(entity->spriteId, 0);
+                deleteEntityFromList(entity, &entityActiveList);
+            } else {
+                // Entity not dead yet...guy doesn't move
+                guy.x = prevX;
+                guy.y = prevY;
+                tempTileX = guy.currentTileX;
+                tempTileY = guy.currentTileY;
             }
-            toggleEntity(entity->spriteId, 0);
-            deleteEntityFromList(entity, &entityActiveList);
         }
     }
 

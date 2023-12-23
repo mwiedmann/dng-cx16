@@ -105,6 +105,10 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     unsigned char newTileX, newTileY;
     signed char tileXChange = 0, tileYChange = 0;
     unsigned char distX, distY;
+    unsigned short prevX, prevY;
+
+    prevX = entity->x;
+    prevY = entity->y;
 
     if (!entity->hasTarget) {
         // Try to move X towards the guy
@@ -197,16 +201,22 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         newTileX = (entity->x + 8) >> 4;
         newTileY = (entity->y + 8) >> 4;
 
-        // Update the current tile
-        entity->currentTileX = newTileX;
-        entity->currentTileY = newTileY;
-
         // See if the entity has moved to its target tile
         if (entity->targetTileX == newTileX && entity->targetTileY == newTileY) {
-            // Clear the old tile and mark the new tile as blocked
-            mapStatus[entity->startTileY][entity->startTileX] = 0; // Remove target blocker (can be diff) from actual new tile
-            mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_TILE_START + entity->spriteId; // Block new tile
-            entity->hasTarget = 0; // Will need new target
+            // See if guy is in this tile...if so, stay still, but attack!
+            if (mapStatus[newTileY][newTileX] == GUY_CLAIM) {
+                entity->x = prevX;
+                entity->y = prevY;
+            } else {
+                // Clear the old tile and mark the new tile as blocked
+                mapStatus[entity->startTileY][entity->startTileX] = 0; // Remove target blocker (can be diff) from actual new tile
+                mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_TILE_START + entity->spriteId; // Block new tile
+                entity->hasTarget = 0; // Will need new target
+                
+                // Update the current tile
+                entity->currentTileX = newTileX;
+                entity->currentTileY = newTileY;
+            }
         }
     }
 
