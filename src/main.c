@@ -17,6 +17,7 @@ void moveGuy(unsigned char speed) {
     unsigned char joy;
     unsigned short prevX=0, prevY=0;
     unsigned char tile, tempTileX, tempTileY;
+    signed char dirX = 0, dirPressX = 0, dirY = 0, dirPressY = 0;
     Entity *entity;
 
     guy.currentTileX = (guy.x+8)>>4;
@@ -30,72 +31,100 @@ void moveGuy(unsigned char speed) {
     //     waitForButtonPress();
     // }
     prevX = guy.x;
-
-    if (JOY_LEFT(joy)) {
-        if (guy.x >= speed) {
-            guy.x-= speed;
-        }
-    } else if (JOY_RIGHT(joy)) {
-        if (guy.x <= GUY_MAX) {
-            guy.x+= speed;
-        }
-    }
-
-    tempTileX = (guy.x+8)>>4;
-    if (tempTileX != guy.currentTileX) {
-        // Check if new tile is open...move back if not
-        tile = mapStatus[guy.currentTileY][tempTileX];
-        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
-            guy.x = prevX;
-            tempTileX = guy.currentTileX;
-        }
-    }
-
     prevY = guy.y;
 
-    if (JOY_UP(joy)) {
-        if (guy.y >= speed) {      
-            guy.y-= speed;
-        }
-    } else if (JOY_DOWN(joy)) {
-         if (guy.y <= GUY_MAX) {
-            guy.y+= speed;
-        }
+    if (JOY_LEFT(joy)) {
+        dirX = -1;
+        dirPressX = -1;
+        guy.x -= speed;
+    } else if (JOY_RIGHT(joy)) {
+        dirX = 1;
+        dirPressX = 1;
+        guy.x += speed;
     }
 
-    tempTileY = (guy.y+8)>>4;
-
-    if (tempTileY != guy.currentTileY) {
+    if (dirX == 1) {
         // Check if new tile is open...move back if not
-        tile = mapStatus[tempTileY][guy.currentTileX];
+        tile = mapStatus[guy.y>>4][(guy.x+15)>>4];
         if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
-            guy.y = prevY;
-            tempTileY = guy.currentTileY;
+            dirX = 0;
+            guy.x = prevX;
+        } else {
+            tile = mapStatus[(guy.y+15)>>4][(guy.x+15)>>4];
+            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+                dirX = 0;
+                guy.x = prevX;
+            }
+        }
+    } else if (dirX == -1) {
+        // Check if new tile is open...move back if not
+        tile = mapStatus[guy.y>>4][guy.x>>4];
+        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            dirX = 0;
+            guy.x = prevX;
+        } else {
+            tile = mapStatus[(guy.y+15)>>4][guy.x>>4];
+            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+                dirX = 0;
+                guy.x = prevX;
+            }
         }
     }
 
-    // See if on an Entity's tile...if so, attack it!
-    tile = mapStatus[tempTileY][tempTileX];
+    if (JOY_UP(joy)) {
+        dirY = -1;
+        dirPressY = -1;
+        guy.y -= speed;
+    } else if (JOY_DOWN(joy)) {
+        dirY = 1;
+        dirPressY = 1;
+        guy.y += speed;
+    }
+
+    if (dirY == 1) {
+        // Check if new tile is open...move back if not
+        tile = mapStatus[(guy.y+15)>>4][(guy.x+15)>>4];
+        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            dirY = 0;
+            guy.y = prevY;
+        } else {
+            tile = mapStatus[(guy.y+15)>>4][guy.x>>4];
+            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+                dirY = 0;
+                guy.y = prevY;
+            }
+        }
+    } else if (dirY == -1) {
+        // Check if new tile is open...move back if not
+        tile = mapStatus[guy.y>>4][guy.x>>4];
+        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            dirY = 0;
+            guy.y = prevY;
+        } else {
+            tile = mapStatus[guy.y>>4][(guy.x+15)>>4];
+            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+                dirY = 0;
+                guy.y = prevY;
+            }
+        }
+    }
+
+    // Check if attacking
+    tile = mapStatus[((guy.y+8)+(dirY*8))>>4][((guy.x+8)+(dirX*8))>>4];
     if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
         entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
         if (entity) {
             meleeAttackEntity(entity);
-            if (entity->health == 0) {
-                mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
-                if (entity->hasTarget) {
-                    mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
-                }
-                toggleEntity(entity->spriteId, 0);
-                deleteEntityFromList(entity, &entityActiveList);
-            } else {
+            if (entity->health > 0) {
                 // Entity not dead yet...guy doesn't move
                 guy.x = prevX;
                 guy.y = prevY;
-                tempTileX = guy.currentTileX;
-                tempTileY = guy.currentTileY;
             }
         }
     }
+
+    tempTileX = (guy.x+8)>>4;
+    tempTileY = (guy.y+8)>>4;
 
     // See if guy has moved tiles
     if (guy.currentTileX != tempTileX || guy.currentTileY != tempTileY) {
