@@ -13,5 +13,6 @@ void deactivateEntities(short scrollX, short scrollY);
 void tempActiveToActiveEntities();
 
 void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY);
+void meleeAttackEntity(Entity *entity);
 
 #endif

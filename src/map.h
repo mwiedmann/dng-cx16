@@ -30,6 +30,8 @@ typedef struct Guy {
     unsigned short y;
     unsigned char currentTileX;
     unsigned char currentTileY;
+    unsigned short health;
+    unsigned short score;
 } Guy;
 
 void createMapStatus();

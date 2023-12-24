@@ -101,11 +101,33 @@ void tempActiveToActiveEntities() {
     entityTempActiveList = 0;
 }
 
+void meleeAttackEntity(Entity *entity) {
+    if (entity->health > 0) {
+        entity->health -= 1;
+    }
+
+    if (entity->health == 0) {
+        mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
+        if (entity->hasTarget) {
+            mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
+        }
+        toggleEntity(entity->spriteId, 0);
+        deleteEntityFromList(entity, &entityActiveList);
+    }
+}
+
+void meleeAttackGuy() {
+    if (guy.health > 0) {
+        guy.health -= 1;
+    }
+}
+
 void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY) {
     unsigned char newTileX, newTileY;
     signed char tileXChange = 0, tileYChange = 0;
     unsigned char distX, distY;
     unsigned short prevX, prevY;
+    unsigned char attack = 0;
 
     prevX = entity->x;
     prevY = entity->y;
@@ -127,25 +149,45 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
 
         // If X direction is blocked, don't move that axis
         if (tileXChange != 0 && mapStatus[entity->currentTileY][entity->currentTileX+tileXChange] > TILE_FLOOR) {
-            tileXChange = 0;
+            if (mapStatus[entity->currentTileY][entity->currentTileX+tileXChange] == GUY_CLAIM) {
+                attack = 1;
+            } else {
+                tileXChange = 0;
+            }
         }
 
         // If Y direction is blocked, don't move that axis
         if (tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX] > TILE_FLOOR) {
-            tileYChange = 0;
+            if (mapStatus[entity->currentTileY+tileYChange][entity->currentTileX] == GUY_CLAIM) {
+                attack = 1;
+            } else {
+                tileYChange = 0;
+            }
         }
 
         // If diagonal, check for blocking tiles
         if (tileXChange !=0 && tileYChange != 0 && mapStatus[entity->currentTileY+tileYChange][entity->currentTileX+tileXChange] > TILE_FLOOR) {
-            distX = abs(guyTileX - entity->currentTileX);
-            distY = abs(guyTileY - entity->currentTileY);
-
-            // Move whichever direction is farther to close the gap
-            if (distX > distY) {
-                tileYChange = 0;
+            if (mapStatus[entity->currentTileY+tileYChange][entity->currentTileX+tileXChange] == GUY_CLAIM) {
+                attack = 1;
             } else {
-                tileXChange = 0;
+                distX = abs(guyTileX - entity->currentTileX);
+                distY = abs(guyTileY - entity->currentTileY);
+
+                // Move whichever direction is farther to close the gap
+                if (distX > distY) {
+                    tileYChange = 0;
+                } else {
+                    tileXChange = 0;
+                }
             }
+        }
+
+        if (attack) {
+            // Keep these until now so we can face the target
+            tileXChange = 0;
+            tileYChange = 0;
+
+            meleeAttackGuy();
         }
 
         if (tileXChange !=0 || tileYChange !=0) {
@@ -207,6 +249,8 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
             if (mapStatus[newTileY][newTileX] == GUY_CLAIM) {
                 entity->x = prevX;
                 entity->y = prevY;
+
+                meleeAttackGuy();
             } else {
                 // Clear the old tile and mark the new tile as blocked
                 mapStatus[entity->startTileY][entity->startTileX] = 0; // Remove target blocker (can be diff) from actual new tile

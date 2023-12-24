@@ -79,7 +79,7 @@ void moveGuy(unsigned char speed) {
     if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
         entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
         if (entity) {
-            entity->health -= 1;
+            meleeAttackEntity(entity);
             if (entity->health == 0) {
                 mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
                 if (entity->hasTarget) {
@@ -140,6 +140,8 @@ void main() {
     createMapStatus();
     drawMap();
 
+    guy.health = 60;
+
     while(1) {
         moveGuy(count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
 
@@ -182,6 +184,11 @@ void main() {
         count++;
         if (count == 2) {
             count = 0;
+        }
+
+        // Stop
+        if (guy.health == 0) {
+            while(1);
         }
 
         wait();
