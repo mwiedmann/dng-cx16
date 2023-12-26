@@ -32,7 +32,8 @@ void createMapStatus() {
                 entityList[i].next = 0;
                 entityList[i].animationCount = ANIMATION_FRAME_SPEED;
                 entityList[i].animationFrame = 0;
-
+                entityList[i].facing = 0;
+                
                 // If we have a lastEntity (not at beginning of list)
                 // Point it's 'next' to this entity
                 if (lastEntity) {

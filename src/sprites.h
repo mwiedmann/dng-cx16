@@ -7,7 +7,8 @@
 #define ANIMATION_FRAME_COUNT 3
 
 void spritesConfig();
-void setAnimationFrame(unsigned char spriteId, unsigned char tileId, unsigned char frame);
+void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned short y, short scrollX, short scrollY,
+    unsigned char tileId, unsigned char frame, unsigned char dir);
 void toggleSprite(unsigned long spriteAddr, unsigned short show);
 void moveSprite(unsigned long spriteAddr, unsigned short x, unsigned short y, short scrollX, short scrollY);
 void moveSpriteId(unsigned char spriteId, unsigned short x, unsigned short y, short scrollX, short scrollY);

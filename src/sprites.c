@@ -47,7 +47,8 @@ void spritesConfig() {
     }
 }
 
-void setAnimationFrame(unsigned char spriteId, unsigned char tileId, unsigned char frame) {
+void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned short y, short scrollX, short scrollY,
+    unsigned char tileId, unsigned char frame, unsigned char dir) {
     unsigned long spriteAddr = SPRITE1_ADDR + (spriteId * 8);
     // VRAM address for sprite 1 (this is fixed)
     unsigned long spriteGraphicAddress = TILEBASE_ADDR + ((tileId+frame)*256);
@@ -62,6 +63,13 @@ void setAnimationFrame(unsigned char spriteId, unsigned char tileId, unsigned ch
     VERA.data0 = spriteGraphicAddress>>5;
     // 256 color mode, and graphic address bits 16:13
     VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
+    // Set the X and Y values
+    VERA.data0 = x-scrollX;
+    VERA.data0 = (x-scrollX)>>8;
+    VERA.data0 = y-scrollY;
+    VERA.data0 = (y-scrollY)>>8;
+
+    VERA.data0 = 0b00001000 | dir; // Z-Depth=2 (or 0 to hide)
 }
 
 void toggleSprite(unsigned long spriteAddr, unsigned short show) {

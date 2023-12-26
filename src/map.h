@@ -25,6 +25,7 @@ typedef struct Entity {
     struct Entity *prev;
     unsigned char animationCount;
     unsigned char animationFrame;
+    unsigned char facing;
 } Entity;
 
 typedef struct Guy {
