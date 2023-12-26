@@ -17,8 +17,8 @@ gimp:
 
 zip:
 	cd build && \
-	rm ski.zip && \
-	zip ski.zip *
+	rm -f dng.zip && \
+	zip dng.zip *
 
 all:
 	make ldtk

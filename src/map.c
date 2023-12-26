@@ -10,7 +10,7 @@ void createMapStatus() {
     unsigned char x,y,i;
     Entity *lastEntity = 0;
 
-    loadFileToBankedRAM("l0.bin", MAP_BANK, 0);
+    loadFileToBankedRAM("l0map.bin", MAP_BANK, 0);
     BANK_NUM = MAP_BANK;
 
     entitySleepList = 0;
@@ -54,25 +54,5 @@ void createMapStatus() {
 }
 
 void drawMap() {
-    unsigned char x,y;
-
-    // Point to the MapBase address so we can write to VRAM
-    VERA.address = L0_MAPBASE_ADDR;
-    VERA.address_hi = L0_MAPBASE_ADDR>>16;
-
-    // Set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
-
-    for (y=0; y<MAPBASE_TILE_WIDTH; y++) {
-        for (x=0; x<MAPBASE_TILE_HEIGHT; x++) {
-            if (x < MAP_MAX && y < MAP_MAX) {
-                VERA.data0 = mapStatus[y][x] > 0 && mapStatus[y][x] < ENTITY_TILE_START
-                    ? mapStatus[y][x]
-                    : TILE_FLOOR;
-            } else {
-                VERA.data0 = 0;
-            }
-            VERA.data0 = 0;
-        }
-    }
+    loadFileToVRAM("l0tile.bin", L0_MAPBASE_ADDR);
 }

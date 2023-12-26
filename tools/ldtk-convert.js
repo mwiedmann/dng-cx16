@@ -11,62 +11,73 @@ const tileWidth = 90
 const tileMax = 128
 
 const createLevelCode = (levelNum, level) => {
-  // const addDummyBytes = (bytes) => {
-  //   for (let i = tileWidth; i < tileMax; i++) {
-  //     bytes.push(0);
-  //     bytes.push(0);
-  //   }
-  // };
+  const getMapIdFromTile = (tileId) => {
+    if (tileId >= 2 && tileId <= 17) { // Wall
+      return 3;
+    } else {
+      return 2; // Floor
+    }
+  }
 
-  // // { "px": [48,32], "src": [80,80], "f": 0, "t": 65, "d": [83] },
-  // const addTiles = (gridTiles, override0) => {
-  //   const bytes = [];
-  //   let col = 0;
-  //   gridTiles.forEach((g) => {
-  //     bytes.push(g.t === override0 ? 0 : g.t + 1); // Add 1 because we have a blank tile before the loaded tiles
+  const getTileData = (gridTiles, override0) => {
+      const tileBytes = [];
+      const mapBytes = [];
+      let i=0;
 
-  //     const flip =
-  //       ((g.f === 2 || g.f === 3 ? 1 : 0) << 3) +
-  //       ((g.f === 1 || g.f === 3 ? 1 : 0) << 2);
-  //     bytes.push(flip);
-  //     col++;
+      const addDummyBytes = () => {
+        for (let i = 90; i < 128; i++) {
+          tileBytes.push(0);
+          tileBytes.push(0);
+        }
+      };
 
-  //     if (col == tileWidth) {
-  //       addDummyBytes(bytes);
-  //       col = 0;
-  //     }
-  //   });
-
-  //   return bytes;
-  // };
-
-  const addMapData = (gridTiles, override0) => {
-      const bytes = [];
-      let col = 0;
       gridTiles.forEach((g) => {
-        bytes.push(g.t);
+        tileBytes.push(g.t);
+        tileBytes.push(0); // No flipping in this set
+
+        mapBytes.push(getMapIdFromTile(g.t));
+
+        i++;
+        if (i == 90) {
+          addDummyBytes()
+          i = 0;
+        }
       });
   
-      return bytes;
+      return {
+        tileBytes,
+        mapBytes
+      }
     };
 
+  const addMapData = (gridTiles, currentMapData) => {
+    // { "px": [144,16], "src": [96,112], "f": 0, "t": 62, "d": [99], "a": 1 },
+    gridTiles.forEach((g) => {
+      const x = g.px[0] / 16;
+      const y = g.px[1] / 16;
+      currentMapData[(y * 90) + x] = g.t == 62 ? 4 : 5; // Entity or Guy
+    });
+  }
+
+  let data = undefined
   level.layerInstances.forEach((li) => {
-    let bytes = undefined;
 
     switch (li.__identifier) {
       case "Map":
-        bytes = addMapData(li.gridTiles);
+        data = getTileData(li.gridTiles);
+        outputFilename = `L${levelNum}TILE.BIN`;
+        output = new Uint8Array(data.tileBytes);
+        
+        fs.writeFileSync(`build/${outputFilename}`, output, "binary");
         break;
-    }
 
-    if (bytes) {
-      let outputFilename;
-      let output;
-
-      outputFilename = `L${levelNum}.BIN`;
-      output = new Uint8Array(bytes);
-      
-      fs.writeFileSync(`build/${outputFilename}`, output, "binary");
+      case "Objects":
+        addMapData(li.gridTiles, data.mapBytes);
+        outputFilename = `L${levelNum}MAP.BIN`;
+        output = new Uint8Array(data.mapBytes);
+        
+        fs.writeFileSync(`build/${outputFilename}`, output, "binary");
+        break;
     }
   });
 };

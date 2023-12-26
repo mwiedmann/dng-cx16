@@ -11,7 +11,7 @@ void spritesConfig() {
     unsigned char i;
 
     // VRAM address for sprite 1 (this is fixed)
-    unsigned long spriteGraphicAddress = TILEBASE_ADDR + (TILE_GUY*256);
+    unsigned long spriteGraphicAddress = TILEBASE_ADDR + (63*256);
 
     // Point to Sprite
     VERA.address = SPRITE1_ADDR;
@@ -32,7 +32,7 @@ void spritesConfig() {
     VERA.data0 = 0b00001000; // Z-Depth=2 (or 0 to hide)
     VERA.data0 = 0b01010000; // 16x16 pixel image
     
-    spriteGraphicAddress = TILEBASE_ADDR + (TILE_ENTITY*256);
+    spriteGraphicAddress = TILEBASE_ADDR + (62*256);
 
     for (i=0; i<ENTITY_COUNT; i++) {
         VERA.data0 = spriteGraphicAddress>>5;
