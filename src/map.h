@@ -25,7 +25,7 @@ typedef struct Entity {
     struct Entity *prev;
     unsigned char animationCount;
     unsigned char animationFrame;
-    unsigned char facing;
+    unsigned char facingX;
 } Entity;
 
 typedef struct Guy {
@@ -37,12 +37,22 @@ typedef struct Guy {
     unsigned short score;
     unsigned char animationCount;
     unsigned char animationFrame;
-    unsigned char facing;
+    unsigned char facingX;
+    unsigned char facingY;
     unsigned char shooting;
     unsigned char ticksUntilNextShot;
     unsigned char ticksUntilNextMelee;
 
 } Guy;
+
+typedef struct Weapon {
+    unsigned short x;
+    unsigned short y;
+    unsigned char visible;
+    short dirX;
+    short dirY;
+    unsigned char animationCount;
+} Weapon;
 
 void createMapStatus();
 void drawMap();

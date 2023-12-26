@@ -136,10 +136,10 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         // Try to move X towards the guy
         if (entity->currentTileX < guyTileX) {
             tileXChange = 1;
-            entity->facing = 0;
+            entity->facingX = 0;
         } else if (entity->currentTileX > guyTileX) {
             tileXChange = -1;
-            entity->facing = 1;
+            entity->facingX = 1;
         }
 
         // Try to move Y towards guy
@@ -207,10 +207,10 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         // Try to move X towards the target
         if (entity->currentTileX < entity->targetTileX) {
             tileXChange = 1;
-            entity->facing = 0;
+            entity->facingX = 0;
         } else if (entity->currentTileX > entity->targetTileX) {
             tileXChange = -1;
-            entity->facing = 1;
+            entity->facingX = 1;
         }
 
         // Try to move Y towards target
@@ -283,7 +283,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
                 entity->animationFrame += 1;
             }
 
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, SNAKE_TILE, entity->animationFrame, entity->facing);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, SNAKE_TILE, entity->animationFrame, entity->facingX);
             needsMove = 0;
         } else {
             entity->animationCount -= 1;

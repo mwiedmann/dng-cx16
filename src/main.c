@@ -37,12 +37,12 @@ void moveGuy(unsigned char speed) {
         dirX = -1;
         dirPressX = -1;
         guy.x -= speed;
-        guy.facing = 1;
+        guy.facingX = 1;
     } else if (JOY_RIGHT(joy)) {
         dirX = 1;
         dirPressX = 1;
         guy.x += speed;
-        guy.facing = 0;
+        guy.facingX = 0;
     }
 
     if (dirX == 1) {
@@ -77,10 +77,12 @@ void moveGuy(unsigned char speed) {
         dirY = -1;
         dirPressY = -1;
         guy.y -= speed;
+        guy.facingY = 0;
     } else if (JOY_DOWN(joy)) {
         dirY = 1;
         dirPressY = 1;
         guy.y += speed;
+        guy.facingY = 1;
     }
 
     if (dirY == 1) {
@@ -153,6 +155,16 @@ void moveGuy(unsigned char speed) {
             guy.animationCount -= 1;
         }
     }
+
+    if (JOY_BTN_1(joy)) {
+        weapon.x = guy.x;
+        weapon.y = guy.y;
+        weapon.visible = 1;
+        weapon.dirX = guy.facingX = 0 ? -1 : 1;
+        weapon.dirY = guy.facingY = 0 ? -1 : 1;
+        weapon.animationCount = 5;
+        toggleWeapon(1);
+    }
 }
 
 // void main() {
@@ -218,8 +230,12 @@ void main() {
         VERA.layer0.hscroll = scrollX;
         // VERA.layer1.hscroll = scrollX;
 
-        moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facing);
+        moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facingX);
 
+        if (weapon.visible) {
+            moveAndSetAnimationFrame(1, weapon.x, weapon.y, scrollX, scrollY, AXE_TILE, 0, 0);
+        }
+        
         // moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
 
         if (count == 0) {

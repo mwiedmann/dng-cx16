@@ -19,7 +19,21 @@ void spritesConfig() {
     // Set the Increment Mode, turn on bit 4
     VERA.address_hi |= 0b10000;
 
-    // Configure Sprite
+    // Configure Guy
+
+    // Graphic address bits 12:5
+    VERA.data0 = spriteGraphicAddress>>5;
+    // 256 color mode, and graphic address bits 16:13
+    VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
+    VERA.data0 = 0;
+    VERA.data0 = 0;
+    VERA.data0 = 0;
+    VERA.data0 = 0;
+    VERA.data0 = 0b00001000; // Z-Depth=2 (or 0 to hide)
+    VERA.data0 = 0b01010000; // 16x16 pixel image
+
+    // Configure Weapon
+    spriteGraphicAddress = TILEBASE_ADDR + (AXE_TILE*256);
 
     // Graphic address bits 12:5
     VERA.data0 = spriteGraphicAddress>>5;
@@ -75,6 +89,13 @@ void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned
 void toggleSprite(unsigned long spriteAddr, unsigned short show) {
     VERA.address = spriteAddr+6;
     VERA.address_hi = spriteAddr>>16;
+    
+    VERA.data0 = show ? 0b00001000 : 0;
+}
+
+void toggleWeapon(unsigned short show) {
+    VERA.address = WEAPON_SPRITE_ADDR;
+    VERA.address_hi = WEAPON_SPRITE_ADDR;
     
     VERA.data0 = show ? 0b00001000 : 0;
 }

@@ -14,3 +14,4 @@ Entity *entityActiveList = 0;
 Entity *entityTempActiveList = 0;
 
 Guy guy;
+Weapon weapon;

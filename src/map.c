@@ -20,7 +20,7 @@ void createMapStatus() {
         for (x=0; x<MAP_MAX; x++) {
             if (mapStatus[y][x] == TILE_ENTITY /* Entity */) {
                 // Create an entity at this tile
-                entityList[i].spriteId = i+1;
+                entityList[i].spriteId = i+2; // First 2 sprites are guy and weapon
                 entityList[i].x = x * 16;
                 entityList[i].y = y * 16;
                 entityList[i].hasTarget = 0;
@@ -32,8 +32,8 @@ void createMapStatus() {
                 entityList[i].next = 0;
                 entityList[i].animationCount = ANIMATION_FRAME_SPEED;
                 entityList[i].animationFrame = 0;
-                entityList[i].facing = 0;
-                
+                entityList[i].facingX = 0;
+
                 // If we have a lastEntity (not at beginning of list)
                 // Point it's 'next' to this entity
                 if (lastEntity) {

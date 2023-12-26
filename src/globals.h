@@ -15,5 +15,6 @@ extern Entity *entityActiveList;
 extern Entity *entityTempActiveList;
 
 extern Guy guy;
+extern Weapon weapon;
 
 #endif
