@@ -35,6 +35,13 @@ typedef struct Guy {
     unsigned char currentTileY;
     unsigned short health;
     unsigned short score;
+    unsigned char animationCount;
+    unsigned char animationFrame;
+    unsigned char facing;
+    unsigned char shooting;
+    unsigned char ticksUntilNextShot;
+    unsigned char ticksUntilNextMelee;
+
 } Guy;
 
 void createMapStatus();

@@ -11,7 +11,7 @@ void spritesConfig() {
     unsigned char i;
 
     // VRAM address for sprite 1 (this is fixed)
-    unsigned long spriteGraphicAddress = TILEBASE_ADDR + (63*256);
+    unsigned long spriteGraphicAddress = TILEBASE_ADDR + (GUY_TILE*256);
 
     // Point to Sprite
     VERA.address = SPRITE1_ADDR;

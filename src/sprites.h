@@ -2,7 +2,8 @@
 #define SPRITES_H
 
 #define SPRITE1_ADDR 0x1FC08
-#define SNAKE_TILE 64
+#define GUY_TILE 64
+#define SNAKE_TILE 69
 #define ANIMATION_FRAME_SPEED 8
 #define ANIMATION_FRAME_COUNT 3
 

@@ -15,7 +15,7 @@
 
 void moveGuy(unsigned char speed) {
     unsigned char joy;
-    unsigned short prevX=0, prevY=0;
+    unsigned short prevX, prevY;
     unsigned char tile, tempTileX, tempTileY;
     signed char dirX = 0, dirPressX = 0, dirY = 0, dirPressY = 0;
     Entity *entity;
@@ -37,10 +37,12 @@ void moveGuy(unsigned char speed) {
         dirX = -1;
         dirPressX = -1;
         guy.x -= speed;
+        guy.facing = 1;
     } else if (JOY_RIGHT(joy)) {
         dirX = 1;
         dirPressX = 1;
         guy.x += speed;
+        guy.facing = 0;
     }
 
     if (dirX == 1) {
@@ -137,6 +139,20 @@ void moveGuy(unsigned char speed) {
 
     // Stamp the current tile with the guy
     mapStatus[guy.currentTileY][guy.currentTileX] = GUY_CLAIM;
+
+    // Animate the guy
+    if (guy.x != prevX || guy.y != prevY) {
+        if (guy.animationCount == 0) {
+            guy.animationCount = ANIMATION_FRAME_SPEED;
+            if (guy.animationFrame == ANIMATION_FRAME_COUNT-1) {
+                guy.animationFrame = 0;
+            } else {
+                guy.animationFrame += 1;
+            }
+        } else {
+            guy.animationCount -= 1;
+        }
+    }
 }
 
 // void main() {
@@ -156,6 +172,15 @@ void moveGuy(unsigned char speed) {
 //     }
 // }
 
+void setupGuy() {
+    guy.health = 60;
+    guy.animationCount = ANIMATION_FRAME_SPEED;
+    guy.animationFrame = 0;
+    guy.ticksUntilNextMelee = 0;
+    guy.ticksUntilNextShot = 0;
+    guy.shooting = 0;
+}
+
 void main() {
     unsigned char count = 0;
     short scrollX, scrollY;
@@ -169,7 +194,7 @@ void main() {
     createMapStatus();
     drawMap();
 
-    guy.health = 60;
+    setupGuy();
 
     while(1) {
         moveGuy(count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
@@ -193,7 +218,9 @@ void main() {
         VERA.layer0.hscroll = scrollX;
         // VERA.layer1.hscroll = scrollX;
 
-        moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
+        moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facing);
+
+        // moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
 
         if (count == 0) {
             // activation/deactivation phase
