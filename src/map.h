@@ -23,6 +23,8 @@ typedef struct Entity {
     unsigned char spriteId;
     struct Entity *next;
     struct Entity *prev;
+    unsigned char animationCount;
+    unsigned char animationFrame;
 } Entity;
 
 typedef struct Guy {

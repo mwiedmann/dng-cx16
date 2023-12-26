@@ -5,6 +5,7 @@
 #include "map.h"
 #include "globals.h"
 #include "utils.h"
+#include "sprites.h"
 
 void createMapStatus() {
     unsigned char x,y,i;
@@ -29,6 +30,8 @@ void createMapStatus() {
                 entityList[i].currentTileY = y;
                 entityList[i].prev = lastEntity; // For the LL, prev entity
                 entityList[i].next = 0;
+                entityList[i].animationCount = ANIMATION_FRAME_SPEED;
+                entityList[i].animationFrame = 0;
 
                 // If we have a lastEntity (not at beginning of list)
                 // Point it's 'next' to this entity

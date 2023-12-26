@@ -270,5 +270,20 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         entity->visible = 1;
     }
 
+    if (entity->x != prevX || entity->y != prevY) {
+        if (entity->animationCount == 0) {
+            entity->animationCount = ANIMATION_FRAME_SPEED;
+            if (entity->animationFrame == ANIMATION_FRAME_COUNT-1) {
+                entity->animationFrame = 0;
+            } else {
+                entity->animationFrame += 1;
+            }
+
+            setAnimationFrame(entity->spriteId, SNAKE_TILE, entity->animationFrame);
+        } else {
+            entity->animationCount -= 1;
+        }
+    }
+
     moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
 }
