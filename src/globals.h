@@ -6,6 +6,9 @@
 #define ENTITY_COUNT 75
 #define GUY_SPEED_1 1
 #define GUY_SPEED_2 2
+#define WEAPON_SPEED 4
+#define WEAPON_ROTATION_SPEED 4
+#define GUY_SHOOT_TICKS 10
 
 extern unsigned char (*mapStatus)[MAP_MAX];
 

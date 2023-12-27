@@ -43,7 +43,7 @@ void spritesConfig() {
     VERA.data0 = 0;
     VERA.data0 = 0;
     VERA.data0 = 0;
-    VERA.data0 = 0b00001000; // Z-Depth=2 (or 0 to hide)
+    VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
     VERA.data0 = 0b01010000; // 16x16 pixel image
     
     spriteGraphicAddress = TILEBASE_ADDR + (SNAKE_TILE*256);
@@ -94,10 +94,7 @@ void toggleSprite(unsigned long spriteAddr, unsigned short show) {
 }
 
 void toggleWeapon(unsigned short show) {
-    VERA.address = WEAPON_SPRITE_ADDR;
-    VERA.address_hi = WEAPON_SPRITE_ADDR;
-    
-    VERA.data0 = show ? 0b00001000 : 0;
+    toggleSprite(WEAPON_SPRITE_ADDR, show);
 }
 
 void moveSprite(unsigned long spriteAddr, unsigned short x, unsigned short y, short scrollX, short scrollY) {

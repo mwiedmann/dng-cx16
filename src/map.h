@@ -38,7 +38,11 @@ typedef struct Guy {
     unsigned char animationCount;
     unsigned char animationFrame;
     unsigned char facingX;
-    unsigned char facingY;
+    signed char aimX;
+    signed char aimY;
+    signed char pressedX;
+    signed char pressedY;
+    unsigned char pressedShoot;
     unsigned char shooting;
     unsigned char ticksUntilNextShot;
     unsigned char ticksUntilNextMelee;
@@ -52,6 +56,7 @@ typedef struct Weapon {
     short dirX;
     short dirY;
     unsigned char animationCount;
+    unsigned char animationFrame;
 } Weapon;
 
 void createMapStatus();

@@ -25,7 +25,7 @@ void createMapStatus() {
                 entityList[i].y = y * 16;
                 entityList[i].hasTarget = 0;
                 entityList[i].visible = 0;
-                entityList[i].health =  60; // Every 3rd entity is dead
+                entityList[i].health =  60;
                 entityList[i].currentTileX = x;
                 entityList[i].currentTileY = y;
                 entityList[i].prev = lastEntity; // For the LL, prev entity

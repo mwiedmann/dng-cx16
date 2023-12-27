@@ -101,12 +101,11 @@ void tempActiveToActiveEntities() {
     entityTempActiveList = 0;
 }
 
-void meleeAttackEntity(Entity *entity) {
-    if (entity->health > 0) {
-        entity->health -= 1;
-    }
-
-    if (entity->health == 0) {
+void attackEntity(Entity *entity, unsigned char damage) {
+    if (entity->health > damage) {
+        entity->health -= damage;
+    } else {
+        entity->health = 0;
         mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
         if (entity->hasTarget) {
             mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
@@ -257,7 +256,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
                 meleeAttackGuy();
             } else {
                 // Clear the old tile and mark the new tile as blocked
-                mapStatus[entity->startTileY][entity->startTileX] = 0; // Remove target blocker (can be diff) from actual new tile
+                mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR; // Remove target blocker (can be diff) from actual new tile
                 mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_TILE_START + entity->spriteId; // Block new tile
                 entity->hasTarget = 0; // Will need new target
                 

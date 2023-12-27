@@ -13,17 +13,43 @@
 #include "list.h"
 #include "utils.h"
 
-void moveGuy(unsigned char speed) {
+unsigned char weaponRotation[4] = {0, 1, 3, 2};
+short scrollX, scrollY;
+
+void setGuyDirection() {
     unsigned char joy;
+
+    joy = joy_read(0);
+
+    guy.pressedX = 0;
+    guy.pressedY = 0;
+    guy.pressedShoot = 0;
+
+    if (JOY_LEFT(joy)) {
+        guy.pressedX = -1;
+    } else if (JOY_RIGHT(joy)) {
+        guy.pressedX = 1;
+    }
+
+    if (JOY_UP(joy)) {
+        guy.pressedY = -1;
+    } else if (JOY_DOWN(joy)) {
+        guy.pressedY = 1;
+    }
+
+    if (JOY_BTN_1(joy) || JOY_BTN_2(joy)) {
+        guy.pressedShoot = 1;
+    }
+}
+
+void moveGuy(unsigned char speed) {
     unsigned short prevX, prevY;
     unsigned char tile, tempTileX, tempTileY;
-    signed char dirX = 0, dirPressX = 0, dirY = 0, dirPressY = 0;
+    signed char dirX = 0, dirY = 0;
     Entity *entity;
 
     guy.currentTileX = (guy.x+8)>>4;
     guy.currentTileY = (guy.y+8)>>4;
-
-    joy = joy_read(0);
 
     // Pause
     // if (JOY_BTN_1(joy)) {
@@ -33,14 +59,12 @@ void moveGuy(unsigned char speed) {
     prevX = guy.x;
     prevY = guy.y;
 
-    if (JOY_LEFT(joy)) {
+    if (guy.pressedX == -1) {
         dirX = -1;
-        dirPressX = -1;
         guy.x -= speed;
         guy.facingX = 1;
-    } else if (JOY_RIGHT(joy)) {
+    } else if (guy.pressedX == 1) {
         dirX = 1;
-        dirPressX = 1;
         guy.x += speed;
         guy.facingX = 0;
     }
@@ -73,16 +97,12 @@ void moveGuy(unsigned char speed) {
         }
     }
 
-    if (JOY_UP(joy)) {
+    if (guy.pressedY == -1) {
         dirY = -1;
-        dirPressY = -1;
         guy.y -= speed;
-        guy.facingY = 0;
-    } else if (JOY_DOWN(joy)) {
+    } else if (guy.pressedY == 1) {
         dirY = 1;
-        dirPressY = 1;
         guy.y += speed;
-        guy.facingY = 1;
     }
 
     if (dirY == 1) {
@@ -113,12 +133,25 @@ void moveGuy(unsigned char speed) {
         }
     }
 
+    // Set the guy's aiming direction
+    if (guy.pressedX != 0 && guy.pressedY == 0) {
+        guy.aimX = guy.pressedX;
+        guy.aimY = 0;
+    } else if (guy.pressedX == 0 && guy.pressedY != 0) {
+        guy.aimX = 0;
+        guy.aimY = guy.pressedY;
+    } else if (guy.pressedX != 0 && guy.pressedY != 0) {
+        guy.aimX = guy.pressedX;
+        guy.aimY = guy.pressedY;
+    } // Other cases just leave the facing as it is
+
+
     // Check if attacking
     tile = mapStatus[((guy.y+8)+(dirY*8))>>4][((guy.x+8)+(dirX*8))>>4];
     if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
         entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
         if (entity) {
-            meleeAttackEntity(entity);
+            attackEntity(entity, 2);
             if (entity->health > 0) {
                 // Entity not dead yet...guy doesn't move
                 guy.x = prevX;
@@ -156,14 +189,21 @@ void moveGuy(unsigned char speed) {
         }
     }
 
-    if (JOY_BTN_1(joy)) {
+    if (guy.pressedShoot && !weapon.visible && guy.ticksUntilNextShot == 0) {
+        guy.ticksUntilNextShot = GUY_SHOOT_TICKS;
         weapon.x = guy.x;
         weapon.y = guy.y;
         weapon.visible = 1;
-        weapon.dirX = guy.facingX = 0 ? -1 : 1;
-        weapon.dirY = guy.facingY = 0 ? -1 : 1;
-        weapon.animationCount = 5;
+        weapon.dirX = guy.aimX;
+        weapon.dirY = guy.aimY;
+        weapon.animationCount = WEAPON_ROTATION_SPEED;
+        weapon.animationFrame = 0;
+
         toggleWeapon(1);
+    } else {
+        if (guy.ticksUntilNextShot > 0) {
+            guy.ticksUntilNextShot -= 1;
+        }
     }
 }
 
@@ -191,11 +231,51 @@ void setupGuy() {
     guy.ticksUntilNextMelee = 0;
     guy.ticksUntilNextShot = 0;
     guy.shooting = 0;
+    guy.aimX = 1;
+    guy.aimY = 0;
+    guy.facingX = 0;
+    guy.score = 0;
+}
+
+void moveWeapon() {
+    unsigned char tile;
+    Entity *entity;
+
+    if (weapon.visible) {
+        weapon.animationCount -= 1;
+        if (weapon.animationCount == 0) {
+            weapon.animationCount = WEAPON_ROTATION_SPEED;
+            weapon.animationFrame += 1;
+            if (weapon.animationFrame == 4) {
+                weapon.animationFrame = 0;
+            }
+        }
+        weapon.x += weapon.dirX * WEAPON_SPEED;
+        weapon.y += weapon.dirY * WEAPON_SPEED;
+
+        moveAndSetAnimationFrame(1, weapon.x, weapon.y, scrollX, scrollY, AXE_TILE, 0, weaponRotation[weapon.animationFrame]);
+
+        tile = mapStatus[(weapon.y+8)>>4][(weapon.x+8)>>4];
+
+        // See if hit something
+        if (tile != TILE_FLOOR && tile != GUY_CLAIM) {
+            // Hide it for now
+            weapon.visible = 0;
+            toggleWeapon(0);
+
+            if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
+                entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
+                if (entity) {
+                    attackEntity(entity, 60);
+                }
+            }
+        }
+    }
 }
 
 void main() {
     unsigned char count = 0;
-    short scrollX, scrollY;
+    unsigned char inputTicks = 0;
     Entity *entity;
 
     init();
@@ -209,6 +289,14 @@ void main() {
     setupGuy();
 
     while(1) {
+        // Get joystick input only periodically
+        if (inputTicks == 4) {
+            setGuyDirection();
+            inputTicks = 0;
+        } else {
+            inputTicks++;
+        }
+
         moveGuy(count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
 
         scrollX = guy.x-112;
@@ -232,10 +320,8 @@ void main() {
 
         moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facingX);
 
-        if (weapon.visible) {
-            moveAndSetAnimationFrame(1, weapon.x, weapon.y, scrollX, scrollY, AXE_TILE, 0, 0);
-        }
-        
+        moveWeapon();
+
         // moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
 
         if (count == 0) {
