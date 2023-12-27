@@ -7,6 +7,7 @@
 #define TILE_WALL 3
 #define TILE_ENTITY 4
 #define TILE_GUY 5  
+#define TILE_GENERATOR 6
 
 #define ENTITY_TILE_START 100
 #define ENTITY_TILE_END 228

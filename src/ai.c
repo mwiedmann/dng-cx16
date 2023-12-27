@@ -122,11 +122,66 @@ void meleeAttackGuy() {
 }
 
 void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY) {
-    unsigned char newTileX, newTileY;
-    signed char tileXChange = 0, tileYChange = 0;
+    unsigned char newTileX, newTileY, i;
+    signed char tileXChange = 0, tileYChange = 0, x, y;
     unsigned char distX, distY;
     unsigned short prevX, prevY;
-    unsigned char attack = 0, needsMove=1;
+    unsigned char attack = 0, needsMove=1, foundEmptyTile=0;
+
+    if (entity->isGenerator) {
+        if (entity->nextSpawn > 0) {
+            entity->nextSpawn -= 1;
+        } else {
+            entity->nextSpawn = entity->spawnRate;
+            // Create an entity
+            // Find an empty tile
+            if (guyTileX < entity->currentTileX) {
+                newTileX = entity->currentTileX-1;
+            } else if (guyTileX > entity->currentTileX) {
+                newTileX = entity->currentTileX+1;
+            } else {
+                newTileX = entity->currentTileX;
+            }
+
+            if (guyTileY < entity->currentTileY) {
+                newTileY = entity->currentTileY-1;
+            } else if (guyTileY > entity->currentTileY) {
+                newTileY = entity->currentTileY+1;
+            } else {
+                newTileY = entity->currentTileY;
+            }
+            
+            if (mapStatus[newTileY][newTileX] != TILE_FLOOR) {
+                for (y=-1; y <= 1 && !foundEmptyTile; y++) {
+                    for (x=-1; x <= 1; x++) {
+                        if (mapStatus[entity->currentTileY+y][entity->currentTileX+x] == TILE_FLOOR) {
+                            newTileY = entity->currentTileY+y;
+                            newTileX = entity->currentTileX+x;
+                            foundEmptyTile = 1;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                foundEmptyTile = 1;
+            }
+
+            // If we have an empty tile, find unused entity and spawn it
+            if (foundEmptyTile) {
+                for (i=0; i < ENTITY_COUNT; i++) {
+                    if (entityList[i].health == 0) {
+                        createEntity(TILE_ENTITY, i, newTileX, newTileY);
+                        addNewEntityToList(&entityList[i], &entitySleepList);
+                        mapStatus[newTileY][newTileX] = ENTITY_TILE_START + entityList[i].spriteId;
+                        break;
+                    }
+                }
+            }
+        }
+
+        moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, GENERATOR_TILE, 0, 0);
+        return;
+    }
 
     prevX = entity->x;
     prevY = entity->y;

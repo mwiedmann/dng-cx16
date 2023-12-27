@@ -6,6 +6,8 @@
 #define AXE_TILE 56
 #define GUY_TILE 64
 #define SNAKE_TILE 69
+#define GENERATOR_TILE 48
+
 #define ANIMATION_FRAME_SPEED 8
 #define ANIMATION_FRAME_COUNT 3
 

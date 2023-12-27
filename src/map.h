@@ -9,6 +9,9 @@
 #define GUY_MAX MAP_PIXEL_MAX-(16+GUY_SPEED_2) // Right edge - Sprite width and move speed
 
 typedef struct Entity {
+    unsigned short isGenerator;
+    unsigned char spawnRate;
+    unsigned char nextSpawn;
     unsigned short x;
     unsigned short y;
     unsigned char startTileX;
@@ -59,6 +62,7 @@ typedef struct Weapon {
     unsigned char animationFrame;
 } Weapon;
 
+void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y);
 void createMapStatus();
 void drawMap();
 

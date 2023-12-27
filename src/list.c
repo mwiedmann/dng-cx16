@@ -17,6 +17,26 @@ void printList(char *name, Entity *list) {
     printf("\n");
 }
 
+void addNewEntityToList(Entity *entity, Entity **to) {
+    // Add to the beginning of the new list
+    // There is never a prev since 1st Entity in list
+    entity->prev = 0;
+
+    // If empty list, point to NULL
+    // Else point to the 1st Entity in the list
+    if (!(*to)) {    
+        // printf("List is empty, new HEAD: %i\n", entity->spriteId);
+        entity->next = 0;
+    } else {
+        // printf("List has entities, new HEAD: %i points to: %i\n", entity->spriteId, (*to)->spriteId);
+        entity->next = *to;
+        (*to)->prev = entity;
+    }
+
+    // Enity becomes the new head of the list
+    *to = entity;
+}
+
 void moveEntityToList(Entity *entity, Entity **to, Entity **from) {
     // If the entity is first in the list, point the list to the next entity (if any, could be 0)
     if (*from == entity) {

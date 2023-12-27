@@ -55,7 +55,7 @@ const createLevelCode = (levelNum, level) => {
     gridTiles.forEach((g) => {
       const x = g.px[0] / 16;
       const y = g.px[1] / 16;
-      currentMapData[(y * 90) + x] = g.t == 62 ? 4 : 5; // Entity or Guy
+      currentMapData[(y * 90) + x] = g.t == 62 ? 4 /*Entity*/ : g.t==48 ? 6 /*Generator*/ : 5 /* Guy*/;
     });
   }
 
