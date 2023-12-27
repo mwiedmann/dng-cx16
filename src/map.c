@@ -29,6 +29,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     entityList[entityId].currentTileX = x;
     entityList[entityId].currentTileY = y;
     entityList[entityId].animationChange = 1;
+    entityList[entityId].movedPrevTick = 0;
 }
 
 void createMapStatus() {

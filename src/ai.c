@@ -328,12 +328,6 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         }
     }
 
-    // Show the sprite if currently not visible
-    if (!entity->visible) {
-        toggleEntity(entity->spriteId, 1);
-        entity->visible = 1;
-    }
-
     if (entity->x != prevX || entity->y != prevY) {
         if (entity->animationCount == 0) {
             entity->animationCount = ANIMATION_FRAME_SPEED;

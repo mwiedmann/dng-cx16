@@ -29,6 +29,7 @@ typedef struct Entity {
     unsigned char animationCount;
     unsigned char animationFrame;
     unsigned char animationChange;
+    unsigned char movedPrevTick;
     unsigned char facingX;
 } Entity;
 

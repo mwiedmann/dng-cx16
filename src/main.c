@@ -300,7 +300,7 @@ void moveWeapon() {
 }
 
 void main() {
-    unsigned char count = 0;
+    unsigned char count = 0, load;
     unsigned char inputTicks = 0;
     Entity *entity;
 
@@ -360,12 +360,27 @@ void main() {
             activateEntities(scrollX, scrollY);
             deactivateEntities(scrollX, scrollY);
             tempActiveToActiveEntities();
+
+            // Move "some" active entities
+            // Try to split the load a bit
+            entity = entityActiveList;
+            load=0;
+            while(entity && load<10) {
+                moveEntity(entity, guy.currentTileX, guy.currentTileY, scrollX, scrollY);   
+                entity->movedPrevTick=1;
+                entity = entity->next;
+                load++;
+            };
         } else {
             // Move active entities phase
             entity = entityActiveList;
 
             while(entity) {
-                moveEntity(entity, guy.currentTileX, guy.currentTileY, scrollX, scrollY);   
+                if (!entity->movedPrevTick) {
+                    moveEntity(entity, guy.currentTileX, guy.currentTileY, scrollX, scrollY);   
+                } else {
+                    entity->movedPrevTick = 0;
+                }
                 entity = entity->next;
             };
         }
