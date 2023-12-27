@@ -11,6 +11,14 @@ const tileWidth = 90
 const tileMax = 128
 
 const createLevelCode = (levelNum, level) => {
+  const createLayer = (val) => {
+    return new Array(128*128*2).fill(val);
+  }
+
+  const createMapArray = (val) => {
+    return new Array(90*90).fill(val);
+  }
+
   const getMapIdFromTile = (tileId) => {
     if (tileId >= 2 && tileId <= 17) { // Wall
       return 3;
@@ -20,28 +28,16 @@ const createLevelCode = (levelNum, level) => {
   }
 
   const getTileData = (gridTiles, override0) => {
-      const tileBytes = [];
-      const mapBytes = [];
-      let i=0;
-
-      const addDummyBytes = () => {
-        for (let i = 90; i < 128; i++) {
-          tileBytes.push(0);
-          tileBytes.push(0);
-        }
-      };
+      const tileBytes = createLayer(0);
+      const mapBytes = createMapArray(0);
 
       gridTiles.forEach((g) => {
-        tileBytes.push(g.t);
-        tileBytes.push(0); // No flipping in this set
+        const xTile = g.px[0]/16;
+        const yTile = g.px[1]/16;
 
-        mapBytes.push(getMapIdFromTile(g.t));
+        tileBytes[(yTile*2*tileMax)+(xTile*2)] = g.t
 
-        i++;
-        if (i == 90) {
-          addDummyBytes()
-          i = 0;
-        }
+        mapBytes[(yTile*tileWidth)+xTile] = getMapIdFromTile(g.t);
       });
   
       return {
@@ -55,7 +51,14 @@ const createLevelCode = (levelNum, level) => {
     gridTiles.forEach((g) => {
       const x = g.px[0] / 16;
       const y = g.px[1] / 16;
-      currentMapData[(y * 90) + x] = g.t == 62 ? 4 /*Entity*/ : g.t==48 ? 6 /*Generator*/ : 5 /* Guy*/;
+      currentMapData[(y * 90) + x] = 
+        g.t == 62 // Entity
+          ? 4 
+          : g.t==48 // Generator
+            ? 6 
+            : g.t >= 40 && g.t <= 42
+            ? 7 // Door
+            : 5; // Guy
     });
   }
 
