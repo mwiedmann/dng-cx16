@@ -151,7 +151,7 @@ void moveGuy(unsigned char speed) {
     if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
         entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
         if (entity) {
-            attackEntity(entity, 2);
+            attackEntity(entity, MELEE_DAMAGE);
             if (entity->health > 0) {
                 // Entity not dead yet...guy doesn't move
                 guy.x = prevX;
@@ -250,15 +250,11 @@ void moveWeapon() {
                 weapon.animationFrame = 0;
             }
         }
-        weapon.x += weapon.dirX * WEAPON_SPEED;
-        weapon.y += weapon.dirY * WEAPON_SPEED;
 
-        moveAndSetAnimationFrame(1, weapon.x, weapon.y, scrollX, scrollY, AXE_TILE, 0, weaponRotation[weapon.animationFrame]);
-
+        // We check before and after the move because of tile boundary edge cases
+        // Probably a better way but tile checking is really fast...so, maybe this is ok
         tile = mapStatus[(weapon.y+8)>>4][(weapon.x+8)>>4];
-
-        // See if hit something
-        if (tile != TILE_FLOOR && tile != GUY_CLAIM) {
+        if (tile != TILE_FLOOR && tile != GUY_CLAIM && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapon.visible = 0;
             toggleWeapon(0);
@@ -266,7 +262,36 @@ void moveWeapon() {
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
                 if (entity) {
-                    attackEntity(entity, 60);
+                    attackEntity(entity, WEAPON_DAMAGE);
+                }
+            }
+            return;
+        }
+
+        weapon.x += weapon.dirX * WEAPON_SPEED;
+        weapon.y += weapon.dirY * WEAPON_SPEED;
+
+        // See if weapon is off screen
+        if (weapon.x >= scrollX + SCROLL_PIXEL_SIZE || weapon.x+16 <= scrollX || weapon.y >= scrollY + SCROLL_PIXEL_SIZE || weapon.y+16 <= scrollY) {
+            // Hide it for now
+            weapon.visible = 0;
+            toggleWeapon(0);
+            return;
+        }
+
+        moveAndSetAnimationFrame(1, weapon.x, weapon.y, scrollX, scrollY, AXE_TILE, 0, weaponRotation[weapon.animationFrame]);
+
+        // Check if hit something after the move
+        tile = mapStatus[(weapon.y+8)>>4][(weapon.x+8)>>4];
+        if (tile != TILE_FLOOR && tile != GUY_CLAIM && tile != ENTITY_CLAIM) {
+            // Hide it for now
+            weapon.visible = 0;
+            toggleWeapon(0);
+
+            if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
+                entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
+                if (entity) {
+                    attackEntity(entity, WEAPON_DAMAGE);
                 }
             }
         }
