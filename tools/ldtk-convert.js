@@ -22,6 +22,8 @@ const createLevelCode = (levelNum, level) => {
   const getMapIdFromTile = (tileId) => {
     if (tileId >= 2 && tileId <= 17) { // Wall
       return 3;
+    } else if (tileId >= 40 && tileId <= 42) { // Door
+      return 7;
     } else {
       return 2; // Floor
     }
@@ -57,8 +59,8 @@ const createLevelCode = (levelNum, level) => {
           : g.t==48 // Generator
             ? 6 
             : g.t >= 40 && g.t <= 42
-            ? 7 // Door
-            : 5; // Guy
+              ? 7 // Door
+              : 5; // Guy
     });
   }
 
