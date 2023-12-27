@@ -28,6 +28,7 @@ typedef struct Entity {
     struct Entity *prev;
     unsigned char animationCount;
     unsigned char animationFrame;
+    unsigned char animationChange;
     unsigned char facingX;
 } Entity;
 
@@ -40,6 +41,7 @@ typedef struct Guy {
     unsigned short score;
     unsigned char animationCount;
     unsigned char animationFrame;
+    unsigned char animationChange;
     unsigned char facingX;
     signed char aimX;
     signed char aimY;

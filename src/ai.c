@@ -179,7 +179,13 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
             }
         }
 
-        moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, GENERATOR_TILE, 0, 0);
+        if (entity->animationChange) {
+            entity->animationChange = 0;
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, GENERATOR_TILE, 0, 0);
+        } else {
+            moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+        }
+
         return;
     }
 

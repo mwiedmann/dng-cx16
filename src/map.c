@@ -28,6 +28,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     entityList[entityId].visible = 0;
     entityList[entityId].currentTileX = x;
     entityList[entityId].currentTileY = y;
+    entityList[entityId].animationChange = 1;
 }
 
 void createMapStatus() {

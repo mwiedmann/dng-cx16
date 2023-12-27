@@ -178,6 +178,7 @@ void moveGuy(unsigned char speed) {
     // Animate the guy
     if (guy.x != prevX || guy.y != prevY) {
         if (guy.animationCount == 0) {
+            guy.animationChange = 1;
             guy.animationCount = ANIMATION_FRAME_SPEED;
             if (guy.animationFrame == ANIMATION_FRAME_COUNT-1) {
                 guy.animationFrame = 0;
@@ -343,11 +344,16 @@ void main() {
         VERA.layer0.hscroll = scrollX;
         // VERA.layer1.hscroll = scrollX;
 
-        moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facingX);
+        // Only set his animation frame if needed (this is more expensive)
+        // Otherwise just move him
+        if (guy.animationChange) {
+            guy.animationChange = 0;
+            moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facingX);
+        } else {
+            moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
+        }
 
         moveWeapon();
-
-        // moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
 
         if (count == 0) {
             // activation/deactivation phase
