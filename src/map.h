@@ -52,7 +52,7 @@ typedef struct Guy {
     unsigned char shooting;
     unsigned char ticksUntilNextShot;
     unsigned char ticksUntilNextMelee;
-
+    unsigned char keys;
 } Guy;
 
 typedef struct Weapon {

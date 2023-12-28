@@ -42,6 +42,52 @@ void setGuyDirection() {
     }
 }
 
+unsigned char tryTile(unsigned char x, unsigned char y) {
+    unsigned char tile = mapStatus[y][x];
+    signed char i;
+
+    if (tile == TILE_DOOR && guy.keys > 0) {
+        guy.keys -= 1;
+        mapStatus[y][x] = TILE_FLOOR;
+        clearTile(x, y);
+
+        i=1;
+        while(mapStatus[y-i][x] == TILE_DOOR) {
+            mapStatus[y-i][x] = TILE_FLOOR;
+            clearTile(x, y-i);
+            i++;
+        }
+
+        i=1;
+        while(mapStatus[y+i][x] == TILE_DOOR) {
+            mapStatus[y+i][x] = TILE_FLOOR;
+            clearTile(x, y+i);
+            i++;
+        }
+
+        i=1;
+        while(mapStatus[y][x-i] == TILE_DOOR) {
+            mapStatus[y][x-i] = TILE_FLOOR;
+            clearTile(x-i, y);
+            i++;
+        }
+
+        i=1;
+        while(mapStatus[y][x+i] == TILE_DOOR) {
+            mapStatus[y][x+i] = TILE_FLOOR;
+            clearTile(x+i, y);
+            i++;
+        }
+        
+    }
+
+    if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+        return 1;
+    }
+
+    return 0;
+}
+
 void moveGuy(unsigned char speed) {
     unsigned short prevX, prevY;
     unsigned char tile, tempTileX, tempTileY;
@@ -71,26 +117,22 @@ void moveGuy(unsigned char speed) {
 
     if (dirX == 1) {
         // Check if new tile is open...move back if not
-        tile = mapStatus[guy.y>>4][(guy.x+15)>>4];
-        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+        if (tryTile((guy.x+15)>>4, guy.y>>4)) {
             dirX = 0;
             guy.x = prevX;
         } else {
-            tile = mapStatus[(guy.y+15)>>4][(guy.x+15)>>4];
-            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            if (tryTile((guy.x+15)>>4, (guy.y+15)>>4)) {
                 dirX = 0;
                 guy.x = prevX;
             }
         }
     } else if (dirX == -1) {
         // Check if new tile is open...move back if not
-        tile = mapStatus[guy.y>>4][guy.x>>4];
-        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+        if (tryTile(guy.x>>4, guy.y>>4)) {
             dirX = 0;
             guy.x = prevX;
         } else {
-            tile = mapStatus[(guy.y+15)>>4][guy.x>>4];
-            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            if (tryTile(guy.x>>4, (guy.y+15)>>4)) {
                 dirX = 0;
                 guy.x = prevX;
             }
@@ -107,26 +149,22 @@ void moveGuy(unsigned char speed) {
 
     if (dirY == 1) {
         // Check if new tile is open...move back if not
-        tile = mapStatus[(guy.y+15)>>4][(guy.x+15)>>4];
-        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+        if (tryTile((guy.x+15)>>4, (guy.y+15)>>4)) {
             dirY = 0;
             guy.y = prevY;
         } else {
-            tile = mapStatus[(guy.y+15)>>4][guy.x>>4];
-            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            if (tryTile(guy.x>>4, (guy.y+15)>>4)) {
                 dirY = 0;
                 guy.y = prevY;
             }
         }
     } else if (dirY == -1) {
         // Check if new tile is open...move back if not
-        tile = mapStatus[guy.y>>4][guy.x>>4];
-        if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+        if (tryTile(guy.x>>4, guy.y>>4)) {
             dirY = 0;
             guy.y = prevY;
         } else {
-            tile = mapStatus[guy.y>>4][(guy.x+15)>>4];
-            if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+            if (tryTile((guy.x+15)>>4, guy.y>>4)) {
                 dirY = 0;
                 guy.y = prevY;
             }
@@ -236,6 +274,7 @@ void setupGuy() {
     guy.aimY = 0;
     guy.facingX = 0;
     guy.score = 0;
+    guy.keys = 0;
 }
 
 void moveWeapon() {

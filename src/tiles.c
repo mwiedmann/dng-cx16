@@ -59,6 +59,14 @@ void drawOverlay() {
     }
 }
 
+void clearTile(unsigned char x, unsigned char y) {
+    unsigned long addr = L0_MAPBASE_ADDR + (y*128*2) + (x*2);
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+
+    VERA.data0 = 0;
+}
+
 void clearLayers() {
     clearLayer0();
     clearLayer1();

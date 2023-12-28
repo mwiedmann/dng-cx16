@@ -8,6 +8,7 @@
 #define TILE_ENTITY 4
 #define TILE_GUY 5  
 #define TILE_GENERATOR 6
+#define TILE_DOOR 7
 
 #define ENTITY_TILE_START 100
 #define ENTITY_TILE_END 228
@@ -19,5 +20,6 @@ void clearLayers();
 void clearLayer0();
 void clearLayer1();
 void drawOverlay();
+void clearTile(unsigned char x, unsigned char y);
 
 #endif
