@@ -10,6 +10,7 @@
 #define TILE_GENERATOR 6
 #define TILE_DOOR 7
 #define TILE_KEY 8
+#define TILE_CHEST 9
 
 #define ENTITY_TILE_START 100
 #define ENTITY_TILE_END 228
@@ -21,6 +22,7 @@ void clearLayers();
 void clearLayer0();
 void clearLayer1();
 void drawOverlay();
+void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY);
 void clearTile(unsigned char x, unsigned char y);
 
 #endif

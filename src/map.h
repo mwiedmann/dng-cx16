@@ -40,6 +40,7 @@ typedef struct Guy {
     unsigned char currentTileY;
     unsigned short health;
     unsigned short score;
+    unsigned short gold;
     unsigned char animationCount;
     unsigned char animationFrame;
     unsigned char animationChange;

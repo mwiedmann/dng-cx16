@@ -59,6 +59,21 @@ void drawOverlay() {
     }
 }
 
+void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {
+    unsigned char tile;
+    unsigned long addr = L0_MAPBASE_ADDR + (fromY*128*2) + (fromX*2);
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+
+    tile = VERA.data0;
+
+    addr = L0_MAPBASE_ADDR + (toY*128*2) + (toX*2);
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+
+    VERA.data0 = tile;
+}
+
 void clearTile(unsigned char x, unsigned char y) {
     unsigned long addr = L0_MAPBASE_ADDR + (y*128*2) + (x*2);
     VERA.address = addr;

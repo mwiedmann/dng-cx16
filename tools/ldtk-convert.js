@@ -24,8 +24,10 @@ const createLevelCode = (levelNum, level) => {
       return 3;
     } else if (tileId >= 40 && tileId <= 42) { // Door
       return 7;
-    } else if (tileId == 45) {
+    } else if (tileId == 45) { // Key
       return 8;
+    } else if (tileId == 44) { // Chest
+      return 9;
     } else {
       return 2; // Floor
     }
