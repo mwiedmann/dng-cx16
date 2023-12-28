@@ -54,20 +54,20 @@ void drawOverlay() {
 
     // Empty tiles
     for (i=0; i<MAPBASE_TILE_COUNT; i++) {
-        VERA.data0 = i % 128 > 14 ? TILE_BLACK : TILE_TRANS;
+        VERA.data0 = i % MAPBASE_TILE_WIDTH > 14 ? TILE_BLACK : TILE_TRANS;
         VERA.data0 = 0;
     }
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {
     unsigned char tile;
-    unsigned long addr = L0_MAPBASE_ADDR + (fromY*128*2) + (fromX*2);
+    unsigned long addr = L0_MAPBASE_ADDR + (fromY*MAPBASE_TILE_WIDTH*2) + (fromX*2);
     VERA.address = addr;
     VERA.address_hi = addr>>16;
 
     tile = VERA.data0;
 
-    addr = L0_MAPBASE_ADDR + (toY*128*2) + (toX*2);
+    addr = L0_MAPBASE_ADDR + (toY*MAPBASE_TILE_WIDTH*2) + (toX*2);
     VERA.address = addr;
     VERA.address_hi = addr>>16;
 
@@ -75,7 +75,7 @@ void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsig
 }
 
 void clearTile(unsigned char x, unsigned char y) {
-    unsigned long addr = L0_MAPBASE_ADDR + (y*128*2) + (x*2);
+    unsigned long addr = L0_MAPBASE_ADDR + (y*MAPBASE_TILE_WIDTH*2) + (x*2);
     VERA.address = addr;
     VERA.address_hi = addr>>16;
 

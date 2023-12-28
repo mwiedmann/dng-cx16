@@ -3,7 +3,7 @@
 
 #define SCROLL_TILE_SIZE 15
 #define SCROLL_PIXEL_SIZE SCROLL_TILE_SIZE * 16
-#define MAP_MAX 90
+#define MAP_MAX 32
 #define MAP_PIXEL_MAX MAP_MAX*16
 #define MAP_SCROLL_MAX MAP_PIXEL_MAX - SCROLL_PIXEL_SIZE
 #define GUY_MAX MAP_PIXEL_MAX-(16+GUY_SPEED_2) // Right edge - Sprite width and move speed

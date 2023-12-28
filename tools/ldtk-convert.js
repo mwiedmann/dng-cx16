@@ -7,16 +7,15 @@ const fs = require("fs");
 const rawText = fs.readFileSync("gfx/dng.ldtk");
 const d = JSON.parse(rawText);
 
-const tileWidth = 90
-const tileMax = 128
+const tileWidth = 32
 
 const createLevelCode = (levelNum, level) => {
   const createLayer = (val) => {
-    return new Array(128*128*2).fill(val);
+    return new Array(tileWidth*tileWidth*2).fill(val);
   }
 
   const createMapArray = (val) => {
-    return new Array(90*90).fill(val);
+    return new Array(tileWidth*tileWidth).fill(val);
   }
 
   const getMapIdFromTile = (tileId) => {
@@ -41,7 +40,7 @@ const createLevelCode = (levelNum, level) => {
         const xTile = g.px[0]/16;
         const yTile = g.px[1]/16;
 
-        tileBytes[(yTile*2*tileMax)+(xTile*2)] = g.t
+        tileBytes[(yTile*2*tileWidth)+(xTile*2)] = g.t
 
         mapBytes[(yTile*tileWidth)+xTile] = getMapIdFromTile(g.t);
       });
@@ -57,7 +56,7 @@ const createLevelCode = (levelNum, level) => {
     gridTiles.forEach((g) => {
       const x = g.px[0] / 16;
       const y = g.px[1] / 16;
-      currentMapData[(y * 90) + x] = 
+      currentMapData[(y * tileWidth) + x] = 
         g.t == 62 // Entity
           ? 4 
           : g.t==48 // Generator

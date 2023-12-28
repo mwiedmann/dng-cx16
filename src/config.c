@@ -13,10 +13,10 @@ void init() {
 
     // With 16 pixel tiles, we don't need as many tiles (might need more later for scrolling)
     // Only 640/16 = 40, 480/16=30 (40x30 tile resolution now)
-    // Set the Map Height=10 (128), Width=10 (128)
+    // Set the Map Height=00 (32), Width=00 (32)
     // Set Color Depth to 8 bpp mode
-    VERA.layer1.config = 0b10100011;
-    VERA.layer0.config = 0b10100011;
+    VERA.layer1.config = 0b00000011;
+    VERA.layer0.config = 0b00000011;
 
     // Get bytes 16-9 of the MapBase addresses and set on both layers
     VERA.layer0.mapbase = L0_MAPBASE_ADDR>>9;
