@@ -57,10 +57,10 @@ const createLevelCode = (levelNum, level) => {
       const x = g.px[0] / 16;
       const y = g.px[1] / 16;
       currentMapData[(y * tileWidth) + x] = 
-        g.t == 62 // Entity
-          ? 4 
-          : g.t==48 // Generator
-            ? 6 
+        g.t == 176 // Entity: TODO: Lots of these
+          ? 4
+          : g.t==48 // Generator: Which type of monster?
+            ? 6
             : g.t >= 40 && g.t <= 42
               ? 7 // Door
               : 5; // Guy

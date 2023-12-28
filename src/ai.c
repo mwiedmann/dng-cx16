@@ -337,7 +337,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
                 entity->animationFrame += 1;
             }
 
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, SNAKE_TILE, entity->animationFrame, entity->facingX);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, SKELETON_TILE, entity->animationFrame, entity->facingX);
             needsMove = 0;
         } else {
             entity->animationCount -= 1;
