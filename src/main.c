@@ -98,8 +98,8 @@ unsigned char tryTile(unsigned char fromX, unsigned char fromY, unsigned char to
 }
 
 void moveGuy(unsigned char speed) {
-    unsigned short prevX, prevY;
-    unsigned char tile, tempTileX, tempTileY, tileNow;
+    unsigned short prevX, prevY, shot = 0;
+    unsigned char tile, tempTileX, tempTileY;
     signed char dirX = 0, dirY = 0;
     Entity *entity;
 
@@ -222,21 +222,6 @@ void moveGuy(unsigned char speed) {
     // Stamp the current tile with the guy
     mapStatus[guy.currentTileY][guy.currentTileX] = GUY_CLAIM;
 
-    // Animate the guy
-    if (guy.x != prevX || guy.y != prevY) {
-        if (guy.animationCount == 0) {
-            guy.animationChange = 1;
-            guy.animationCount = ANIMATION_FRAME_SPEED;
-            if (guy.animationFrame == ANIMATION_FRAME_COUNT-1) {
-                guy.animationFrame = 0;
-            } else {
-                guy.animationFrame += 1;
-            }
-        } else {
-            guy.animationCount -= 1;
-        }
-    }
-
     if (guy.pressedShoot && !weapon.visible && guy.ticksUntilNextShot == 0) {
         guy.ticksUntilNextShot = GUY_SHOOT_TICKS;
         weapon.x = guy.x;
@@ -248,9 +233,32 @@ void moveGuy(unsigned char speed) {
         weapon.animationFrame = 0;
 
         toggleWeapon(1);
+
+        shot = 1;
     } else {
         if (guy.ticksUntilNextShot > 0) {
             guy.ticksUntilNextShot -= 1;
+        }
+    }
+
+    // Animate the guy
+    if (shot || guy.x != prevX || guy.y != prevY || guy.animationFrame == ANIMATION_FRAME_COUNT) {
+        if (shot) {
+            guy.animationChange = 1;
+            guy.animationCount = ANIMATION_FRAME_SPEED;
+            guy.animationFrame = ANIMATION_FRAME_COUNT;
+        } 
+        
+        if (guy.animationCount == 0) {
+            guy.animationChange = 1;
+            guy.animationCount = ANIMATION_FRAME_SPEED;
+            if (guy.animationFrame >= ANIMATION_FRAME_COUNT-1) {
+                guy.animationFrame = 0;
+            } else {
+                guy.animationFrame += 1;
+            }
+        } else {
+            guy.animationCount -= 1;
         }
     }
 }
