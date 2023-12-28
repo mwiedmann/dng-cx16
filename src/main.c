@@ -268,7 +268,7 @@ void moveGuy(unsigned char speed) {
 // }
 
 void setupGuy() {
-    guy.health = 60;
+    guy.health = 1000;
     guy.animationCount = ANIMATION_FRAME_SPEED;
     guy.animationFrame = 0;
     guy.ticksUntilNextMelee = 0;
@@ -371,21 +371,19 @@ void main() {
         scrollX = guy.x-112;
         if (scrollX < 0) {
             scrollX = 0;
-        } else if (scrollX > MAP_SCROLL_MAX) {
-            scrollX = MAP_SCROLL_MAX;
+        } else if (scrollX > maxMapX) {
+            scrollX = maxMapX;
         }
 
         scrollY = guy.y-112;
         if (scrollY < 0) {
             scrollY = 0;
-        } else if (scrollY > MAP_SCROLL_MAX) {
-            scrollY = MAP_SCROLL_MAX;
+        } else if (scrollY > maxMapY) {
+            scrollY = maxMapY;
         }
         
         VERA.layer0.vscroll = scrollY;
-        // VERA.layer1.vscroll = scrollY;
         VERA.layer0.hscroll = scrollX;
-        // VERA.layer1.hscroll = scrollX;
 
         // Only set his animation frame if needed (this is more expensive)
         // Otherwise just move him

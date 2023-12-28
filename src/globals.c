@@ -15,3 +15,6 @@ Entity *entityTempActiveList = 0;
 
 Guy guy;
 Weapon weapon;
+
+unsigned short maxMapX;
+unsigned short maxMapY;

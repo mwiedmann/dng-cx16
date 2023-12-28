@@ -22,4 +22,7 @@ extern Entity *entityTempActiveList;
 extern Guy guy;
 extern Weapon weapon;
 
+extern unsigned short maxMapX;
+extern unsigned short maxMapY;
+
 #endif
