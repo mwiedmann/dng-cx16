@@ -46,7 +46,11 @@ unsigned char tryTile(unsigned char x, unsigned char y) {
     unsigned char tile = mapStatus[y][x];
     signed char i;
 
-    if (tile == TILE_DOOR && guy.keys > 0) {
+    if (tile == TILE_KEY) {
+        guy.keys += 1;
+        mapStatus[y][x] = TILE_FLOOR;
+        clearTile(x, y);
+    } else if (tile == TILE_DOOR && guy.keys > 0) {
         guy.keys -= 1;
         mapStatus[y][x] = TILE_FLOOR;
         clearTile(x, y);

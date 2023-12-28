@@ -9,6 +9,7 @@
 #define TILE_GUY 5  
 #define TILE_GENERATOR 6
 #define TILE_DOOR 7
+#define TILE_KEY 8
 
 #define ENTITY_TILE_START 100
 #define ENTITY_TILE_END 228
