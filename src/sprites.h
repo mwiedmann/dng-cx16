@@ -18,7 +18,7 @@
 
 #define GENERATOR_TILE 48
 
-#define ANIMATION_FRAME_SPEED 8
+#define ANIMATION_FRAME_SPEED 4
 #define ANIMATION_FRAME_COUNT 3
 
 void spritesConfig();
