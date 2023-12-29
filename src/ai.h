@@ -14,5 +14,4 @@ void tempActiveToActiveEntities();
 
 void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY);
 void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage);
-
 #endif

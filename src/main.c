@@ -283,8 +283,9 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
 //     }
 // }
 
-void setupPlayer(unsigned char playerId) {
+void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].active = 1;
+    players[playerId].characterType = characterType;
     players[playerId].health = 1000;
     players[playerId].animationCount = ANIMATION_FRAME_SPEED;
     players[playerId].animationFrame = 0;
@@ -370,13 +371,15 @@ void main() {
     initTiles();
     spritesConfig();
     clearLayers();
-    drawOverlayBackground();
 
     // Only player 0 for now
     players[1].active = 0;
+    players[1].characterType = DRUID;
 
-    setupPlayer(0);
+    setupPlayer(0, MAGE);
 
+    drawOverlayBackground();
+    
     while(!gameOver) {
         createMapStatus(level);
         drawMap(level);

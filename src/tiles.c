@@ -73,7 +73,7 @@ void clearLayer1() {
 
 void drawOverlayBackground() {
     // Note we need a `short` here because there are more than 255 tiles
-    unsigned char y, x, tile=WARLOCKS_DUNGEON_TILE;
+    unsigned char y, x, tile=WARLOCKS_DUNGEON_TILE, i;
     unsigned long addr;
 
     // Clear layer 1
@@ -109,48 +109,49 @@ void drawOverlayBackground() {
         tile+=6;
     }
 
-    // Assume player 1 is Barbarian for now
-    addr = L1_MAPBASE_ADDR + (5*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
-    VERA.address = addr;
-    VERA.address_hi = addr>>16;
-    // Always set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
+    for (i=0; i<NUM_PLAYERS; i++) {
+        addr = L1_MAPBASE_ADDR + ((5+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+        VERA.address = addr;
+        VERA.address_hi = addr>>16;
+        // Always set the Increment Mode, turn on bit 4
+        VERA.address_hi |= 0b10000;
 
-    for (x=0; x<8; x++) {
-        VERA.data0 = BARBARIAN_NAME_TILE+x;
+        for (x=0; x<8; x++) {
+            VERA.data0 = (CHARACTER_NAME_TILES+(players[i].characterType*16))+x+(i*8);
+            VERA.data0 = 0;
+        }
+
+        // Show SCORE and GOLD
+        addr = L1_MAPBASE_ADDR + ((6+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        VERA.address = addr;
+        VERA.address_hi = addr>>16;
+        // Always set the Increment Mode, turn on bit 4
+        VERA.address_hi |= 0b10000;
+
+        for (x=0; x<5; x++) {
+            VERA.data0 = 224+x+(i*8);
+            VERA.data0 = 0;
+        }
+
+        VERA.data0 = L1_TILE_BLACK;
         VERA.data0 = 0;
-    }
 
-    // Show SCORE and GOLD
-    addr = L1_MAPBASE_ADDR + (6*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
-    VERA.address = addr;
-    VERA.address_hi = addr>>16;
-    // Always set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
+        for (x=0; x<4; x++) {
+            VERA.data0 = 240+x+(i*8);
+            VERA.data0 = 0;
+        }
 
-    for (x=0; x<5; x++) {
-        VERA.data0 = 224+x;
-        VERA.data0 = 0;
-    }
+        // Show HEALTH
+        addr = L1_MAPBASE_ADDR + ((8+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        VERA.address = addr;
+        VERA.address_hi = addr>>16;
+        // Always set the Increment Mode, turn on bit 4
+        VERA.address_hi |= 0b10000;
 
-    VERA.data0 = L1_TILE_BLACK;
-    VERA.data0 = 0;
-
-    for (x=0; x<4; x++) {
-        VERA.data0 = 240+x;
-        VERA.data0 = 0;
-    }
-
-    // Show HEALTH
-    addr = L1_MAPBASE_ADDR + (8*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
-    VERA.address = addr;
-    VERA.address_hi = addr>>16;
-    // Always set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
-
-    for (x=0; x<6; x++) {
-        VERA.data0 = x;
-        VERA.data0 = 1;
+        for (x=0; x<6; x++) {
+            VERA.data0 = x+(i*8);
+            VERA.data0 = 1;
+        }
     }
 }
 
@@ -181,10 +182,10 @@ void updateOverlay() {
     message(30, 9, buf);
 
     sprintf(buf, "%05u %04u", players[1].score, players[1].gold);
-    message(30, 13, buf);
+    message(30, 16, buf);
 
     sprintf(buf, "%05u", players[1].health);
-    message(30, 15, buf);
+    message(30, 18, buf);
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {

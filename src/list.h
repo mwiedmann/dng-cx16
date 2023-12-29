@@ -1,7 +1,7 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "map.h"
+#include "globals.h"
 
 void printList(char *name, Entity *list);
 void addNewEntityToList(Entity *entity, Entity **to);
