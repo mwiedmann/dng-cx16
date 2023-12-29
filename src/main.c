@@ -365,7 +365,7 @@ void main() {
     initTiles();
     spritesConfig();
     clearLayers();
-    drawOverlay();
+    drawOverlayBackground();
     createMapStatus();
     drawMap();
 
@@ -438,6 +438,8 @@ void main() {
                 }
                 entity = entity->next;
             };
+
+            updateOverlay();
         }
 
         count++;

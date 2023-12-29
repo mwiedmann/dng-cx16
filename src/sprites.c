@@ -11,7 +11,7 @@ void spritesConfig() {
     unsigned char i;
 
     // VRAM address for sprite 1 (this is fixed)
-    unsigned long spriteGraphicAddress = TILEBASE_ADDR + (GUY_TILE*TILE_SIZE);
+    unsigned long spriteGraphicAddress = L0_TILEBASE_ADDR + (GUY_TILE*L0_TILE_SIZE);
 
     // Point to Sprite
     VERA.address = SPRITE1_ADDR;
@@ -33,7 +33,7 @@ void spritesConfig() {
     VERA.data0 = 0b01010000; // 16x16 pixel image
 
     // Configure Weapon
-    spriteGraphicAddress = TILEBASE_ADDR + (AXE_TILE*TILE_SIZE);
+    spriteGraphicAddress = L0_TILEBASE_ADDR + (AXE_TILE*L0_TILE_SIZE);
 
     // Graphic address bits 12:5
     VERA.data0 = spriteGraphicAddress>>5;
@@ -46,7 +46,7 @@ void spritesConfig() {
     VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
     VERA.data0 = 0b01010000; // 16x16 pixel image
     
-    spriteGraphicAddress = TILEBASE_ADDR + (SKELETON_TILE*TILE_SIZE);
+    spriteGraphicAddress = L0_TILEBASE_ADDR + (SKELETON_TILE*L0_TILE_SIZE);
 
     for (i=0; i<ENTITY_COUNT; i++) {
         VERA.data0 = spriteGraphicAddress>>5;
@@ -65,7 +65,7 @@ void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned
     unsigned char tileId, unsigned char frame, unsigned char dir) {
     unsigned long spriteAddr = SPRITE1_ADDR + (spriteId * 8);
     // VRAM address for sprite 1 (this is fixed)
-    unsigned long spriteGraphicAddress = TILEBASE_ADDR + ((tileId+frame)*TILE_SIZE);
+    unsigned long spriteGraphicAddress = L0_TILEBASE_ADDR + ((tileId+frame)*L0_TILE_SIZE);
 
     // Point to Sprite
     VERA.address = spriteAddr;

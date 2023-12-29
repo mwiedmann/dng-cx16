@@ -12,17 +12,24 @@
 #define TILE_KEY 8
 #define TILE_CHEST 9
 
+#define L1_TILE_TRANS 46
+#define L1_TILE_BLACK 47
+
+#define TILE_CHARS_START 128
+
 #define ENTITY_TILE_START 100
 #define ENTITY_TILE_END 228
 #define ENTITY_CLAIM 254
 #define GUY_CLAIM 255
 
+// 4 types: BARBARIAN, MAGE, PALADIN, RANGER
+
 void initTiles();
+unsigned char letterToTile(char letter);
 void clearLayers();
 void clearLayer0();
 void clearLayer1();
-void drawOverlay();
+void drawOverlayBackground();
+void updateOverlay();
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY);
-void clearTile(unsigned char x, unsigned char y);
-
 #endif
