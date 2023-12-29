@@ -73,7 +73,8 @@ void clearLayer1() {
 
 void drawOverlayBackground() {
     // Note we need a `short` here because there are more than 255 tiles
-    unsigned char y, x;
+    unsigned char y, x, tile=WARLOCKS_DUNGEON_TILE;
+    unsigned long addr;
 
     // Clear layer 1
     VERA.address = L1_MAPBASE_ADDR;
@@ -84,11 +85,40 @@ void drawOverlayBackground() {
     // Trans and Black background
     for (y=0; y<L1_MAPBASE_TILE_HEIGHT; y++) {
         for (x=0; x<L1_MAPBASE_TILE_WIDTH; x++) {
-            VERA.data0 = x % L1_MAPBASE_TILE_WIDTH > 29
+            VERA.data0 = x % L1_MAPBASE_TILE_WIDTH >= L1_OVERLAY_X
                 ? L1_TILE_BLACK
                 : L1_TILE_TRANS;
             VERA.data0 = 0;
         }
+    }
+
+    // Draw Warlock's Dungeon
+    for (y=0; y<4; y++) {
+        addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2) + (L1_OVERLAY_X*2);
+        VERA.address = addr;
+        VERA.address_hi = addr>>16;
+        // Always set the Increment Mode, turn on bit 4
+        VERA.address_hi |= 0b10000;
+
+        for (x=0; x<10; x++) {
+            VERA.data0 = tile;
+            VERA.data0 = 0;
+            tile++;
+        }
+
+        tile+=6;
+    }
+
+    // Assume player 1 is Barbarian for now
+    addr = L1_MAPBASE_ADDR + (5*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    for (x=0; x<8; x++) {
+        VERA.data0 = BARBARIAN_NAME_TILE+x;
+        VERA.data0 = 0;
     }
 }
 
@@ -114,7 +144,7 @@ void updateOverlay() {
 
     sprintf(buf, "SCORE %u", guy.score);
 
-    message(30, 2, buf);
+    message(30, 6, buf);
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {
