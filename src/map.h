@@ -31,6 +31,7 @@ typedef struct Entity {
     unsigned char animationChange;
     unsigned char movedPrevTick;
     unsigned char facingX;
+    unsigned short points;
 } Entity;
 
 typedef struct Guy {

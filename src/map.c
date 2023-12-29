@@ -13,6 +13,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].health =  60;
         entityList[entityId].spawnRate = 60;
         entityList[entityId].nextSpawn = entityList[entityId].spawnRate;
+        entityList[entityId].points = 1000;
     } else {
         entityList[entityId].isGenerator = 0;
         entityList[entityId].health =  60;
@@ -20,6 +21,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].animationCount = ANIMATION_FRAME_SPEED;
         entityList[entityId].animationFrame = 0;
         entityList[entityId].facingX = 0;
+        entityList[entityId].points = 50; // TODO: Vary by entity type
     }
 
     entityList[entityId].spriteId = entityId+2; // First 2 sprites are guy and weapon

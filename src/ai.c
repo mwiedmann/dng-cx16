@@ -105,6 +105,7 @@ void attackEntity(Entity *entity, unsigned char damage) {
     if (entity->health > damage) {
         entity->health -= damage;
     } else {
+        guy.score += entity->points;
         entity->health = 0;
         mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
         if (entity->hasTarget) {

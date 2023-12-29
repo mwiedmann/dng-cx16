@@ -120,6 +120,26 @@ void drawOverlayBackground() {
         VERA.data0 = BARBARIAN_NAME_TILE+x;
         VERA.data0 = 0;
     }
+
+    // Show SCORE and GOLD
+    addr = L1_MAPBASE_ADDR + (6*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    for (x=0; x<5; x++) {
+        VERA.data0 = 224+x;
+        VERA.data0 = 0;
+    }
+
+    VERA.data0 = L1_TILE_BLACK;
+    VERA.data0 = 0;
+
+    for (x=0; x<4; x++) {
+        VERA.data0 = 240+x;
+        VERA.data0 = 0;
+    }
 }
 
 void message(unsigned char x, unsigned char y, char *msg) {
@@ -140,11 +160,11 @@ void message(unsigned char x, unsigned char y, char *msg) {
 }
 
 void updateOverlay() {
-    char buf[32];
+    char buf[16];
 
-    sprintf(buf, "SCORE %u", guy.score);
+    sprintf(buf, "%05u %04u", guy.score, guy.gold);
 
-    message(30, 6, buf);
+    message(30, 7, buf);
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {

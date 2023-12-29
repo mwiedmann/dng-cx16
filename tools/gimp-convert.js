@@ -57,7 +57,7 @@ for (ty = 0; ty < yTiles; ty++) {
 frameWidth = 8
 frameHeight = 8
 xTiles = 16
-yTiles = 14
+yTiles = 16
 
 for (ty = 0; ty < yTiles; ty++) {
   for (tx = 0; tx < xTiles; tx++) {
