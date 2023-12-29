@@ -174,11 +174,17 @@ void message(unsigned char x, unsigned char y, char *msg) {
 void updateOverlay() {
     char buf[16];
 
-    sprintf(buf, "%05u %04u", guy.score, guy.gold);
+    sprintf(buf, "%05u %04u", players[0].score, players[0].gold);
     message(30, 7, buf);
 
-    sprintf(buf, "%05u", guy.health);
+    sprintf(buf, "%05u", players[0].health);
     message(30, 9, buf);
+
+    sprintf(buf, "%05u %04u", players[1].score, players[1].gold);
+    message(30, 13, buf);
+
+    sprintf(buf, "%05u", players[1].health);
+    message(30, 15, buf);
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {

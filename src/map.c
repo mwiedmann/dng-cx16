@@ -80,8 +80,11 @@ void createMapStatus(unsigned char level) {
                 i++;
             } else if (mapStatus[y][x] == TILE_GUY /* Guy Start*/) {
                 mapStatus[y][x] = 0;
-                guy.x = x * 16;
-                guy.y = y * 16;
+                players[0].x = x * 16;
+                players[0].y = y * 16;
+
+                players[1].x = (x+1) * 16; // Start next to each other
+                players[1].y = y * 16;
             }
         }
     }

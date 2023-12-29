@@ -12,6 +12,8 @@
 #define WEAPON_DAMAGE 30
 #define MELEE_DAMAGE 10
 
+#define NUM_PLAYERS 2
+
 extern unsigned char (*mapStatus)[MAP_MAX];
 
 extern Entity entityList[ENTITY_COUNT];
@@ -19,8 +21,8 @@ extern Entity *entitySleepList;
 extern Entity *entityActiveList;
 extern Entity *entityTempActiveList;
 
-extern Guy guy;
-extern Weapon weapon;
+extern Guy players[NUM_PLAYERS];
+extern Weapon weapons[NUM_PLAYERS];
 
 extern unsigned short maxMapX;
 extern unsigned short maxMapY;

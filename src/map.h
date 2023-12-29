@@ -35,6 +35,7 @@ typedef struct Entity {
 } Entity;
 
 typedef struct Guy {
+    unsigned char active;
     unsigned short x;
     unsigned short y;
     unsigned char currentTileX;

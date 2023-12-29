@@ -13,6 +13,6 @@ void deactivateEntities(short scrollX, short scrollY);
 void tempActiveToActiveEntities();
 
 void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY);
-void attackEntity(Entity *entity, unsigned char damage);
+void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage);
 
 #endif

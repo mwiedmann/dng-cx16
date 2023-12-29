@@ -13,8 +13,8 @@ Entity *entityActiveList = 0;
 
 Entity *entityTempActiveList = 0;
 
-Guy guy;
-Weapon weapon;
+Guy players[NUM_PLAYERS];
+Weapon weapons[NUM_PLAYERS];
 
 unsigned short maxMapX;
 unsigned short maxMapY;
