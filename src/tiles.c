@@ -140,6 +140,18 @@ void drawOverlayBackground() {
         VERA.data0 = 240+x;
         VERA.data0 = 0;
     }
+
+    // Show HEALTH
+    addr = L1_MAPBASE_ADDR + (8*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    for (x=0; x<6; x++) {
+        VERA.data0 = x;
+        VERA.data0 = 1;
+    }
 }
 
 void message(unsigned char x, unsigned char y, char *msg) {
@@ -163,8 +175,10 @@ void updateOverlay() {
     char buf[16];
 
     sprintf(buf, "%05u %04u", guy.score, guy.gold);
-
     message(30, 7, buf);
+
+    sprintf(buf, "%05u", guy.health);
+    message(30, 9, buf);
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {

@@ -439,6 +439,7 @@ void main() {
                 entity = entity->next;
             };
 
+            // TODO: Only need to update this periodically
             updateOverlay();
         }
 
