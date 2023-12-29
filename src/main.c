@@ -88,6 +88,9 @@ unsigned char tryTile(unsigned char fromX, unsigned char fromY, unsigned char to
             i++;
         }
         
+    } else if (tile == TILE_EXIT) {
+        guy.exit = 1;
+        return 0;
     }
 
     if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
@@ -293,6 +296,7 @@ void setupGuy() {
     guy.score = 0;
     guy.gold = 0;
     guy.keys = 0;
+    guy.exit = 0;
 }
 
 void moveWeapon() {
@@ -357,7 +361,7 @@ void moveWeapon() {
 }
 
 void main() {
-    unsigned char count = 0, load;
+    unsigned char count = 0, load, level=0;
     unsigned char inputTicks = 0;
     Entity *entity;
 
@@ -366,93 +370,98 @@ void main() {
     spritesConfig();
     clearLayers();
     drawOverlayBackground();
-    createMapStatus();
-    drawMap();
-
     setupGuy();
 
     while(1) {
-        // Get joystick input only periodically
-        if (inputTicks == 4) {
-            setGuyDirection();
-            inputTicks = 0;
-        } else {
-            inputTicks++;
-        }
+        createMapStatus(level);
+        drawMap(level);
 
-        moveGuy(count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
+        while(!guy.exit) {
+            // Get joystick input only periodically
+            if (inputTicks == 4) {
+                setGuyDirection();
+                inputTicks = 0;
+            } else {
+                inputTicks++;
+            }
 
-        scrollX = guy.x-112;
-        if (scrollX < 0) {
-            scrollX = 0;
-        } else if (scrollX > maxMapX) {
-            scrollX = maxMapX;
-        }
+            moveGuy(count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
 
-        scrollY = guy.y-112;
-        if (scrollY < 0) {
-            scrollY = 0;
-        } else if (scrollY > maxMapY) {
-            scrollY = maxMapY;
-        }
-        
-        VERA.layer0.vscroll = scrollY;
-        VERA.layer0.hscroll = scrollX;
+            scrollX = guy.x-112;
+            if (scrollX < 0) {
+                scrollX = 0;
+            } else if (scrollX > maxMapX) {
+                scrollX = maxMapX;
+            }
 
-        // Only set his animation frame if needed (this is more expensive)
-        // Otherwise just move him
-        if (guy.animationChange) {
-            guy.animationChange = 0;
-            moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facingX);
-        } else {
-            moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
-        }
+            scrollY = guy.y-112;
+            if (scrollY < 0) {
+                scrollY = 0;
+            } else if (scrollY > maxMapY) {
+                scrollY = maxMapY;
+            }
+            
+            VERA.layer0.vscroll = scrollY;
+            VERA.layer0.hscroll = scrollX;
 
-        moveWeapon();
+            // Only set his animation frame if needed (this is more expensive)
+            // Otherwise just move him
+            if (guy.animationChange) {
+                guy.animationChange = 0;
+                moveAndSetAnimationFrame(0, guy.x, guy.y, scrollX, scrollY, GUY_TILE, guy.animationFrame, guy.facingX);
+            } else {
+                moveSpriteId(0, guy.x, guy.y, scrollX, scrollY);
+            }
 
-        if (count == 0) {
-            // activation/deactivation phase
-            activateEntities(scrollX, scrollY);
-            deactivateEntities(scrollX, scrollY);
-            tempActiveToActiveEntities();
+            moveWeapon();
 
-            // Move "some" active entities
-            // Try to split the load a bit
-            entity = entityActiveList;
-            load=0;
-            while(entity && load<10) {
-                moveEntity(entity, guy.currentTileX, guy.currentTileY, scrollX, scrollY);   
-                entity->movedPrevTick=1;
-                entity = entity->next;
-                load++;
-            };
-        } else {
-            // Move active entities phase
-            entity = entityActiveList;
+            if (count == 0) {
+                // activation/deactivation phase
+                activateEntities(scrollX, scrollY);
+                deactivateEntities(scrollX, scrollY);
+                tempActiveToActiveEntities();
 
-            while(entity) {
-                if (!entity->movedPrevTick) {
+                // Move "some" active entities
+                // Try to split the load a bit
+                entity = entityActiveList;
+                load=0;
+                while(entity && load<10) {
                     moveEntity(entity, guy.currentTileX, guy.currentTileY, scrollX, scrollY);   
-                } else {
-                    entity->movedPrevTick = 0;
-                }
-                entity = entity->next;
-            };
+                    entity->movedPrevTick=1;
+                    entity = entity->next;
+                    load++;
+                };
+            } else {
+                // Move active entities phase
+                entity = entityActiveList;
 
-            // TODO: Only need to update this periodically
-            updateOverlay();
+                while(entity) {
+                    if (!entity->movedPrevTick) {
+                        moveEntity(entity, guy.currentTileX, guy.currentTileY, scrollX, scrollY);   
+                    } else {
+                        entity->movedPrevTick = 0;
+                    }
+                    entity = entity->next;
+                };
+
+                // TODO: Only need to update this periodically
+                updateOverlay();
+            }
+
+            count++;
+            if (count == 2) {
+                count = 0;
+            }
+
+            // Stop
+            if (guy.health == 0) {
+                while(1);
+            }
+
+            wait();
         }
 
-        count++;
-        if (count == 2) {
-            count = 0;
-        }
-
-        // Stop
-        if (guy.health == 0) {
-            while(1);
-        }
-
-        wait();
+        level++;
+        guy.exit = 0;
     }
 }

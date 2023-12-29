@@ -55,6 +55,7 @@ typedef struct Guy {
     unsigned char ticksUntilNextShot;
     unsigned char ticksUntilNextMelee;
     unsigned char keys;
+    unsigned char exit;
 } Guy;
 
 typedef struct Weapon {
@@ -68,7 +69,7 @@ typedef struct Weapon {
 } Weapon;
 
 void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y);
-void createMapStatus();
-void drawMap();
+void createMapStatus(unsigned char level);
+void drawMap(unsigned char level);
 
 #endif

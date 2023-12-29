@@ -27,6 +27,8 @@ const createLevelCode = (levelNum, level) => {
       return 8;
     } else if (tileId == 44) { // Chest
       return 9;
+    } else if (tileId == 43) { // Exit
+      return 10;
     } else {
       return 2; // Floor
     }
@@ -57,7 +59,7 @@ const createLevelCode = (levelNum, level) => {
       const x = g.px[0] / 16;
       const y = g.px[1] / 16;
       currentMapData[(y * tileWidth) + x] = 
-        g.t == 176 // Entity: TODO: Lots of these
+        g.t == 128 // Entity: TODO: Lots of these
           ? 4
           : g.t==48 // Generator: Which type of monster?
             ? 6

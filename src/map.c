@@ -1,4 +1,5 @@
 #include <cx16.h>
+#include <stdio.h>
 
 #include "config.h"
 #include "tiles.h"
@@ -34,11 +35,14 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     entityList[entityId].movedPrevTick = 0;
 }
 
-void createMapStatus() {
+void createMapStatus(unsigned char level) {
+    char buf[16];
     unsigned char x,y,i;
     Entity *lastEntity = 0;
 
-    loadFileToBankedRAM("l0map.bin", MAP_BANK, 0);
+    sprintf(buf, "l%umap.bin", level);
+    loadFileToBankedRAM(buf, MAP_BANK, 0);
+
     BANK_NUM = MAP_BANK;
 
     entitySleepList = 0;
@@ -89,6 +93,9 @@ void createMapStatus() {
     entitySleepList = &entityList[0];
 }
 
-void drawMap() {
-    loadFileToVRAM("l0tile.bin", L0_MAPBASE_ADDR);
+void drawMap(unsigned char level) {
+    char buf[16];
+
+    sprintf(buf, "l%utile.bin", level);
+    loadFileToVRAM(buf, L0_MAPBASE_ADDR);
 }

@@ -11,6 +11,7 @@
 #define TILE_DOOR 7
 #define TILE_KEY 8
 #define TILE_CHEST 9
+#define TILE_EXIT 10
 
 #define L1_TILE_TRANS 46
 #define L1_TILE_BLACK 47
