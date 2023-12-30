@@ -30,6 +30,8 @@ enum Character {
 
 typedef struct Entity {
     unsigned short isGenerator;
+    unsigned short entityTypeId;
+    unsigned short tileId;
     unsigned char spawnRate;
     unsigned char nextSpawn;
     unsigned short x;

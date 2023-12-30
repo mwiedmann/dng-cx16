@@ -9,14 +9,20 @@
 #include "sprites.h"
 
 void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y) {
-    if (tile == TILE_GENERATOR) {
+    if (tile >= TILE_GENERATOR_START && tile <= TILE_GENERATOR_END) {
         entityList[entityId].isGenerator = 1;
+        entityList[entityId].entityTypeId = tile-TILE_GENERATOR_START;
+        entityList[entityId].tileId = GENERATOR_TILE+entityList[entityId].entityTypeId;
         entityList[entityId].health =  60;
+        entityList[entityId].animationCount = 0;
+        entityList[entityId].animationFrame = 0;
         entityList[entityId].spawnRate = 60;
         entityList[entityId].nextSpawn = entityList[entityId].spawnRate;
         entityList[entityId].points = 1000;
     } else {
         entityList[entityId].isGenerator = 0;
+        entityList[entityId].entityTypeId = tile-TILE_ENTITY_START;
+        entityList[entityId].tileId = MONSTER_TILE+(4*entityList[entityId].entityTypeId);
         entityList[entityId].health =  60;
         entityList[entityId].hasTarget = 0;
         entityList[entityId].animationCount = ANIMATION_FRAME_SPEED;
@@ -61,7 +67,7 @@ void createMapStatus(unsigned char level) {
                     maxMapY = y*16;
                 }
             }
-            if (mapStatus[y][x] == TILE_ENTITY || mapStatus[y][x] == TILE_GENERATOR) {
+            if (mapStatus[y][x] >= TILE_GENERATOR_START && mapStatus[y][x] <= TILE_ENTITY_END) {
                 createEntity(mapStatus[y][x], i, x, y);
 
                 entityList[i].prev = lastEntity; // For the LL, prev entity

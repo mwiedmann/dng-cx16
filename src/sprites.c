@@ -46,7 +46,7 @@ void spritesConfig() {
     VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
     VERA.data0 = 0b01010000; // 16x16 pixel image
     
-    spriteGraphicAddress = L0_TILEBASE_ADDR + (SKELETON_TILE*L0_TILE_SIZE);
+    spriteGraphicAddress = L0_TILEBASE_ADDR + (MONSTER_TILE*L0_TILE_SIZE);
 
     for (i=0; i<ENTITY_COUNT; i++) {
         VERA.data0 = spriteGraphicAddress>>5;

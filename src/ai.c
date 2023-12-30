@@ -33,15 +33,10 @@ void activateEntities(short scrollX, short scrollY) {
         if (entity->x >= scrollX + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX || entity->y >= scrollY + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY) {
             // Off screen
         } else {
-            toggleEntity(entity->spriteId, 1);
             entity->visible = 1;
-            // printf("Moving entity to tempActive from sleep: %i\n", entity->spriteId);
-            // moveEntityFromSleepToTempActiveList(entity);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, entity->animationFrame, entity->facingX);
             moveEntityToList(entity, &entityTempActiveList, &entitySleepList);
-        } 
-        // else {
-        //     // printf("Out of range: %i x:%i y:%i\n", entity->spriteId, entity->currentTileX, entity->currentTileY);
-        // }
+        }
 
         entity = nextEntity;
     } while (entity);
@@ -171,7 +166,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
             if (foundEmptyTile) {
                 for (i=0; i < ENTITY_COUNT; i++) {
                     if (entityList[i].health == 0) {
-                        createEntity(TILE_ENTITY, i, newTileX, newTileY);
+                        createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
                         addNewEntityToList(&entityList[i], &entitySleepList);
                         mapStatus[newTileY][newTileX] = ENTITY_TILE_START + entityList[i].spriteId;
                         break;
@@ -182,7 +177,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
 
         if (entity->animationChange) {
             entity->animationChange = 0;
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, GENERATOR_TILE, 0, 0);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, 0, 0);
         } else {
             moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
         }
@@ -338,7 +333,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
                 entity->animationFrame += 1;
             }
 
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, SKELETON_TILE, entity->animationFrame, entity->facingX);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, entity->animationFrame, entity->facingX);
             needsMove = 0;
         } else {
             entity->animationCount -= 1;

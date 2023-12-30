@@ -5,13 +5,15 @@
 #define TILE_BLACK 1
 #define TILE_FLOOR 2
 #define TILE_WALL 3
-#define TILE_ENTITY 4
-#define TILE_GUY 5  
-#define TILE_GENERATOR 6
+#define TILE_GUY 5 
 #define TILE_DOOR 7
 #define TILE_KEY 8
 #define TILE_CHEST 9
 #define TILE_EXIT 10
+#define TILE_GENERATOR_START 20
+#define TILE_GENERATOR_END 32
+#define TILE_ENTITY_START 33
+#define TILE_ENTITY_END 45
 
 #define L1_TILE_TRANS 46
 #define L1_TILE_BLACK 47
