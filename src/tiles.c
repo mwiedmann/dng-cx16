@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "tiles.h"
 #include "globals.h"
+#include "wait.h"
 
 void initTiles() {
     loadFileToVRAM("l0tiles.bin", L0_TILEBASE_ADDR);
@@ -206,4 +207,31 @@ void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsig
 void clearLayers() {
     clearLayer0();
     clearLayer1();
+}
+
+void flashLayer1() {
+     // Note we need a `short` here because there are more than 255 tiles
+    unsigned char y, x, i;
+    unsigned long addr;
+
+    
+    for (i=0; i<2; i++) {
+        for (y=0; y<L1_OVERLAY_X; y++) {
+            addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2);
+        
+            VERA.address = addr;
+            VERA.address_hi = addr>>16;
+            // Always set the Increment Mode, turn on bit 4
+            VERA.address_hi |= 0b10000;
+
+            for (x=0; x<L1_OVERLAY_X; x++) {
+                VERA.data0 = i == 0 ? L1_TILE_WHITE : L1_TILE_TRANS; // TODO: Need good flash tile
+                VERA.data0 = 0;
+            }
+        }
+
+        if (i==0) {
+            waitCount(10);
+        }
+    }
 }

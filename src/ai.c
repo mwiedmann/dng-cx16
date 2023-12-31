@@ -358,6 +358,8 @@ void useScrollOnEntities(unsigned char playerId) {
 
     entity = entityActiveList;
 
+    flashLayer1();
+    
     while(entity) {
         attackEntity(playerId, entity, 100);
         entity = entityActiveList;

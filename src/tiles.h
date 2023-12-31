@@ -18,6 +18,7 @@
 
 #define L1_TILE_TRANS 46
 #define L1_TILE_BLACK 47
+#define L1_TILE_WHITE 45
 
 #define TILE_CHARS_START 128
 
@@ -39,4 +40,6 @@ void clearLayer1();
 void drawOverlayBackground();
 void updateOverlay();
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY);
+void flashLayer1();
+
 #endif
