@@ -88,10 +88,12 @@ typedef struct Guy {
     signed char pressedX;
     signed char pressedY;
     unsigned char pressedShoot;
+    unsigned char pressedScroll;
     unsigned char shooting;
     unsigned char ticksUntilNextShot;
     unsigned char ticksUntilNextMelee;
     unsigned char keys;
+    unsigned char scrolls;
     unsigned char exit;
 } Guy;
 

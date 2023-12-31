@@ -352,3 +352,14 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
     }
 }
+
+void useScrollOnEntities(unsigned char playerId) {
+    Entity *entity;
+
+    entity = entityActiveList;
+
+    while(entity) {
+        attackEntity(playerId, entity, 100);
+        entity = entityActiveList;
+    }
+}

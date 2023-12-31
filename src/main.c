@@ -37,8 +37,16 @@ void setGuyDirection(unsigned char playerId) {
         players[playerId].pressedY = 1;
     }
 
-    if (JOY_BTN_1(joy) || JOY_BTN_2(joy)) {
+    if (JOY_BTN_1(joy)) {
         players[playerId].pressedShoot = 1;
+    }
+
+    if (JOY_BTN_2(joy)) {
+        if (players[playerId].pressedScroll == 0) {
+            players[playerId].pressedScroll = 1;
+        }
+    } else {
+        players[playerId].pressedScroll = 0;
     }
 }
 
@@ -48,6 +56,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
     if (tile == TILE_KEY) {
         players[playerId].keys += 1;
+        players[playerId].score += 100;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
     } if (tile == TILE_CHEST) {
@@ -55,6 +64,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         players[playerId].score += 500;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
+    } else if (tile == TILE_SCROLL) {
+        players[playerId].scrolls += 1;
+        players[playerId].score += 250;
+        mapStatus[toY][toX] = TILE_FLOOR;
+        copyTile(fromX, fromY, toX, toY);
+        return 0;
     } else if (tile == TILE_DOOR && players[playerId].keys > 0) {
         players[playerId].keys -= 1;
         mapStatus[toY][toX] = TILE_FLOOR;
@@ -244,6 +259,12 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
         }
     }
 
+    // See if player used scroll
+    if (players[playerId].pressedScroll && players[playerId].scrolls > 0) {
+        players[playerId].scrolls -= 1;
+        useScrollOnEntities(playerId);
+    }
+
     // Animate the guy
     if (shot || players[playerId].x != prevX || players[playerId].y != prevY || players[playerId].animationFrame == ANIMATION_FRAME_COUNT) {
         if (shot) {
@@ -298,6 +319,7 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].score = 0;
     players[playerId].gold = 0;
     players[playerId].keys = 0;
+    players[playerId].scrolls = 0;
     players[playerId].exit = 0;
 }
 

@@ -29,6 +29,8 @@ const createLevelCode = (levelNum, level) => {
       return 9;
     } else if (tileId == 43) { // Exit
       return 10;
+    } else if (tileId == 46) { // Scroll
+      return 11;
     } else {
       return 2; // Floor
     }
