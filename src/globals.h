@@ -9,8 +9,8 @@
 #define WEAPON_SPEED 4
 #define WEAPON_ROTATION_SPEED 4
 #define GUY_SHOOT_TICKS 10
-#define WEAPON_DAMAGE 30
-#define MELEE_DAMAGE 10
+#define WEAPON_DAMAGE 4
+#define MELEE_DAMAGE 1
 
 #define NUM_PLAYERS 2
 
@@ -20,6 +20,10 @@
 #define MAP_PIXEL_MAX MAP_MAX*16
 #define MAP_SCROLL_MAX MAP_PIXEL_MAX - SCROLL_PIXEL_SIZE
 #define GUY_MAX MAP_PIXEL_MAX-(16+GUY_SPEED_2) // Right edge - Sprite width and move speed
+
+#define WEAK_HEALTH 4
+#define NORMAL_HEATH 8
+#define STRONG_HEALTH 12
 
 enum Character {
   BARBARIAN,
@@ -32,6 +36,7 @@ typedef struct EntityStats {
     unsigned char *melee;
     unsigned char *moves;
     unsigned char ranged;
+    unsigned startingHealth;
 } EntityStats;
 
 typedef struct Entity {
@@ -113,6 +118,6 @@ extern Weapon weapons[NUM_PLAYERS];
 extern unsigned short maxMapX;
 extern unsigned short maxMapY;
 
-extern EntityStats skeletonStats;
+extern EntityStats *entityStatsByType[10];
 
 #endif

@@ -13,7 +13,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].isGenerator = 1;
         entityList[entityId].entityTypeId = tile-TILE_GENERATOR_START;
         entityList[entityId].tileId = GENERATOR_TILE+entityList[entityId].entityTypeId;
-        entityList[entityId].health =  60;
+        entityList[entityId].health =  12;
         entityList[entityId].animationCount = 0;
         entityList[entityId].animationFrame = 0;
         entityList[entityId].spawnRate = 60;
@@ -21,10 +21,10 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].points = 1000;
     } else {
         entityList[entityId].isGenerator = 0;
-        entityList[entityId].stats = &skeletonStats; // TODO: Pick stats for monster
         entityList[entityId].entityTypeId = tile-TILE_ENTITY_START;
+        entityList[entityId].stats = entityStatsByType[entityList[entityId].entityTypeId]; // TODO: Pick stats for monster
+        entityList[entityId].health =  entityList[entityId].stats->startingHealth;
         entityList[entityId].tileId = MONSTER_TILE+(4*entityList[entityId].entityTypeId);
-        entityList[entityId].health =  60;
         entityList[entityId].hasTarget = 0;
         entityList[entityId].animationCount = ANIMATION_FRAME_SPEED;
         entityList[entityId].animationFrame = 0;

@@ -192,7 +192,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     prevY = entity->y;
 
     entity->statsId += 1;
-    if (entity->statsId == 2) {
+    if (entity->statsId == 4) {
         entity->statsId = 0;
     }
 
