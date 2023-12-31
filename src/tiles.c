@@ -93,7 +93,7 @@ void drawOverlayBackground() {
     }
 
     // Draw Warlock's Dungeon
-    for (y=0; y<4; y++) {
+    for (y=0; y<5; y++) {
         addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2) + (L1_OVERLAY_X*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
@@ -110,7 +110,7 @@ void drawOverlayBackground() {
     }
 
     for (i=0; i<NUM_PLAYERS; i++) {
-        addr = L1_MAPBASE_ADDR + ((5+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+        addr = L1_MAPBASE_ADDR + ((6+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
@@ -122,14 +122,14 @@ void drawOverlayBackground() {
         }
 
         // Show SCORE and GOLD
-        addr = L1_MAPBASE_ADDR + ((6+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        addr = L1_MAPBASE_ADDR + ((7+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
         VERA.address_hi |= 0b10000;
 
         for (x=0; x<5; x++) {
-            VERA.data0 = 224+x+(i*8);
+            VERA.data0 = 240+x+(i*8);
             VERA.data0 = 0;
         }
 
@@ -137,19 +137,19 @@ void drawOverlayBackground() {
         VERA.data0 = 0;
 
         for (x=0; x<4; x++) {
-            VERA.data0 = 240+x+(i*8);
-            VERA.data0 = 0;
+            VERA.data0 = x+(i*8);
+            VERA.data0 = 1;
         }
 
         // Show HEALTH
-        addr = L1_MAPBASE_ADDR + ((8+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        addr = L1_MAPBASE_ADDR + ((9+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
         VERA.address_hi |= 0b10000;
 
         for (x=0; x<6; x++) {
-            VERA.data0 = x+(i*8);
+            VERA.data0 = 16+x+(i*8);
             VERA.data0 = 1;
         }
     }
@@ -176,16 +176,16 @@ void updateOverlay() {
     char buf[16];
 
     sprintf(buf, "%05u %04u", players[0].score, players[0].gold);
-    message(30, 7, buf);
+    message(30, 8, buf);
 
     sprintf(buf, "%05u", players[0].health);
-    message(30, 9, buf);
+    message(30, 10, buf);
 
     sprintf(buf, "%05u %04u", players[1].score, players[1].gold);
-    message(30, 16, buf);
+    message(30, 17, buf);
 
     sprintf(buf, "%05u", players[1].health);
-    message(30, 18, buf);
+    message(30, 19, buf);
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {

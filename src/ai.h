@@ -3,10 +3,6 @@
 
 #include "globals.h"
 
-#define AI_SPEED 2
-#define DIST_MAX_X 8  // In tiles
-#define DIST_MAX_Y 8
-
 void toggleEntity(unsigned char spriteId, unsigned char show);
 void activateEntities(short scrollX, short scrollY);
 void deactivateEntities(short scrollX, short scrollY);

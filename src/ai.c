@@ -111,9 +111,12 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
     }
 }
 
-void meleeAttackGuy(unsigned char playerId) {
-    if (players[playerId].health > 0) {
-        players[playerId].health -= 1;
+void meleeAttackGuy(unsigned char playerId, unsigned char dmg) {
+    if (players[playerId].health > dmg) {
+        players[playerId].health -= dmg;
+    } else {
+        players[playerId].health = 0;
+        players[playerId].active = 0;
     }
 }
 
@@ -188,6 +191,11 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     prevX = entity->x;
     prevY = entity->y;
 
+    entity->statsId += 1;
+    if (entity->statsId == 2) {
+        entity->statsId = 0;
+    }
+
     if (!entity->hasTarget) {
         // Try to move X towards the guy
         if (entity->currentTileX < guyTileX) {
@@ -245,7 +253,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
             tileXChange = 0;
             tileYChange = 0;
 
-            meleeAttackGuy(GUY_CLAIM-attack);
+            meleeAttackGuy(GUY_CLAIM-attack, entity->stats->melee[entity->statsId]);
         }
 
         if (tileXChange !=0 || tileYChange !=0) {
@@ -278,22 +286,22 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     }
 
     if (tileXChange != 0) {
-        entity->x+= tileXChange * AI_SPEED;
+        entity->x+= tileXChange * entity->stats->moves[entity->statsId];
     } else {
         if (entity->x+8 < ((entity->currentTileX)<<4)+8) {
-            entity->x+= AI_SPEED;
+            entity->x+= entity->stats->moves[entity->statsId];
         } else if (entity->x+8 > ((entity->currentTileX)<<4)+8) {
-            entity->x-= AI_SPEED;
+            entity->x-= entity->stats->moves[entity->statsId];
         }
     }
 
     if (tileYChange != 0) {
-        entity->y+= tileYChange * AI_SPEED;
+        entity->y+= tileYChange * entity->stats->moves[entity->statsId];
     } else {
         if (entity->y+8 < ((entity->currentTileY)<<4)+8) {
-            entity->y+= AI_SPEED;
+            entity->y+= entity->stats->moves[entity->statsId];
         } else if (entity->y+8 > ((entity->currentTileY)<<4)+8) {
-            entity->y-= AI_SPEED;
+            entity->y-= entity->stats->moves[entity->statsId];
         }
     }
 
@@ -310,7 +318,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
                 entity->x = prevX;
                 entity->y = prevY;
 
-                meleeAttackGuy(GUY_CLAIM-mapStatus[newTileY][newTileX]);
+                meleeAttackGuy(GUY_CLAIM-mapStatus[newTileY][newTileX], entity->stats->melee[entity->statsId]);
             } else {
                 // Clear the old tile and mark the new tile as blocked
                 mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR; // Remove target blocker (can be diff) from actual new tile

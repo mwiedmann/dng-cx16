@@ -21,6 +21,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].points = 1000;
     } else {
         entityList[entityId].isGenerator = 0;
+        entityList[entityId].stats = &skeletonStats; // TODO: Pick stats for monster
         entityList[entityId].entityTypeId = tile-TILE_ENTITY_START;
         entityList[entityId].tileId = MONSTER_TILE+(4*entityList[entityId].entityTypeId);
         entityList[entityId].health =  60;
@@ -31,6 +32,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].points = 50; // TODO: Vary by entity type
     }
 
+    entityList[entityId].statsId = 0;
     entityList[entityId].spriteId = entityId+2; // First 2 sprites are guy and weapon
     entityList[entityId].x = x * 16;
     entityList[entityId].y = y * 16;

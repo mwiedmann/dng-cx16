@@ -18,3 +18,18 @@ Weapon weapons[NUM_PLAYERS];
 
 unsigned short maxMapX;
 unsigned short maxMapY;
+
+unsigned char entityWeakMelee[2] = { 1, 1 };
+unsigned char entityNormalMelee[2] = { 2, 1 };
+unsigned char entityStrongMelee[2] = { 2, 2 };
+
+unsigned char entitySlowMove[2] = { 1, 1 };
+unsigned char entityMediumMove[2] = { 2, 1 };
+unsigned char entityFastMove[2] = { 2, 2 };
+
+
+EntityStats skeletonStats = {
+    entityWeakMelee,
+    entityMediumMove,
+    0, // ranged
+};

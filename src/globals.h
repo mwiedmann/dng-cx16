@@ -28,7 +28,15 @@ enum Character {
   RANGER
 };
 
+typedef struct EntityStats {
+    unsigned char *melee;
+    unsigned char *moves;
+    unsigned char ranged;
+} EntityStats;
+
 typedef struct Entity {
+    EntityStats *stats;
+    unsigned char statsId;
     unsigned short isGenerator;
     unsigned short entityTypeId;
     unsigned short tileId;
@@ -104,5 +112,7 @@ extern Weapon weapons[NUM_PLAYERS];
 
 extern unsigned short maxMapX;
 extern unsigned short maxMapY;
+
+extern EntityStats skeletonStats;
 
 #endif
