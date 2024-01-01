@@ -29,7 +29,7 @@ void spritesConfig() {
     VERA.data0 = 0;
     VERA.data0 = 0;
     VERA.data0 = 0;
-    VERA.data0 = 0b00001000; // Z-Depth=2 (or 0 to hide)
+    VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
     VERA.data0 = 0b01010000; // 16x16 pixel image
 
     // Guy 2

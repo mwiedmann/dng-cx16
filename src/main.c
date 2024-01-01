@@ -322,7 +322,8 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].health = players[playerId].stats->startingHealth;
     players[playerId].animationCount = ANIMATION_FRAME_SPEED;
     players[playerId].animationFrame = 0;
-    players[playerId].animationTile = GUY_TILE_START; // + (playerId*4) + (characterType*8);
+    players[playerId].animationTile = GUY_TILE_START + (playerId*4) + (characterType*8);
+    players[playerId].weaponTile = GUY_TILE_START + (playerId*4) + (characterType*8) + 5;
     players[playerId].ticksUntilNextMelee = 0;
     players[playerId].ticksUntilNextShot = 0;
     players[playerId].shooting = 0;
@@ -334,6 +335,7 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].keys = 0;
     players[playerId].scrolls = 0;
     players[playerId].exit = 0;
+    players[playerId].animationChange = 1; // Trigger immediate animation
 }
 
 void moveWeapon(unsigned char playerId) {
@@ -378,7 +380,7 @@ void moveWeapon(unsigned char playerId) {
             return;
         }
 
-        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, scrollX, scrollY, AXE_TILE, 0, weaponRotation[weapons[playerId].animationFrame]);
+        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, scrollX, scrollY, players[playerId].weaponTile, 0, weaponRotation[weapons[playerId].animationFrame]);
 
         // Check if hit something after the move
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];

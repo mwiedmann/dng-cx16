@@ -93,6 +93,7 @@ typedef struct Guy {
     unsigned char animationFrame;
     unsigned char animationChange;
     unsigned char animationTile;
+    unsigned char weaponTile;
     unsigned char facingX;
     signed char aimX;
     signed char aimY;
