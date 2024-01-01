@@ -413,10 +413,12 @@ void main() {
     players[1].active = 0;
     players[1].characterType = DRUID;
 
-    setupPlayer(0, RANGER);
+    setupPlayer(0, DRUID);
 
     drawOverlayBackground();
-    
+    instructions1();
+    drawOverlayBackground();
+
     while(!gameOver) {
         createMapStatus(level);
         drawMap(level);

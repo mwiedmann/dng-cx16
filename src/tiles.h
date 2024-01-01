@@ -20,6 +20,11 @@
 #define L1_TILE_BLACK 47
 #define L1_TILE_WHITE 45
 
+#define AXE_TILE 69
+#define GUY_TILE_START 64
+#define MONSTER_TILE 128
+#define GENERATOR_TILE 48
+
 #define TILE_CHARS_START 128
 
 #define WARLOCKS_DUNGEON_TILE 96
@@ -41,5 +46,6 @@ void drawOverlayBackground();
 void updateOverlay();
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY);
 void flashLayer1();
+void instructions1();
 
 #endif

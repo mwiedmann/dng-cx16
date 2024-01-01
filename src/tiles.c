@@ -5,6 +5,7 @@
 #include "tiles.h"
 #include "globals.h"
 #include "wait.h"
+#include "joy.h"
 
 void initTiles() {
     loadFileToVRAM("l0tiles.bin", L0_TILEBASE_ADDR);
@@ -31,6 +32,8 @@ unsigned char letterToTile(char letter) {
         tile = 40;
     } else if (letter == 39) {
         tile = 41;
+    } else if (letter == 42) {
+        tile = 42;
     } else {
         return 47;
     }
@@ -169,8 +172,19 @@ void message(unsigned char x, unsigned char y, char *msg) {
         VERA.data0 = letterToTile(msg[i]);
         VERA.data0 = 0;
         i++;
-    } while(msg[i] != 0 || i > 10);
+    } while(msg[i] != 0 || i > 30);
+}
 
+void l0TileShow(unsigned char x, unsigned char y, unsigned char tile) {
+    unsigned long addr = L0_MAPBASE_ADDR + (y*L0_MAPBASE_TILE_WIDTH*2) + (x*2);
+
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    VERA.data0 = tile;
+    VERA.data0 = 0;
 }
 
 void updateOverlay() {
@@ -234,4 +248,53 @@ void flashLayer1() {
             waitCount(10);
         }
     }
+}
+
+/*
+        BARBARIAN    MAGE    DRUID    RANGER
+Speed      *         **      **       ****
+Melee      ****      *       **       ***
+Ranged
+ Damage    ****      ***     **       **
+ Rate      *         ****    **       ****
+Magic      *         ****    ****     **
+Health     ****      *       ***      **
+Armor      **        *       ****     **
+*/
+
+void instructions1() {
+    unsigned char startY = 10;
+
+    message(4, 2, "BARBARIAN");
+    l0TileShow(7, 1, GUY_TILE_START);
+
+    message(19, 2, "  MAGE");
+    l0TileShow(13, 1, GUY_TILE_START+8);
+
+    message(4, 6, "    DRUID");
+    l0TileShow(7, 3, GUY_TILE_START+16);
+
+    message(19, 6, "RANGER");
+    l0TileShow(13, 3, GUY_TILE_START+24);
+
+    message(0, startY, "       BARB. MAGE DRUID RANGER");
+    message(0, startY+1, "SPEED  *     **   **    ****");
+    message(0, startY+2, "MELEE  ****  *    **    ***");
+    message(0, startY+3, "RANGED");
+    message(0, startY+4, "   DMG ****  ***  **    **");
+    message(0, startY+5, "  RATE *     **** **    ****");
+    message(0, startY+6, "MAGIC  *     **** ***   **");
+    message(0, startY+7, "HEALTH ****  *    ***   **");
+    message(0, startY+8, "ARMOR  **    *    ****  **");  
+
+    l0TileShow(1, 10, 46);
+    message(5, 20, "SCROLLS DAMAGE ALL ENEMIES");
+
+    l0TileShow(1, 11, 45);
+    message(5, 22, "KEYS OPEN DOORS");
+    l0TileShow(10, 11, 40);
+    l0TileShow(11, 11, 41);
+    l0TileShow(12, 11, 42);
+
+    waitForButtonPress();
 }

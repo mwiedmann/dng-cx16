@@ -111,9 +111,16 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
     }
 }
 
-void meleeAttackGuy(unsigned char playerId, unsigned char dmg) {
-    if (players[playerId].health > dmg) {
-        players[playerId].health -= dmg;
+void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char dmg) {
+    signed char adjustedDmg = dmg - players[playerId].stats->armor[statsId];
+
+    // See if all damage blocked
+    if (adjustedDmg<=0) {
+        return;
+    }
+
+    if (players[playerId].health > adjustedDmg) {
+        players[playerId].health -= adjustedDmg;
     } else {
         players[playerId].health = 0;
         players[playerId].active = 0;
@@ -253,7 +260,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
             tileXChange = 0;
             tileYChange = 0;
 
-            meleeAttackGuy(GUY_CLAIM-attack, entity->stats->melee[entity->statsId]);
+            meleeAttackGuy(GUY_CLAIM-attack, entity->statsId, entity->stats->melee[entity->statsId]);
         }
 
         if (tileXChange !=0 || tileYChange !=0) {
@@ -318,7 +325,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
                 entity->x = prevX;
                 entity->y = prevY;
 
-                meleeAttackGuy(GUY_CLAIM-mapStatus[newTileY][newTileX], entity->stats->melee[entity->statsId]);
+                meleeAttackGuy(GUY_CLAIM-mapStatus[newTileY][newTileX], entity->statsId, entity->stats->melee[entity->statsId]);
             } else {
                 // Clear the old tile and mark the new tile as blocked
                 mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR; // Remove target blocker (can be diff) from actual new tile
@@ -361,7 +368,7 @@ void useScrollOnEntities(unsigned char playerId) {
     flashLayer1();
 
     while(entity) {
-        attackEntity(playerId, entity, 100);
+        attackEntity(playerId, entity, players[playerId].stats->scrollDamage);
         entity = entityActiveList;
     }
 }
