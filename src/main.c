@@ -413,7 +413,7 @@ void main() {
     players[1].active = 0;
     players[1].characterType = DRUID;
 
-    setupPlayer(0, MAGE);
+    setupPlayer(0, RANGER);
 
     drawOverlayBackground();
     
