@@ -478,7 +478,7 @@ void main() {
                 moveWeapon(i);
             }
 
-            if (count == 0) {
+            if (count == 0 || count == 2) {
                 // activation/deactivation phase
                 activateEntities(scrollX, scrollY);
                 deactivateEntities(scrollX, scrollY);
@@ -512,7 +512,7 @@ void main() {
             }
 
             count++;
-            if (count == 2) {
+            if (count == 4) {
                 count = 0;
             }
 

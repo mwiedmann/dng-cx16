@@ -113,7 +113,7 @@ EntityStats *entityStatsByType[10] = {
 
 
 /*
-    unsigned char speeds[2];
+    unsigned char speeds[4];
     unsigned char meleeDamage;
     unsigned char ticksToMelee;
     unsigned char rangedDamage;
@@ -136,10 +136,10 @@ Health     ****      *       ***      **
 Armor      **        *       ****     **
 */
 
-PlayerStats barbarianStats = { {1, 1}, 1, 5  /* 12-sec */,  8, 15 /* 32-sec */,  4, 1000, 200, { 0, 0, 0, 1 } };
-PlayerStats mageStats =      { {2, 1}, 1, 10 /* 6-sec */,   6, 10 /* 36-sec */, 12,  700, 100, { 0, 0, 0, 0 } };
-PlayerStats druidStats =     { {2, 1}, 1, 7  /* 8.5-sec */, 4, 12 /* 20-sec */, 12,  900, 150, { 0, 0, 1, 1 } };
-PlayerStats rangerStats =    { {2, 2}, 1, 6  /* 10-sec */,  4, 10 /* 24-sec */,  8,  800, 125, { 0, 0, 0, 1 } };
+PlayerStats barbarianStats = { {1, 1, 1, 2}, 1, 5  /* 12-sec */,  8, 15 /* 32-sec */,  4, 1000, 200, { 0, 0, 0, 1 } };
+PlayerStats mageStats =      { {2, 1, 2, 1}, 1, 10 /* 6-sec */,   6, 10 /* 36-sec */, 12,  700, 100, { 0, 0, 0, 0 } };
+PlayerStats druidStats =     { {2, 1, 2, 1}, 1, 7  /* 8.5-sec */, 4, 12 /* 20-sec */, 12,  900, 150, { 0, 0, 1, 1 } };
+PlayerStats rangerStats =    { {2, 2, 2, 1}, 1, 6  /* 10-sec */,  4, 10 /* 24-sec */,  8,  800, 125, { 0, 0, 0, 1 } };
 
 // Barb, Mage, Druid, Ranger
 PlayerStats *playerStatsByType[4] = {
