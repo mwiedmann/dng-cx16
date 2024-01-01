@@ -31,6 +31,8 @@ const createLevelCode = (levelNum, level) => {
       return 10;
     } else if (tileId == 46) { // Scroll
       return 11;
+    } else if (tileId == 47) { // Food
+      return 12;
     } else {
       return 2; // Floor
     }

@@ -70,6 +70,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
         return 0;
+    } else if (tile == TILE_FOOD) {
+        players[playerId].health += players[playerId].stats->foodHealth;
+        players[playerId].score += 250;
+        mapStatus[toY][toX] = TILE_FLOOR;
+        copyTile(fromX, fromY, toX, toY);
+        return 0;
     } else if (tile == TILE_DOOR && players[playerId].keys > 0) {
         players[playerId].keys -= 1;
         mapStatus[toY][toX] = TILE_FLOOR;
