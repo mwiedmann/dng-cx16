@@ -8,9 +8,6 @@
 #define GUY_SPEED_2 2
 #define WEAPON_SPEED 4
 #define WEAPON_ROTATION_SPEED 4
-#define GUY_SHOOT_TICKS 10
-#define WEAPON_DAMAGE 4
-#define MELEE_DAMAGE 1
 
 #define NUM_PLAYERS 2
 
@@ -69,9 +66,22 @@ typedef struct Entity {
     unsigned short points;
 } Entity;
 
+typedef struct PlayerStats {
+    unsigned char speeds[2];
+    unsigned char meleeDamage;
+    unsigned char ticksToMelee;
+    unsigned char rangedDamage;
+    unsigned char ticksToRanged;
+    unsigned char scrollDamage;
+    unsigned short startingHealth;
+    unsigned char foodHealth;
+    unsigned char armor[4];
+} PlayerStats;
+
 typedef struct Guy {
     unsigned char active;
     enum Character characterType;
+    PlayerStats *stats;
     unsigned short x;
     unsigned short y;
     unsigned char currentTileX;
@@ -82,6 +92,7 @@ typedef struct Guy {
     unsigned char animationCount;
     unsigned char animationFrame;
     unsigned char animationChange;
+    unsigned char animationTile;
     unsigned char facingX;
     signed char aimX;
     signed char aimY;
@@ -121,5 +132,5 @@ extern unsigned short maxMapX;
 extern unsigned short maxMapY;
 
 extern EntityStats *entityStatsByType[10];
-
+extern PlayerStats *playerStatsByType[4];
 #endif

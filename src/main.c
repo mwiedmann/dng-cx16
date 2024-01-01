@@ -214,15 +214,26 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     // Check if attacking
     tile = mapStatus[((players[playerId].y+8)+(dirY*8))>>4][((players[playerId].x+8)+(dirX*8))>>4];
     if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
-        entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
-        if (entity) {
-            attackEntity(playerId, entity, MELEE_DAMAGE);
-            if (entity->health > 0) {
-                // Entity not dead yet...guy doesn't move
-                players[playerId].x = prevX;
-                players[playerId].y = prevY;
+        if (players[playerId].ticksUntilNextMelee == 0) {
+            entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
+            if (entity) {
+                players[playerId].ticksUntilNextMelee = players[playerId].stats->ticksToMelee + 1;
+                attackEntity(playerId, entity, players[playerId].stats->meleeDamage);
+                if (entity->health > 0) {
+                    // Entity not dead yet...guy doesn't move
+                    players[playerId].x = prevX;
+                    players[playerId].y = prevY;
+                }
             }
+        } else {
+            // Can't attack yet...move back
+            players[playerId].x = prevX;
+            players[playerId].y = prevY;
         }
+    }
+    
+    if (players[playerId].ticksUntilNextMelee > 0) {
+        players[playerId].ticksUntilNextMelee -= 1;
     }
 
     tempTileX = (players[playerId].x+8)>>4;
@@ -241,7 +252,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = GUY_CLAIM-playerId;
 
     if (players[playerId].pressedShoot && !weapons[playerId].visible && players[playerId].ticksUntilNextShot == 0) {
-        players[playerId].ticksUntilNextShot = GUY_SHOOT_TICKS;
+        players[playerId].ticksUntilNextShot = players[playerId].stats->ticksToRanged;
         weapons[playerId].x = players[playerId].x;
         weapons[playerId].y = players[playerId].y;
         weapons[playerId].visible = 1;
@@ -250,7 +261,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
         weapons[playerId].animationCount = WEAPON_ROTATION_SPEED;
         weapons[playerId].animationFrame = 0;
 
-        toggleWeapon(1);
+        toggleWeapon(playerId, 1);
 
         shot = 1;
     } else {
@@ -307,9 +318,11 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
 void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].active = 1;
     players[playerId].characterType = characterType;
-    players[playerId].health = 1000;
+    players[playerId].stats =  playerStatsByType[characterType];
+    players[playerId].health = players[playerId].stats->startingHealth;
     players[playerId].animationCount = ANIMATION_FRAME_SPEED;
     players[playerId].animationFrame = 0;
+    players[playerId].animationTile = GUY_TILE_START; // + (playerId*4) + (characterType*8);
     players[playerId].ticksUntilNextMelee = 0;
     players[playerId].ticksUntilNextShot = 0;
     players[playerId].shooting = 0;
@@ -343,12 +356,12 @@ void moveWeapon(unsigned char playerId) {
         if (tile != TILE_FLOOR && tile != GUY_CLAIM && tile != GUY_CLAIM-1 && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
-            toggleWeapon(0);
+            toggleWeapon(playerId, 0);
 
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
                 if (entity) {
-                    attackEntity(playerId, entity, WEAPON_DAMAGE);
+                    attackEntity(playerId, entity, players[playerId].stats->rangedDamage);
                 }
             }
             return;
@@ -361,23 +374,23 @@ void moveWeapon(unsigned char playerId) {
         if (weapons[playerId].x >= scrollX + SCROLL_PIXEL_SIZE || weapons[playerId].x+16 <= scrollX || weapons[playerId].y >= scrollY + SCROLL_PIXEL_SIZE || weapons[playerId].y+16 <= scrollY) {
             // Hide it for now
             weapons[playerId].visible = 0;
-            toggleWeapon(0);
+            toggleWeapon(playerId, 0);
             return;
         }
 
-        moveAndSetAnimationFrame(1, weapons[playerId].x, weapons[playerId].y, scrollX, scrollY, AXE_TILE, 0, weaponRotation[weapons[playerId].animationFrame]);
+        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, scrollX, scrollY, AXE_TILE, 0, weaponRotation[weapons[playerId].animationFrame]);
 
         // Check if hit something after the move
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
         if (tile != TILE_FLOOR && tile != GUY_CLAIM && tile != GUY_CLAIM-1 && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
-            toggleWeapon(0);
+            toggleWeapon(playerId, 0);
 
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
                 if (entity) {
-                    attackEntity(playerId, entity, WEAPON_DAMAGE);
+                    attackEntity(playerId, entity, players[playerId].stats->rangedDamage);
                 }
             }
         }
@@ -424,7 +437,7 @@ void main() {
                 if (!players[i].active) {
                     continue;
                 }
-                moveGuy(i, count == 0 ? GUY_SPEED_1 : GUY_SPEED_2);
+                moveGuy(i, players[i].stats->speeds[count]);
             }
 
             // TODO: Scroll between 2 players if both active
@@ -455,9 +468,9 @@ void main() {
 
                 if (players[i].animationChange) {
                     players[i].animationChange = 0;
-                    moveAndSetAnimationFrame(0, players[i].x, players[i].y, scrollX, scrollY, GUY_TILE, players[i].animationFrame, players[i].facingX);
+                    moveAndSetAnimationFrame(i, players[i].x, players[i].y, scrollX, scrollY, players[i].animationTile, players[i].animationFrame, players[i].facingX);
                 } else {
-                    moveSpriteId(0, players[i].x, players[i].y, scrollX, scrollY);
+                    moveSpriteId(i, players[i].x, players[i].y, scrollX, scrollY);
                 }
 
                 moveWeapon(i);

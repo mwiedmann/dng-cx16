@@ -9,7 +9,7 @@
 #include "list.h"
 
 void toggleEntity(unsigned char spriteId, unsigned char show) {
-    unsigned long spriteAddr = SPRITE1_ADDR + (spriteId * 8);
+    unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
 
     toggleSprite(spriteAddr, show);
 }
@@ -359,7 +359,7 @@ void useScrollOnEntities(unsigned char playerId) {
     entity = entityActiveList;
 
     flashLayer1();
-    
+
     while(entity) {
         attackEntity(playerId, entity, 100);
         entity = entityActiveList;

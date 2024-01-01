@@ -33,7 +33,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     }
 
     entityList[entityId].statsId = 0;
-    entityList[entityId].spriteId = entityId+2; // First 2 sprites are guy and weapon
+    entityList[entityId].spriteId = entityId+4; // First 4 sprites are guy and weapon
     entityList[entityId].x = x * 16;
     entityList[entityId].y = y * 16;
     entityList[entityId].visible = 0;
