@@ -74,7 +74,8 @@ typedef struct PlayerStats {
     unsigned char ticksToRanged;
     unsigned char scrollDamage;
     unsigned short startingHealth;
-    unsigned char foodHealth;
+    unsigned char foodHealthBig;
+    unsigned char foodHealthSmall;
     unsigned char armor[4];
 } PlayerStats;
 

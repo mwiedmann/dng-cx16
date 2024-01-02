@@ -56,9 +56,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
-    } if (tile == TILE_CHEST) {
-        players[playerId].gold += 500;
-        players[playerId].score += 500;
+    } if (tile == TILE_TREASURE_CHEST || tile == TILE_TREASURE_GOLD || tile == TILE_TREASURE_SILVER) {
+        players[playerId].gold += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
+        players[playerId].score += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
         overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
@@ -69,9 +69,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
         return 0;
-    } else if (tile == TILE_FOOD) {
-        players[playerId].health += players[playerId].stats->foodHealth;
-        players[playerId].score += 250;
+    } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
+        players[playerId].health += tile == TILE_FOOD_BIG ? players[playerId].stats->foodHealthBig : players[playerId].stats->foodHealthSmall;
+        players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);

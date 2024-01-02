@@ -23,16 +23,22 @@ const createLevelCode = (levelNum, level) => {
       return 3;
     } else if (tileId >= 40 && tileId <= 42) { // Door
       return 7;
-    } else if (tileId == 45) { // Key
+    } else if (tileId == 48) { // Key
       return 8;
     } else if (tileId == 44) { // Chest
       return 9;
+    } else if (tileId == 45) { // Gold
+      return 13;
+    } else if (tileId == 46) { // Silver
+      return 14;
     } else if (tileId == 43) { // Exit
       return 10;
-    } else if (tileId == 46) { // Scroll
+    } else if (tileId == 49) { // Scroll
       return 11;
-    } else if (tileId == 47) { // Food
+    } else if (tileId == 50) { // Food Big
       return 12;
+    } else if (tileId == 51) { // Food Small
+      return 15;
     } else {
       return 2; // Floor
     }
@@ -65,8 +71,8 @@ const createLevelCode = (levelNum, level) => {
       currentMapData[(y * tileWidth) + x] = 
         g.t >= 128 && g.t <= 164 // Entity: TODO: Lots of these
           ? 33 + ((g.t-128)/4)
-          : g.t >= 48 && g.t <= 52  // Generator: Which type of monster?
-            ? 20 + g.t-48
+          : g.t >= 56 && g.t <= 60  // Generator: Which type of monster?
+            ? 20 + g.t-56
             : g.t >= 40 && g.t <= 42
               ? 7 // Door
               : 5; // Guy
