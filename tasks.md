@@ -1,9 +1,6 @@
 # Tasks
 
-- Allow player to pick their character
-- Send game back to instruction screen on game over (currently hangs)
-
+- The GUY_CLAIM-player math seems wrong in some cases. Collides with ENTITY_CLAIM?
 
 # Questions
 
-- Should player pause when shooting? Melee?

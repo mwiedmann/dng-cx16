@@ -37,21 +37,24 @@ void instructions1() {
     message(8, 7, "SHOOT ENEMIES");
     message(7, 8, "OR MELEE ATTACK");
 
-    l0TileShow(1, 8, 44);
-    message(5, 16, "GET TREASURE FOR GOLD");
-    message(5, 17, "SPEND ON UPGRADES!");
+    l0TileShow(0, 8, 46);
+    l0TileShow(1, 8, 45);
+    l0TileShow(2, 8, 44);
+    message(7, 16, "GET TREASURE FOR GOLD");
+    message(7, 17, "SPEND ON UPGRADES!");
 
-    l0TileShow(1, 10, 46);
+    l0TileShow(1, 10, 49);
     message(5, 20, "SCROLLS HIT ALL ENEMIES");
 
-    l0TileShow(1, 11, 45);
+    l0TileShow(1, 11, 48);
     message(5, 22, "KEYS OPEN DOORS:");
     l0TileShow(11, 11, 40);
     l0TileShow(12, 11, 41);
     l0TileShow(13, 11, 42);
 
-    l0TileShow(1, 12, 47);
-    message(5, 25, "FOOD RESTORES HEALTH");
+    l0TileShow(1, 12, 50);
+    l0TileShow(2, 12, 51);
+    message(7, 25, "FOOD RESTORES HEALTH");
 
     message(5, 28, "PRESS A BUTTON TO START");
 }
