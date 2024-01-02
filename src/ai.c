@@ -137,6 +137,65 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     unsigned short prevX, prevY;
     unsigned char attack = 0, needsMove=1, foundEmptyTile=0;
 
+    if (entity->isShot) {
+        entity->x += entity->xDir;
+        entity->y += entity->yDir;
+
+        moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+
+        // Get the new tile
+        entity->currentTileX = (entity->x + 8) >> 4;
+        entity->currentTileY = (entity->y + 8) >> 4;
+
+        // See if shot hit something
+        if (mapStatus[entity->currentTileY][entity->currentTileX] > TILE_FLOOR &&
+            mapStatus[entity->currentTileY][entity->currentTileX] != ENTITY_CLAIM) {
+            // See if guy is in this tile!
+            if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
+                meleeAttackGuy(GUY_CLAIM-mapStatus[entity->currentTileY][entity->currentTileX], entity->statsId, 100);   
+            }
+
+            entity->health=0;
+            deleteEntityFromList(entity, &entityActiveList);
+            toggleEntity(entity->spriteId, 0);
+        }
+
+        return;
+    }
+
+    if (entity->stats->ranged > 0) {
+        if (entity->rangedTicks == 0) {
+            distX = abs(guyTileX - entity->currentTileX);
+            distY = abs(guyTileY - entity->currentTileY);
+
+            // Only shoot if lined up
+            if (distX == 0 || distY == 0 || distX == distY) {
+                entity->rangedTicks = MONSTER_RANGED_RATE;
+
+                for (i=0; i < ENTITY_COUNT; i++) {
+                    if (entityList[i].health == 0) {
+                        newTileX = distX == 0 ? entity->currentTileX : entity->currentTileX > guyTileX ? entity->currentTileX-1 : entity->currentTileX+1;
+                        newTileY = distY == 0 ? entity->currentTileY : entity->currentTileY > guyTileY ? entity->currentTileY-1 : entity->currentTileY+1;
+
+                        createEntity(TILE_ENTITY_START /* NEED SHOT TILE */, i, newTileX, newTileY);
+                        entityList[i].isShot = 1;
+                        entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -4 : 4;
+                        entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -4 : 4;
+                        addNewEntityToList(&entityList[i], &entitySleepList);
+                        moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
+                        break;
+                    }
+                }
+
+                return;
+            }
+        }
+
+        if (entity->rangedTicks>0) {
+            entity->rangedTicks -= 1;
+        }
+    }
+
     if (entity->isGenerator) {
         if (entity->nextSpawn > 0) {
             entity->nextSpawn -= 1;

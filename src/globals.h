@@ -22,6 +22,8 @@
 #define NORMAL_HEATH 8
 #define STRONG_HEALTH 12
 
+#define MONSTER_RANGED_RATE 30
+
 enum Character {
   BARBARIAN,
   MAGE,
@@ -33,7 +35,7 @@ typedef struct EntityStats {
     unsigned char *melee;
     unsigned char *moves;
     unsigned char ranged;
-    unsigned startingHealth;
+    unsigned char startingHealth;
 } EntityStats;
 
 typedef struct Entity {
@@ -64,6 +66,10 @@ typedef struct Entity {
     unsigned char movedPrevTick;
     unsigned char facingX;
     unsigned short points;
+    unsigned char rangedTicks;
+    unsigned char isShot;
+    signed short xDir;
+    signed short yDir;
 } Entity;
 
 typedef struct PlayerStats {
