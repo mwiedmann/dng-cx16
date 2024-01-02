@@ -167,13 +167,16 @@ void main() {
             for (i=0; i<NUM_PLAYERS; i++) {
                 players[i].exit = 0;
             }
-        }
 
-        // Cleanup active entities
-        entity = entityActiveList;
-        while(entity) {
-            toggleEntity(entity->spriteId, 0);
-            entity = entity->next;
-        };
+            // Cleanup active entities
+            entity = entityActiveList;
+            while(entity) {
+                toggleEntity(entity->spriteId, 0);
+                entity = entity->next;
+            };
+
+            entityActiveList = 0;
+            entitySleepList = 0;
+        }
     }
 }

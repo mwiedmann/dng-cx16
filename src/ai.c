@@ -137,11 +137,22 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     unsigned short prevX, prevY;
     unsigned char attack = 0, needsMove=1, foundEmptyTile=0;
 
+    // Is this a projectile entity?
     if (entity->isShot) {
         entity->x += entity->xDir;
         entity->y += entity->yDir;
 
-        moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+        entity->animationCount -= 1;
+        if (entity->animationCount == 0) {
+            entity->animationCount = 2;
+            entity->animationFrame += 1;
+            if (entity->animationFrame == 4) {
+                entity->animationFrame = 0;
+            }
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entityList[i].tileId, 0,  weaponRotation[entity->animationFrame]);
+        } else {
+            moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+        }
 
         // Get the new tile
         entity->currentTileX = (entity->x + 8) >> 4;
@@ -163,6 +174,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         return;
     }
 
+    // Does the entity make ranged attacks?
     if (entity->stats->ranged > 0) {
         if (entity->rangedTicks == 0) {
             distX = abs(guyTileX - entity->currentTileX);
@@ -177,8 +189,10 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
                         newTileX = distX == 0 ? entity->currentTileX : entity->currentTileX > guyTileX ? entity->currentTileX-1 : entity->currentTileX+1;
                         newTileY = distY == 0 ? entity->currentTileY : entity->currentTileY > guyTileY ? entity->currentTileY-1 : entity->currentTileY+1;
 
-                        createEntity(TILE_ENTITY_START /* NEED SHOT TILE */, i, newTileX, newTileY);
+                        createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
+                        entityList[i].tileId += 3; // Move to the shot tile for this entity
                         entityList[i].isShot = 1;
+                        entityList[i].animationCount = 2;
                         entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -4 : 4;
                         entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -4 : 4;
                         addNewEntityToList(&entityList[i], &entitySleepList);
