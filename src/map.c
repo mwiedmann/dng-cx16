@@ -22,7 +22,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     } else {
         entityList[entityId].isGenerator = 0;
         entityList[entityId].entityTypeId = tile-TILE_ENTITY_START;
-        entityList[entityId].stats = entityStatsByType[entityList[entityId].entityTypeId]; // TODO: Pick stats for monster
+        entityList[entityId].stats = entityStatsByType[entityList[entityId].entityTypeId];
         entityList[entityId].health =  entityList[entityId].stats->startingHealth;
         entityList[entityId].tileId = MONSTER_TILE+(4*entityList[entityId].entityTypeId);
         entityList[entityId].hasTarget = 0;

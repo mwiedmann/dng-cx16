@@ -53,27 +53,32 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
         players[playerId].keys += 1;
         players[playerId].score += 100;
+        overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
     } if (tile == TILE_CHEST) {
         players[playerId].gold += 500;
         players[playerId].score += 500;
+        overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
     } else if (tile == TILE_SCROLL) {
         players[playerId].scrolls += 1;
         players[playerId].score += 250;
+        overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
         return 0;
     } else if (tile == TILE_FOOD) {
         players[playerId].health += players[playerId].stats->foodHealth;
         players[playerId].score += 250;
+        overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
         return 0;
     } else if (tile == TILE_DOOR && players[playerId].keys > 0) {
         players[playerId].keys -= 1;
+        overlayChanged = 1;
         mapStatus[toY][toX] = TILE_FLOOR;
         copyTile(fromX, fromY, toX, toY);
 
@@ -281,7 +286,8 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     }
 
     // See if player used scroll
-    if (players[playerId].pressedScroll && players[playerId].scrolls > 0) {
+    if (players[playerId].pressedScroll == 1 && players[playerId].scrolls > 0) {
+        players[playerId].pressedScroll = 2;
         players[playerId].scrolls -= 1;
         useScrollOnEntities(playerId);
     }
@@ -329,6 +335,8 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].scrolls = 0;
     players[playerId].exit = 0;
     players[playerId].animationChange = 1; // Trigger immediate animation
+
+    overlayChanged = 1;
 }
 
 void moveWeapon(unsigned char playerId) {

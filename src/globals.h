@@ -147,4 +147,5 @@ extern unsigned char weaponRotation[4];
 extern short scrollX;
 extern short scrollY;
 
+extern unsigned char overlayChanged;
 #endif

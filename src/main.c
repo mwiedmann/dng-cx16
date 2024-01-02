@@ -39,7 +39,7 @@ void main() {
         createMapStatus(level);
         drawMap(level);
         exitLevel = 0;
-        
+
         while(!exitLevel && !gameOver) {
             // Get joystick input only periodically
             if (inputTicks == 4) {
@@ -107,7 +107,7 @@ void main() {
                 // Try to split the load a bit
                 entity = entityActiveList;
                 load=0;
-                while(entity && load<10) {
+                while(entity && load<15) {
                     moveEntity(entity, players[0].currentTileX, players[0].currentTileY, scrollX, scrollY);   
                     entity->movedPrevTick=1;
                     entity = entity->next;
@@ -126,8 +126,10 @@ void main() {
                     entity = entity->next;
                 };
 
-                // TODO: Only need to update this periodically
-                updateOverlay();
+                if (overlayChanged) {
+                    updateOverlay();
+                    overlayChanged = 0;
+                }
             }
 
             count++;

@@ -100,6 +100,7 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
     if (entity->health > damage) {
         entity->health -= damage;
     } else {
+        overlayChanged = 1;
         players[playerId].score += entity->points;
         entity->health = 0;
         mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
@@ -118,6 +119,8 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     if (adjustedDmg<=0) {
         return;
     }
+
+    overlayChanged = 1;
 
     if (players[playerId].health > adjustedDmg) {
         players[playerId].health -= adjustedDmg;
@@ -361,14 +364,15 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
 }
 
 void useScrollOnEntities(unsigned char playerId) {
-    Entity *entity;
+    Entity *entity, *nextEntity;
 
     entity = entityActiveList;
 
     flashLayer1();
 
     while(entity) {
+        nextEntity = entity->next;
         attackEntity(playerId, entity, players[playerId].stats->scrollDamage);
-        entity = entityActiveList;
+        entity = nextEntity;
     }
 }
