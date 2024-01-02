@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <cx16.h>
+#include <joystick.h>
+
 #include "config.h"
 #include "utils.h"
 #include "tiles.h"
 #include "globals.h"
 #include "wait.h"
 #include "joy.h"
+#include "players.h"
 
 void initTiles() {
     loadFileToVRAM("l0tiles.bin", L0_TILEBASE_ADDR);
@@ -75,6 +78,20 @@ void clearLayer1() {
     }
 }
 
+void updateCharacterTypeInOverlay(unsigned char playerId) {
+    unsigned char x;
+    unsigned long addr = L1_MAPBASE_ADDR + ((6+(playerId*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    for (x=0; x<8; x++) {
+        VERA.data0 = (CHARACTER_NAME_TILES+(players[playerId].characterType*16))+x+(playerId*8);
+        VERA.data0 = 0;
+    }
+}
+
 void drawOverlayBackground() {
     // Note we need a `short` here because there are more than 255 tiles
     unsigned char y, x, tile=WARLOCKS_DUNGEON_TILE, i;
@@ -114,16 +131,17 @@ void drawOverlayBackground() {
     }
 
     for (i=0; i<NUM_PLAYERS; i++) {
-        addr = L1_MAPBASE_ADDR + ((6+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
-        VERA.address = addr;
-        VERA.address_hi = addr>>16;
-        // Always set the Increment Mode, turn on bit 4
-        VERA.address_hi |= 0b10000;
+        updateCharacterTypeInOverlay(i);
+        // addr = L1_MAPBASE_ADDR + ((6+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+        // VERA.address = addr;
+        // VERA.address_hi = addr>>16;
+        // // Always set the Increment Mode, turn on bit 4
+        // VERA.address_hi |= 0b10000;
 
-        for (x=0; x<8; x++) {
-            VERA.data0 = (CHARACTER_NAME_TILES+(players[i].characterType*16))+x+(i*8);
-            VERA.data0 = 0;
-        }
+        // for (x=0; x<8; x++) {
+        //     VERA.data0 = (CHARACTER_NAME_TILES+(players[i].characterType*16))+x+(i*8);
+        //     VERA.data0 = 0;
+        // }
 
         // Show SCORE and GOLD
         addr = L1_MAPBASE_ADDR + ((7+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
@@ -190,16 +208,16 @@ void l0TileShow(unsigned char x, unsigned char y, unsigned char tile) {
 void updateOverlay() {
     char buf[16];
 
-    sprintf(buf, "%05u %04u", players[0].score, players[0].gold);
+    sprintf(buf, "% 5u % 4u", players[0].score, players[0].gold);
     message(30, 8, buf);
 
-    sprintf(buf, "%05u", players[0].health);
+    sprintf(buf, "% 5u", players[0].health);
     message(30, 10, buf);
 
-    sprintf(buf, "%05u %04u", players[1].score, players[1].gold);
+    sprintf(buf, "% 5u % 4u", players[1].score, players[1].gold);
     message(30, 17, buf);
 
-    sprintf(buf, "%05u", players[1].health);
+    sprintf(buf, "% 5u", players[1].health);
     message(30, 19, buf);
 }
 
@@ -239,7 +257,7 @@ void flashLayer1() {
             VERA.address_hi |= 0b10000;
 
             for (x=0; x<L1_OVERLAY_X; x++) {
-                VERA.data0 = i == 0 ? L1_TILE_WHITE : L1_TILE_TRANS; // TODO: Need good flash tile
+                VERA.data0 = i == 0 ? L1_TILE_WHITE : L1_TILE_TRANS;
                 VERA.data0 = 0;
             }
         }
@@ -250,51 +268,28 @@ void flashLayer1() {
     }
 }
 
-/*
-        BARBARIAN    MAGE    DRUID    RANGER
-Speed      *         **      **       ****
-Melee      ****      *       **       ***
-Ranged
- Damage    ****      ***     **       **
- Rate      *         ****    **       ****
-Magic      *         ****    ****     **
-Health     ****      *       ***      **
-Armor      **        *       ****     **
-*/
+void gameMessage(unsigned char x1, unsigned char y1, char *msg1, unsigned char x2, unsigned char y2, char *msg2) {
+    unsigned char y, x, i;
+    unsigned long addr;
 
-void instructions1() {
-    unsigned char startY = 10;
+    message(x1, y1, msg1);
+    message(x2, y2, msg2);
 
-    message(4, 2, "BARBARIAN");
-    l0TileShow(7, 1, GUY_TILE_START);
+    waitCount(180);
 
-    message(19, 2, "  MAGE");
-    l0TileShow(13, 1, GUY_TILE_START+8);
+    for (i=0; i<2; i++) {
+        for (y=0; y<L1_OVERLAY_X; y++) {
+            addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2);
+        
+            VERA.address = addr;
+            VERA.address_hi = addr>>16;
+            // Always set the Increment Mode, turn on bit 4
+            VERA.address_hi |= 0b10000;
 
-    message(4, 6, "    DRUID");
-    l0TileShow(7, 3, GUY_TILE_START+16);
-
-    message(19, 6, "RANGER");
-    l0TileShow(13, 3, GUY_TILE_START+24);
-
-    message(0, startY, "       BARB. MAGE DRUID RANGER");
-    message(0, startY+1, "SPEED  *     **   **    ****");
-    message(0, startY+2, "MELEE  ****  *    **    ***");
-    message(0, startY+3, "RANGED");
-    message(0, startY+4, "   DMG ****  ***  **    **");
-    message(0, startY+5, "  RATE *     **** **    ****");
-    message(0, startY+6, "MAGIC  *     **** ***   **");
-    message(0, startY+7, "HEALTH ****  *    ***   **");
-    message(0, startY+8, "ARMOR  **    *    ****  **");  
-
-    l0TileShow(1, 10, 46);
-    message(5, 20, "SCROLLS DAMAGE ALL ENEMIES");
-
-    l0TileShow(1, 11, 45);
-    message(5, 22, "KEYS OPEN DOORS");
-    l0TileShow(10, 11, 40);
-    l0TileShow(11, 11, 41);
-    l0TileShow(12, 11, 42);
-
-    waitForButtonPress();
+            for (x=0; x<L1_OVERLAY_X; x++) {
+                VERA.data0 = L1_TILE_TRANS;
+                VERA.data0 = 0;
+            }
+        }
+    }
 }

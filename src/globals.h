@@ -119,6 +119,12 @@ typedef struct Weapon {
     unsigned char animationFrame;
 } Weapon;
 
+typedef struct Hints {
+    unsigned char keys;
+    unsigned char treasure;
+    unsigned char scrolls;
+} Hints;
+
 extern unsigned char (*mapStatus)[MAP_MAX];
 
 extern Entity entityList[ENTITY_COUNT];
@@ -134,4 +140,11 @@ extern unsigned short maxMapY;
 
 extern EntityStats *entityStatsByType[10];
 extern PlayerStats *playerStatsByType[4];
+
+extern Hints hints;
+
+extern unsigned char weaponRotation[4];
+extern short scrollX;
+extern short scrollY;
+
 #endif
