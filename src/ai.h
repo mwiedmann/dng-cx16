@@ -11,6 +11,10 @@
 // Entities move 30/sec
 #define LOB_MOVE_TICKS 30
 
+#define LOB_PIXEL_MAX 16*5
+
+#define RANGED_SPEED 4
+
 void toggleEntity(unsigned char spriteId, unsigned char show);
 void activateEntities(short scrollX, short scrollY);
 void deactivateEntities(short scrollX, short scrollY);

@@ -174,8 +174,8 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                 toggleEntity(entity->spriteId, 0);
             }
 
-            entityList[i].xDir = (entityList[i].xLobTarget - (signed short)entityList[i].x) / entity->rangedTicks;
-            entityList[i].yDir = (entityList[i].yLobTarget - (signed short)entityList[i].y) / entity->rangedTicks;
+            entity->xDir = (entity->xLobTarget - (signed short)entity->x) / entity->rangedTicks;
+            entity->yDir = (entity->yLobTarget - (signed short)entity->y) / entity->rangedTicks;
             entity->rangedTicks -= 1;
         } else {
             // See if shot hit something
@@ -199,17 +199,17 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
     if (entity->stats->ranged > 0) {
         if (entity->rangedTicks == 0) {
             if (entity->stats->lob) {
-                entity->rangedTicks = MONSTER_RANGED_RATE;
+                entity->rangedTicks = entity->stats->rangedRate;
 
                 // See where target will be in 1 sec
                 xTemp = (signed short)players[0].x + (signed short)(players[0].pressedX * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
                 yTemp = (signed short)players[0].y + (signed short)(players[0].pressedY * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
 
-                // distX = abs(xTemp - entity->x);
-                // distY = abs(yTemp - entity->y);
+                distX = abs(xTemp - entity->x);
+                distY = abs(yTemp - entity->y);
 
                 // If a reachable tile...
-                if (xTemp > 0 && yTemp > 0) {
+                if (xTemp > 0 && yTemp > 0 && distX<=LOB_PIXEL_MAX && distY<=LOB_PIXEL_MAX) {
                     for (i=0; i < ENTITY_COUNT; i++) {
                         if (entityList[i].health == 0) {
                             createEntity(TILE_ENTITY_START+entity->entityTypeId, i, entity->currentTileX, entity->currentTileY);
@@ -222,14 +222,11 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                             entityList[i].xLobTarget= xTemp;
                             entityList[i].yLobTarget= yTemp;
                             entityList[i].rangedTicks = LOB_MOVE_TICKS;
-                            entityList[i].health = 10; // REMOVE
                             addNewEntityToList(&entityList[i], &entitySleepList);
                             moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
                             break;
                         }
                     }
-
-                    
                 }
 
                 return;
@@ -240,7 +237,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
 
                 // Only shoot if lined up
                 if (distX == 0 || distY == 0 || distX == distY) {
-                    entity->rangedTicks = MONSTER_RANGED_RATE;
+                    entity->rangedTicks = entity->stats->rangedRate;
 
                     for (i=0; i < ENTITY_COUNT; i++) {
                         if (entityList[i].health == 0) {
@@ -251,8 +248,8 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                             entityList[i].tileId += 3; // Move to the shot tile for this entity
                             entityList[i].isShot = 1;
                             entityList[i].animationCount = 2;
-                            entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -4 : 4;
-                            entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -4 : 4;
+                            entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -RANGED_SPEED : RANGED_SPEED;
+                            entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -RANGED_SPEED : RANGED_SPEED;
                             addNewEntityToList(&entityList[i], &entitySleepList);
                             moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
                             break;

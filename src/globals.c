@@ -32,7 +32,7 @@ EntityStats skeletonStats = {
     entityMediumMove,
     0, // ranged
     NORMAL_HEATH, // health
-    0
+    0, 0
 };
 
 EntityStats slimeStats = {
@@ -40,7 +40,7 @@ EntityStats slimeStats = {
     entityNoMove, // entityMediumMove,
     10, // ranged
     WEAK_HEALTH, // health
-    1
+    1, 15
 };
 
 EntityStats snakeStats = {
@@ -48,7 +48,7 @@ EntityStats snakeStats = {
     entityMediumMove,
     0, // ranged
     NORMAL_HEATH, // health
-    0
+    0, 0
 };
 
 EntityStats dragonStats = {
@@ -56,7 +56,7 @@ EntityStats dragonStats = {
     entityMediumMove,
     15, // ranged
     NORMAL_HEATH, // health
-    0
+    0, 30
 };
 
 EntityStats spiderStats = {
@@ -64,7 +64,7 @@ EntityStats spiderStats = {
     entityMediumMove,
     0, // ranged
     NORMAL_HEATH, // health
-    0
+    0, 0
 };
 
 EntityStats golemStats = {
@@ -72,7 +72,7 @@ EntityStats golemStats = {
     entitySlowMove,
     0, // ranged
     STRONG_HEALTH, // health
-    0
+    0, 0
 };
 
 EntityStats batStats = {
@@ -80,7 +80,7 @@ EntityStats batStats = {
     entityFastMove,
     0, // ranged
     WEAK_HEALTH, // health
-    0
+    0, 0
 };
 
 EntityStats beholderStats = {
@@ -88,7 +88,7 @@ EntityStats beholderStats = {
     entityFastMove,
     15, // ranged
     NORMAL_HEATH, // health
-    0
+    0, 30
 };
 
 EntityStats demonStats = {
@@ -96,7 +96,7 @@ EntityStats demonStats = {
     entityMediumMove,
     0, // ranged
     STRONG_HEALTH, // health
-    0
+    0, 0
 };
 
 EntityStats insectsStats = {
@@ -104,7 +104,7 @@ EntityStats insectsStats = {
     entityFastMove,
     0, // ranged
     WEAK_HEALTH, // health
-    0
+    0, 0
 };
 
 EntityStats *entityStatsByType[10] = {

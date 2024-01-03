@@ -22,8 +22,6 @@
 #define NORMAL_HEATH 8
 #define STRONG_HEALTH 12
 
-#define MONSTER_RANGED_RATE 30
-
 enum Character {
   BARBARIAN,
   MAGE,
@@ -37,6 +35,7 @@ typedef struct EntityStats {
     unsigned char ranged;
     unsigned char startingHealth;
     unsigned char lob;
+    unsigned char rangedRate;
 } EntityStats;
 
 typedef struct Entity {
