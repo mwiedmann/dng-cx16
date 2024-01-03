@@ -15,6 +15,30 @@
 #include "players.h"
 #include "intro.h"
 
+// void main() {
+//     unsigned short xTemp, yTemp;
+
+//     players[0].x = 500;
+//     players[0].y = 300;
+//     entityList[0].x = 600;
+//     entityList[0].y = 300;
+    
+//     players[0].pressedX = 0;
+//     players[0].pressedY = 0;
+//     players[0].characterType = BARBARIAN;
+    
+//     xTemp = players[0].x + 8 + (players[0].pressedX * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
+//     yTemp = players[0].y + 8 + (players[0].pressedY * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
+
+                        
+//     entityList[0].xDir = ((signed short)xTemp - ((signed short)entityList[0].x + 8)) >>5; // LOB_MOVE_TICKS;
+//     entityList[0].yDir = ((signed short)yTemp - ((signed short)entityList[0].y + 8)) >>5; // LOB_MOVE_TICKS;
+
+
+//     printf("xTemp:%u yTemp:%u xDir:%i yDir:%i\n", xTemp, yTemp, entityList[0].xDir, entityList[0].yDir);
+
+// }
+
 void main() {
     unsigned char count = 0, load, level, exitLevel, gameOver, i;
     unsigned char inputTicks = 0;
@@ -120,7 +144,7 @@ void main() {
                     entity = entityActiveList;
                     load=0;
                     while(entity && load<15) {
-                        moveEntity(entity, players[0].currentTileX, players[0].currentTileY, scrollX, scrollY);   
+                        moveEntity(entity, scrollX, scrollY);   
                         entity->movedPrevTick=1;
                         entity = entity->next;
                         load++;
@@ -131,7 +155,7 @@ void main() {
 
                     while(entity) {
                         if (!entity->movedPrevTick) {
-                            moveEntity(entity, players[0].currentTileX, players[0].currentTileY, scrollX, scrollY);   
+                            moveEntity(entity, scrollX, scrollY);   
                         } else {
                             entity->movedPrevTick = 0;
                         }

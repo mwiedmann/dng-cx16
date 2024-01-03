@@ -27,19 +27,20 @@ unsigned char entitySlowMove[4] = { 2, 1, 1, 1 };
 unsigned char entityMediumMove[4] = { 2, 1, 2, 1 };
 unsigned char entityFastMove[4] = { 2, 2, 2, 2 };
 
-
 EntityStats skeletonStats = {
     entityWeakMelee,
     entityMediumMove,
     0, // ranged
     NORMAL_HEATH, // health
+    0
 };
 
 EntityStats slimeStats = {
     entityWeakMelee,
-    entityMediumMove,
-    0, // ranged
+    entityNoMove, // entityMediumMove,
+    10, // ranged
     WEAK_HEALTH, // health
+    1
 };
 
 EntityStats snakeStats = {
@@ -47,6 +48,7 @@ EntityStats snakeStats = {
     entityMediumMove,
     0, // ranged
     NORMAL_HEATH, // health
+    0
 };
 
 EntityStats dragonStats = {
@@ -54,6 +56,7 @@ EntityStats dragonStats = {
     entityMediumMove,
     15, // ranged
     NORMAL_HEATH, // health
+    0
 };
 
 EntityStats spiderStats = {
@@ -61,6 +64,7 @@ EntityStats spiderStats = {
     entityMediumMove,
     0, // ranged
     NORMAL_HEATH, // health
+    0
 };
 
 EntityStats golemStats = {
@@ -68,6 +72,7 @@ EntityStats golemStats = {
     entitySlowMove,
     0, // ranged
     STRONG_HEALTH, // health
+    0
 };
 
 EntityStats batStats = {
@@ -75,6 +80,7 @@ EntityStats batStats = {
     entityFastMove,
     0, // ranged
     WEAK_HEALTH, // health
+    0
 };
 
 EntityStats beholderStats = {
@@ -82,6 +88,7 @@ EntityStats beholderStats = {
     entityFastMove,
     15, // ranged
     NORMAL_HEATH, // health
+    0
 };
 
 EntityStats demonStats = {
@@ -89,6 +96,7 @@ EntityStats demonStats = {
     entityMediumMove,
     0, // ranged
     STRONG_HEALTH, // health
+    0
 };
 
 EntityStats insectsStats = {
@@ -96,6 +104,7 @@ EntityStats insectsStats = {
     entityFastMove,
     0, // ranged
     WEAK_HEALTH, // health
+    0
 };
 
 EntityStats *entityStatsByType[10] = {
@@ -140,6 +149,8 @@ PlayerStats barbarianStats = { {1, 1, 1, 2}, 1, 5  /* 12-sec */,  8, 15 /* 32-se
 PlayerStats mageStats =      { {1, 1, 1, 2}, 1, 10 /* 6-sec */,   6, 10 /* 36-sec */, 12,  700, 100, 10, { 0, 0, 0, 0 } };
 PlayerStats druidStats =     { {2, 1, 2, 1}, 1, 7  /* 8.5-sec */, 4, 12 /* 20-sec */, 12,  900, 150, 50, { 0, 0, 1, 1 } };
 PlayerStats rangerStats =    { {2, 2, 2, 1}, 1, 6  /* 10-sec */,  4, 10 /* 24-sec */,  8,  800, 125, 25, { 0, 0, 0, 1 } };
+
+unsigned char playerMoveChunks[4] = { 5, 5, 6, 7 };
 
 // Barb, Mage, Druid, Ranger
 PlayerStats *playerStatsByType[4] = {

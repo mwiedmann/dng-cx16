@@ -130,12 +130,17 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     }
 }
 
-void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, short scrollX, short scrollY) {
+void moveEntity(Entity *entity, short scrollX, short scrollY) {
     unsigned char newTileX, newTileY, i;
     signed char tileXChange = 0, tileYChange = 0, x, y;
     unsigned char distX, distY;
     unsigned short prevX, prevY;
     unsigned char attack = 0, needsMove=1, foundEmptyTile=0;
+    unsigned char guyTileX, guyTileY;
+    signed short xTemp, yTemp;
+
+    guyTileX = players[0].currentTileX;
+    guyTileY = players[0].currentTileY;
 
     // Is this a projectile entity?
     if (entity->isShot) {
@@ -149,7 +154,7 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
             if (entity->animationFrame == 4) {
                 entity->animationFrame = 0;
             }
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entityList[i].tileId, 0,  weaponRotation[entity->animationFrame]);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, 0, weaponRotation[entity->animationFrame]);
         } else {
             moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
         }
@@ -158,17 +163,33 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
         entity->currentTileX = (entity->x + 8) >> 4;
         entity->currentTileY = (entity->y + 8) >> 4;
 
-        // See if shot hit something
-        if (mapStatus[entity->currentTileY][entity->currentTileX] > TILE_FLOOR &&
-            mapStatus[entity->currentTileY][entity->currentTileX] != ENTITY_CLAIM) {
-            // See if guy is in this tile!
-            if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
-                meleeAttackGuy(GUY_CLAIM-mapStatus[entity->currentTileY][entity->currentTileX], entity->statsId, 100);   
+        if (entity->isLob) {
+            if (entity->rangedTicks == 0) {
+                if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
+                    meleeAttackGuy(GUY_CLAIM-mapStatus[entity->currentTileY][entity->currentTileX], entity->statsId, 1);   
+                }
+
+                entity->health=0;
+                deleteEntityFromList(entity, &entityActiveList);
+                toggleEntity(entity->spriteId, 0);
             }
 
-            entity->health=0;
-            deleteEntityFromList(entity, &entityActiveList);
-            toggleEntity(entity->spriteId, 0);
+            entityList[i].xDir = (entityList[i].xLobTarget - (signed short)entityList[i].x) / entity->rangedTicks;
+            entityList[i].yDir = (entityList[i].yLobTarget - (signed short)entityList[i].y) / entity->rangedTicks;
+            entity->rangedTicks -= 1;
+        } else {
+            // See if shot hit something
+            if (mapStatus[entity->currentTileY][entity->currentTileX] > TILE_FLOOR &&
+                mapStatus[entity->currentTileY][entity->currentTileX] != ENTITY_CLAIM) {
+                // See if guy is in this tile!
+                if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
+                    meleeAttackGuy(GUY_CLAIM-mapStatus[entity->currentTileY][entity->currentTileX], entity->statsId, 100);   
+                }
+
+                entity->health=0;
+                deleteEntityFromList(entity, &entityActiveList);
+                toggleEntity(entity->spriteId, 0);
+            }
         }
 
         return;
@@ -177,31 +198,69 @@ void moveEntity(Entity *entity, unsigned char guyTileX, unsigned char guyTileY, 
     // Does the entity make ranged attacks?
     if (entity->stats->ranged > 0) {
         if (entity->rangedTicks == 0) {
-            distX = abs(guyTileX - entity->currentTileX);
-            distY = abs(guyTileY - entity->currentTileY);
-
-            // Only shoot if lined up
-            if (distX == 0 || distY == 0 || distX == distY) {
+            if (entity->stats->lob) {
                 entity->rangedTicks = MONSTER_RANGED_RATE;
 
-                for (i=0; i < ENTITY_COUNT; i++) {
-                    if (entityList[i].health == 0) {
-                        newTileX = distX == 0 ? entity->currentTileX : entity->currentTileX > guyTileX ? entity->currentTileX-1 : entity->currentTileX+1;
-                        newTileY = distY == 0 ? entity->currentTileY : entity->currentTileY > guyTileY ? entity->currentTileY-1 : entity->currentTileY+1;
+                // See where target will be in 1 sec
+                xTemp = (signed short)players[0].x + (signed short)(players[0].pressedX * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
+                yTemp = (signed short)players[0].y + (signed short)(players[0].pressedY * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
 
-                        createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
-                        entityList[i].tileId += 3; // Move to the shot tile for this entity
-                        entityList[i].isShot = 1;
-                        entityList[i].animationCount = 2;
-                        entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -4 : 4;
-                        entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -4 : 4;
-                        addNewEntityToList(&entityList[i], &entitySleepList);
-                        moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
-                        break;
+                // distX = abs(xTemp - entity->x);
+                // distY = abs(yTemp - entity->y);
+
+                // If a reachable tile...
+                if (xTemp > 0 && yTemp > 0) {
+                    for (i=0; i < ENTITY_COUNT; i++) {
+                        if (entityList[i].health == 0) {
+                            createEntity(TILE_ENTITY_START+entity->entityTypeId, i, entity->currentTileX, entity->currentTileY);
+                            entityList[i].tileId += 3; // Move to the shot tile for this entity
+                            entityList[i].isShot = 1; 
+                            entityList[i].isLob = 1;
+                            entityList[i].animationCount = 2;
+                            entityList[i].xDir = ((signed short)xTemp - ((signed short)entityList[i].x + 8)) / LOB_MOVE_TICKS;
+                            entityList[i].yDir = ((signed short)yTemp - ((signed short)entityList[i].y + 8)) / LOB_MOVE_TICKS;
+                            entityList[i].xLobTarget= xTemp;
+                            entityList[i].yLobTarget= yTemp;
+                            entityList[i].rangedTicks = LOB_MOVE_TICKS;
+                            entityList[i].health = 10; // REMOVE
+                            addNewEntityToList(&entityList[i], &entitySleepList);
+                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
+                            break;
+                        }
                     }
+
+                    
                 }
 
                 return;
+                
+            } else {
+                distX = abs(guyTileX - entity->currentTileX);
+                distY = abs(guyTileY - entity->currentTileY);
+
+                // Only shoot if lined up
+                if (distX == 0 || distY == 0 || distX == distY) {
+                    entity->rangedTicks = MONSTER_RANGED_RATE;
+
+                    for (i=0; i < ENTITY_COUNT; i++) {
+                        if (entityList[i].health == 0) {
+                            newTileX = distX == 0 ? entity->currentTileX : entity->currentTileX > guyTileX ? entity->currentTileX-1 : entity->currentTileX+1;
+                            newTileY = distY == 0 ? entity->currentTileY : entity->currentTileY > guyTileY ? entity->currentTileY-1 : entity->currentTileY+1;
+
+                            createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
+                            entityList[i].tileId += 3; // Move to the shot tile for this entity
+                            entityList[i].isShot = 1;
+                            entityList[i].animationCount = 2;
+                            entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -4 : 4;
+                            entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -4 : 4;
+                            addNewEntityToList(&entityList[i], &entitySleepList);
+                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
+                            break;
+                        }
+                    }
+
+                    return;
+                }
             }
         }
 

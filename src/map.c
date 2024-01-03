@@ -43,6 +43,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     entityList[entityId].movedPrevTick = 0;
     entityList[entityId].rangedTicks = MONSTER_RANGED_RATE;
     entityList[entityId].isShot = 0;
+    entityList[entityId].isLob = 0;
 }
 
 void createMapStatus(unsigned char level) {

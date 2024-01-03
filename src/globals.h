@@ -36,6 +36,7 @@ typedef struct EntityStats {
     unsigned char *moves;
     unsigned char ranged;
     unsigned char startingHealth;
+    unsigned char lob;
 } EntityStats;
 
 typedef struct Entity {
@@ -68,8 +69,11 @@ typedef struct Entity {
     unsigned short points;
     unsigned char rangedTicks;
     unsigned char isShot;
+    unsigned char isLob;
     signed short xDir;
     signed short yDir;
+    signed short xLobTarget;
+    signed short yLobTarget;
 } Entity;
 
 typedef struct PlayerStats {
@@ -147,6 +151,8 @@ extern unsigned short maxMapY;
 
 extern EntityStats *entityStatsByType[10];
 extern PlayerStats *playerStatsByType[4];
+
+extern unsigned char playerMoveChunks[4];
 
 extern Hints hints;
 
