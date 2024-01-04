@@ -131,7 +131,8 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
 }
 
 Guy *getClosestPlayer(unsigned short x, unsigned short y) {
-    unsigned char i, closest, amount=99, tempA, tempB;
+    unsigned char i, closest;
+    unsigned short amount=32767, tempA, tempB;
 
     // If only 1 player active, return it
     if (!players[1].active) {
@@ -154,6 +155,7 @@ Guy *getClosestPlayer(unsigned short x, unsigned short y) {
         // If this player is closer, make it the target
         if (tempA < amount) {
             closest = i;
+            amount = tempA;
         }
     }
 
@@ -199,7 +201,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
         if (entity->isLob) {
             if (entity->rangedTicks == 0) {
                 if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
-                    meleeAttackGuy(GUY_CLAIM-mapStatus[entity->currentTileY][entity->currentTileX], entity->statsId, 1);   
+                    meleeAttackGuy(mapStatus[entity->currentTileY][entity->currentTileX]-GUY_CLAIM, entity->statsId, 1);   
                 }
 
                 entity->health=0;
@@ -216,7 +218,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                 mapStatus[entity->currentTileY][entity->currentTileX] != ENTITY_CLAIM) {
                 // See if guy is in this tile!
                 if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
-                    meleeAttackGuy(GUY_CLAIM-mapStatus[entity->currentTileY][entity->currentTileX], entity->statsId, 100);   
+                    meleeAttackGuy(mapStatus[entity->currentTileY][entity->currentTileX]-GUY_CLAIM, entity->statsId, 100);   
                 }
 
                 entity->health=0;
@@ -425,7 +427,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
             tileXChange = 0;
             tileYChange = 0;
 
-            meleeAttackGuy(GUY_CLAIM-attack, entity->statsId, entity->stats->melee[entity->statsId]);
+            meleeAttackGuy(attack-GUY_CLAIM, entity->statsId, entity->stats->melee[entity->statsId]);
         }
 
         if (tileXChange !=0 || tileYChange !=0) {
@@ -490,7 +492,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                 entity->x = prevX;
                 entity->y = prevY;
 
-                meleeAttackGuy(GUY_CLAIM-mapStatus[newTileY][newTileX], entity->statsId, entity->stats->melee[entity->statsId]);
+                meleeAttackGuy(mapStatus[newTileY][newTileX]-GUY_CLAIM, entity->statsId, entity->stats->melee[entity->statsId]);
             } else {
                 // Clear the old tile and mark the new tile as blocked
                 mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR; // Remove target blocker (can be diff) from actual new tile

@@ -269,7 +269,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     }
 
     // Stamp the current tile with the guy
-    mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = GUY_CLAIM-playerId;
+    mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = GUY_CLAIM+playerId;
 
     if (players[playerId].pressedShoot && !weapons[playerId].visible && players[playerId].ticksUntilNextShot == 0) {
         players[playerId].ticksUntilNextShot = players[playerId].stats->ticksToRanged;
@@ -361,7 +361,7 @@ void moveWeapon(unsigned char playerId) {
         // We check before and after the move because of tile boundary edge cases
         // Probably a better way but tile checking is really fast...so, maybe this is ok
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
-        if (tile != TILE_FLOOR && tile != GUY_CLAIM && tile != GUY_CLAIM-1 && tile != ENTITY_CLAIM) {
+        if (tile != TILE_FLOOR && tile < GUY_CLAIM && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
             toggleWeapon(playerId, 0);
@@ -390,7 +390,7 @@ void moveWeapon(unsigned char playerId) {
 
         // Check if hit something after the move
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
-        if (tile != TILE_FLOOR && tile != GUY_CLAIM && tile != GUY_CLAIM-1 && tile != ENTITY_CLAIM) {
+        if (tile != TILE_FLOOR && tile < GUY_CLAIM && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
             toggleWeapon(playerId, 0);
