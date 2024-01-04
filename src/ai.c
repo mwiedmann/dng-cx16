@@ -130,6 +130,36 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     }
 }
 
+Guy *getClosestPlayer(unsigned short x, unsigned short y) {
+    unsigned char i, closest, amount=99, tempA, tempB;
+
+    // If only 1 player active, return it
+    if (!players[1].active) {
+        return &players[0];
+    } else if (!players[0].active) {
+        return &players[1];
+    }
+
+    for (i=0, closest=0; i<NUM_PLAYERS; i++) {
+        tempA = abs(x - players[i].x);
+        tempB = abs(y - players[i].y);
+
+        // Largest will be the distance of the entity to the x/y
+        // This is because entities can move diagonally
+        // Use tempA to hold the largest
+        if (tempB > tempA) {
+            tempA = tempB;
+        }
+
+        // If this player is closer, make it the target
+        if (tempA < amount) {
+            closest = i;
+        }
+    }
+
+    return &players[closest];
+}
+
 void moveEntity(Entity *entity, short scrollX, short scrollY) {
     unsigned char newTileX, newTileY, i;
     signed char tileXChange = 0, tileYChange = 0, x, y;
@@ -138,9 +168,12 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
     unsigned char attack = 0, needsMove=1, foundEmptyTile=0;
     unsigned char guyTileX, guyTileY;
     signed short xTemp, yTemp;
+    Guy *guy;
 
-    guyTileX = players[0].currentTileX;
-    guyTileY = players[0].currentTileY;
+    guy = getClosestPlayer(entity->x, entity->y);
+
+    guyTileX = guy->currentTileX;
+    guyTileY = guy->currentTileY;
 
     // Is this a projectile entity?
     if (entity->isShot) {
@@ -202,8 +235,8 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                 entity->rangedTicks = entity->stats->rangedRate;
 
                 // See where target will be in 1 sec
-                xTemp = (signed short)players[0].x + (signed short)(players[0].pressedX * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
-                yTemp = (signed short)players[0].y + (signed short)(players[0].pressedY * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
+                xTemp = (signed short)guy->x + (signed short)(guy->pressedX * playerMoveChunks[guy->characterType] * LOB_PLAYER_CHUNK);
+                yTemp = (signed short)guy->y + (signed short)(guy->pressedY * playerMoveChunks[guy->characterType] * LOB_PLAYER_CHUNK);
 
                 distX = abs(xTemp - entity->x);
                 distY = abs(yTemp - entity->y);

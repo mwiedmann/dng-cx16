@@ -16,6 +16,11 @@ void setGuyDirection(unsigned char playerId) {
     players[playerId].pressedY = 0;
     players[playerId].pressedShoot = 0;
 
+    // Button 3 controls which player is moving. A hack for now since I don't have a joypad (that works!)
+    if (playerId == 0 && JOY_BTN_3(joy) || (playerId == 1 && !JOY_BTN_3(joy))) {
+        return;
+    }
+
     if (JOY_LEFT(joy)) {
         players[playerId].pressedX = -1;
     } else if (JOY_RIGHT(joy)) {
@@ -321,8 +326,8 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].health = players[playerId].stats->startingHealth;
     players[playerId].animationCount = ANIMATION_FRAME_SPEED;
     players[playerId].animationFrame = 0;
-    players[playerId].animationTile = GUY_TILE_START + (playerId*4) + (characterType*8);
-    players[playerId].weaponTile = GUY_TILE_START + (playerId*4) + (characterType*8) + 5;
+    players[playerId].animationTile = GUY_TILE_START + (playerId*32) + (characterType*8);
+    players[playerId].weaponTile = GUY_TILE_START + (playerId*32) + (characterType*8) + 5;
     players[playerId].ticksUntilNextMelee = 0;
     players[playerId].ticksUntilNextShot = 0;
     players[playerId].shooting = 0;

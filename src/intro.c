@@ -90,9 +90,28 @@ void instructions2() {
     message(5, 28, "PRESS A BUTTON TO START");
 }
 
+unsigned char getCharacterChoice(Guy *guy, unsigned char joy) {
+    unsigned char change = 0;
+
+    if (JOY_UP(joy)) {
+        guy->characterType = BARBARIAN;
+        change = 1;
+    } else if (JOY_LEFT(joy)) {
+        guy->characterType = DRUID;
+        change = 1;
+    } else if (JOY_RIGHT(joy)) {
+        guy->characterType = RANGER;
+        change = 1;
+    } else if (JOY_DOWN(joy)) {
+        guy->characterType = MAGE;
+        change = 1;
+    }
+
+    return change;
+}
+
 void instructions() {
-    //unsigned short count = 0;
-    unsigned char joy, change0;
+    unsigned char joy, change, i;
 
     instructions1();
 
@@ -104,36 +123,27 @@ void instructions() {
     instructions2();
 
     while (1) {
-        joy = joy_read(0);
-        change0 = 0;
+        for (i=0; i<NUM_PLAYERS; i++){
+            joy = joy_read(0);
 
-        if (JOY_UP(joy)) {
-            players[0].characterType = BARBARIAN;
-            change0 = 1;
-        } else if (JOY_LEFT(joy)) {
-            players[0].characterType = DRUID;
-            change0 = 1;
-        } else if (JOY_RIGHT(joy)) {
-            players[0].characterType = RANGER;
-            change0 = 1;
-        } else if (JOY_DOWN(joy)) {
-            players[0].characterType = MAGE;
-            change0 = 1;
-        }
+            // Hold button 3 for player 2
+            if ((i==0 && !JOY_BTN_3(joy)) || (i == 1 && JOY_BTN_3(joy))) {
+                change = getCharacterChoice(&players[i], joy);
 
-        if (change0) {
-            waitForRelease();
-            setupPlayer(0, players[0].characterType);
-            updateCharacterTypeInOverlay(0);
-            updateOverlay();
+                if (change) {
+                    waitForRelease();
+                    setupPlayer(i, players[i].characterType);
+                    updateCharacterTypeInOverlay(i);
+                    updateOverlay();
+                }
+            }
+            wait();
         }
 
         if (JOY_BTN_1(joy)) {
             waitForRelease();
             break;
         }
-
-        wait();
     }
 
     clearLayer0();

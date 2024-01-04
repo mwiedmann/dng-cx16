@@ -15,29 +15,40 @@
 #include "players.h"
 #include "intro.h"
 
-// void main() {
-//     unsigned short xTemp, yTemp;
+void setScroll() {
+    unsigned short x, y;
 
-//     players[0].x = 500;
-//     players[0].y = 300;
-//     entityList[0].x = 600;
-//     entityList[0].y = 300;
+    // If only 1 player active, use it
+    if (!players[1].active) {
+        x = players[0].x;
+        y = players[0].y;
+    } else if (!players[0].active) {
+        x = players[1].x;
+        y = players[1].y;
+    } else {
+        // Both players active, scroll around the midpoint
+        x = (players[0].x + players[1].x) >>1;
+        y = (players[0].y + players[1].y) >>1;
+    }
+
+    // Just follow P0 for now
+    scrollX = x-112;
+    if (scrollX < 0) {
+        scrollX = 0;
+    } else if (scrollX > maxMapX) {
+        scrollX = maxMapX;
+    }
+
+    scrollY = y-112;
+    if (scrollY < 0) {
+        scrollY = 0;
+    } else if (scrollY > maxMapY) {
+        scrollY = maxMapY;
+    }
     
-//     players[0].pressedX = 0;
-//     players[0].pressedY = 0;
-//     players[0].characterType = BARBARIAN;
-    
-//     xTemp = players[0].x + 8 + (players[0].pressedX * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
-//     yTemp = players[0].y + 8 + (players[0].pressedY * playerMoveChunks[players[0].characterType] * LOB_PLAYER_CHUNK);
-
-                        
-//     entityList[0].xDir = ((signed short)xTemp - ((signed short)entityList[0].x + 8)) >>5; // LOB_MOVE_TICKS;
-//     entityList[0].yDir = ((signed short)yTemp - ((signed short)entityList[0].y + 8)) >>5; // LOB_MOVE_TICKS;
-
-
-//     printf("xTemp:%u yTemp:%u xDir:%i yDir:%i\n", xTemp, yTemp, entityList[0].xDir, entityList[0].yDir);
-
-// }
+    VERA.layer0.vscroll = scrollY;
+    VERA.layer0.hscroll = scrollX;
+}
 
 void main() {
     unsigned char count = 0, load, level, exitLevel, gameOver, i;
@@ -97,24 +108,7 @@ void main() {
                     moveGuy(i, players[i].stats->speeds[count]);
                 }
 
-                // TODO: Scroll between 2 players if both active
-                // Just follow P0 for now
-                scrollX = players[0].x-112;
-                if (scrollX < 0) {
-                    scrollX = 0;
-                } else if (scrollX > maxMapX) {
-                    scrollX = maxMapX;
-                }
-
-                scrollY = players[0].y-112;
-                if (scrollY < 0) {
-                    scrollY = 0;
-                } else if (scrollY > maxMapY) {
-                    scrollY = maxMapY;
-                }
-                
-                VERA.layer0.vscroll = scrollY;
-                VERA.layer0.hscroll = scrollX;
+                setScroll();
 
                 // Only set his animation frame if needed (this is more expensive)
                 // Otherwise just move him
