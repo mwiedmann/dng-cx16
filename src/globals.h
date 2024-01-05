@@ -13,6 +13,8 @@
 
 #define SCROLL_TILE_SIZE 15
 #define SCROLL_PIXEL_SIZE SCROLL_TILE_SIZE * 16
+#define TWO_PLAYER_SCROLL_LIMIT SCROLL_TILE_SIZE * 15
+
 #define MAP_MAX 32
 #define MAP_PIXEL_MAX MAP_MAX*16
 #define MAP_SCROLL_MAX MAP_PIXEL_MAX - SCROLL_PIXEL_SIZE
@@ -160,4 +162,6 @@ extern short scrollX;
 extern short scrollY;
 
 extern unsigned char overlayChanged;
+extern unsigned char activePlayers;
+
 #endif

@@ -127,6 +127,7 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     } else {
         players[playerId].health = 0;
         players[playerId].active = 0;
+        activePlayers -= 1;
     }
 }
 

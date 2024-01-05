@@ -163,5 +163,6 @@ PlayerStats *playerStatsByType[4] = {
 Hints hints = { 0, 0, 0 };
 
 unsigned char weaponRotation[4] = {0, 1, 3, 2};
-short scrollX, scrollY;
+signed short scrollX, scrollY;
 unsigned char overlayChanged = 0;
+unsigned char activePlayers=0;

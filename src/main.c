@@ -18,13 +18,15 @@
 void setScroll() {
     unsigned short x, y;
 
-    // If only 1 player active, use it
-    if (!players[1].active) {
-        x = players[0].x;
-        y = players[0].y;
-    } else if (!players[0].active) {
-        x = players[1].x;
-        y = players[1].y;
+    if (activePlayers == 1) {
+        // If only 1 player active, use it
+        if (!players[1].active) {
+            x = players[0].x;
+            y = players[0].y;
+        } else {
+            x = players[1].x;
+            y = players[1].y;
+        }
     } else {
         // Both players active, scroll around the midpoint
         x = (players[0].x + players[1].x) >>1;
@@ -81,6 +83,13 @@ void main() {
         drawOverlayBackground();
         updateOverlay();
         instructions();
+
+        activePlayers=0;
+        for (i=0; i<NUM_PLAYERS; i++) {
+            if (players[i].active) {
+                activePlayers+= 1;
+            }
+        }
 
         while(!gameOver) {
             createMapStatus(level);

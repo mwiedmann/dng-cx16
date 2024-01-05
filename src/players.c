@@ -46,8 +46,10 @@ void setGuyDirection(unsigned char playerId) {
     }
 }
 
-unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {
-    unsigned char tile = mapStatus[toY][toX];
+unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char fromY, unsigned short toX, unsigned short toY) {
+    unsigned char toTileX = toX>>4;
+    unsigned char toTileY = toY>>4;
+    unsigned char tile = mapStatus[toTileY][toTileX];
     signed char i;
 
     if (tile == TILE_KEY) {
@@ -59,59 +61,59 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         players[playerId].keys += 1;
         players[playerId].score += 100;
         overlayChanged = 1;
-        mapStatus[toY][toX] = TILE_FLOOR;
-        copyTile(fromX, fromY, toX, toY);
+        mapStatus[toTileY][toTileX] = TILE_FLOOR;
+        copyTile(fromX, fromY, toTileX, toTileY);
     } if (tile == TILE_TREASURE_CHEST || tile == TILE_TREASURE_GOLD || tile == TILE_TREASURE_SILVER) {
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
         players[playerId].score += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
         overlayChanged = 1;
-        mapStatus[toY][toX] = TILE_FLOOR;
-        copyTile(fromX, fromY, toX, toY);
+        mapStatus[toTileY][toTileX] = TILE_FLOOR;
+        copyTile(fromX, fromY, toTileX, toTileY);
     } else if (tile == TILE_SCROLL) {
         players[playerId].scrolls += 1;
         players[playerId].score += 250;
         overlayChanged = 1;
-        mapStatus[toY][toX] = TILE_FLOOR;
-        copyTile(fromX, fromY, toX, toY);
+        mapStatus[toTileY][toTileX] = TILE_FLOOR;
+        copyTile(fromX, fromY, toTileX, toTileY);
         return 0;
     } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
         players[playerId].health += tile == TILE_FOOD_BIG ? players[playerId].stats->foodHealthBig : players[playerId].stats->foodHealthSmall;
         players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         overlayChanged = 1;
-        mapStatus[toY][toX] = TILE_FLOOR;
-        copyTile(fromX, fromY, toX, toY);
+        mapStatus[toTileY][toTileX] = TILE_FLOOR;
+        copyTile(fromX, fromY, toTileX, toTileY);
         return 0;
     } else if (tile == TILE_DOOR && players[playerId].keys > 0) {
         players[playerId].keys -= 1;
         overlayChanged = 1;
-        mapStatus[toY][toX] = TILE_FLOOR;
-        copyTile(fromX, fromY, toX, toY);
+        mapStatus[toTileY][toTileX] = TILE_FLOOR;
+        copyTile(fromX, fromY, toTileX, toTileY);
 
         i=1;
-        while(mapStatus[toY-i][toX] == TILE_DOOR) {
-            mapStatus[toY-i][toX] = TILE_FLOOR;
-            copyTile(fromX, fromY, toX, toY-i);
+        while(mapStatus[toTileY-i][toTileX] == TILE_DOOR) {
+            mapStatus[toTileY-i][toTileX] = TILE_FLOOR;
+            copyTile(fromX, fromY, toTileX, toTileY-i);
             i++;
         }
 
         i=1;
-        while(mapStatus[toY+i][toX] == TILE_DOOR) {
-            mapStatus[toY+i][toX] = TILE_FLOOR;
-            copyTile(fromX, fromY, toX, toY+i);
+        while(mapStatus[toTileY+i][toTileX] == TILE_DOOR) {
+            mapStatus[toTileY+i][toTileX] = TILE_FLOOR;
+            copyTile(fromX, fromY, toTileX, toTileY+i);
             i++;
         }
 
         i=1;
-        while(mapStatus[toY][toX-i] == TILE_DOOR) {
-            mapStatus[toY][toX-i] = TILE_FLOOR;
-            copyTile(fromX, fromY, toX-i, toY);
+        while(mapStatus[toTileY][toTileX-i] == TILE_DOOR) {
+            mapStatus[toTileY][toTileX-i] = TILE_FLOOR;
+            copyTile(fromX, fromY, toTileX-i, toTileY);
             i++;
         }
 
         i=1;
-        while(mapStatus[toY][toX+i] == TILE_DOOR) {
-            mapStatus[toY][toX+i] = TILE_FLOOR;
-            copyTile(fromX, fromY, toX+i, toY);
+        while(mapStatus[toTileY][toTileX+i] == TILE_DOOR) {
+            mapStatus[toTileY][toTileX+i] = TILE_FLOOR;
+            copyTile(fromX, fromY, toTileX+i, toTileY);
             i++;
         }
         
@@ -122,6 +124,14 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
     if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
         return 1;
+    }
+
+    // Scrolling is split between both players in 2 player game
+    // Make sure players aren't leaving the scroll field
+    if (activePlayers == 2) {
+        if (toX >= scrollX + TWO_PLAYER_SCROLL_LIMIT || toX <= scrollX+16 || toY >= scrollY + TWO_PLAYER_SCROLL_LIMIT || toY <= scrollY+16) {
+            return 1;
+        }
     }
 
     return 0;
@@ -160,22 +170,22 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
 
     if (dirX == 1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, (players[playerId].x+15)>>4, players[playerId].y>>4)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y)) {
             dirX = 0;
             players[playerId].x = prevX;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, (players[playerId].x+15)>>4, (players[playerId].y+15)>>4)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y+15)) {
                 dirX = 0;
                 players[playerId].x = prevX;
             }
         }
     } else if (dirX == -1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x>>4, players[playerId].y>>4)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y)) {
             dirX = 0;
             players[playerId].x = prevX;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x>>4, (players[playerId].y+15)>>4)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y+15)) {
                 dirX = 0;
                 players[playerId].x = prevX;
             }
@@ -194,22 +204,22 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
 
     if (dirY == 1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, (players[playerId].x+15)>>4, (players[playerId].y+15)>>4)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y+15)) {
             dirY = 0;
             players[playerId].y = prevY;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x>>4, (players[playerId].y+15)>>4)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y+15)) {
                 dirY = 0;
                 players[playerId].y = prevY;
             }
         }
     } else if (dirY == -1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x>>4, players[playerId].y>>4)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y)) {
             dirY = 0;
             players[playerId].y = prevY;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, (players[playerId].x+15)>>4, players[playerId].y>>4)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y)) {
                 dirY = 0;
                 players[playerId].y = prevY;
             }
