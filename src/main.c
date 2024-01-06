@@ -33,7 +33,6 @@ void setScroll() {
         y = (players[0].y + players[1].y) >>1;
     }
 
-    // Just follow P0 for now
     scrollX = x-112;
     scrollY = y-112;
 
@@ -50,25 +49,13 @@ void setScroll() {
             scrollY = MAP_SCROLL_MAX;
         }
     } else {
-        x = x % 512;
-        y = y % 512;
+        scrollX = scrollX % 512;
+        scrollY = scrollY % 512;
     }
 
     VERA.layer0.vscroll = scrollY;
     VERA.layer0.hscroll = scrollX;
 }
-
-// void main() {
-//     // unsigned char speed = 2;
-
-//     // players[0].x = 0;
-
-//     // players[0].x = POS_ADJ(players[0].x - speed);
-
-//     // printf("%u", players[0].x);
-
-//     printf("%u %u %u", tileLessThan(2, 22), tileLessThan(18, 22), tileLessThan(8, 24));
-// }
 
 void main() {
     unsigned char count = 0, load, level, exitLevel, gameOver, i;
@@ -136,6 +123,9 @@ void main() {
                 }
 
                 setScroll();
+
+                players[0].score = scrollX;
+                overlayChanged = 1;
 
                 // Only set his animation frame if needed (this is more expensive)
                 // Otherwise just move him

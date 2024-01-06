@@ -102,10 +102,21 @@ void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned
     // 256 color mode, and graphic address bits 16:13
     VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
     // Set the X and Y values
-    VERA.data0 = x-scrollX;
-    VERA.data0 = (x-scrollX)>>8;
-    VERA.data0 = y-scrollY;
-    VERA.data0 = (y-scrollY)>>8;
+    if (x>scrollX) {
+        VERA.data0 = x-scrollX;
+        VERA.data0 = (x-scrollX)>>8;
+    } else {
+        VERA.data0 = (MAP_PIXEL_MAX-scrollX)+x;
+        VERA.data0 = ((MAP_PIXEL_MAX-scrollX)+x)>>8;
+    }
+
+    if (y>scrollY) {
+        VERA.data0 = y-scrollY;
+        VERA.data0 = (y-scrollY)>>8;
+    } else {
+        VERA.data0 = (MAP_PIXEL_MAX-scrollY)+y;
+        VERA.data0 = ((MAP_PIXEL_MAX-scrollY)+y)>>8;
+    }
 
     VERA.data0 = 0b00001000 | dir; // Z-Depth=2 (or 0 to hide)
 }
@@ -130,10 +141,21 @@ void moveSprite(unsigned long spriteAddr, unsigned short x, unsigned short y) {
     VERA.address_hi |= 0b10000;
     
     // Set the X and Y values
-    VERA.data0 = x-scrollX;
-    VERA.data0 = (x-scrollX)>>8;
-    VERA.data0 = y-scrollY;
-    VERA.data0 = (y-scrollY)>>8;
+    if (x>scrollX) {
+        VERA.data0 = x-scrollX;
+        VERA.data0 = (x-scrollX)>>8;
+    } else {
+        VERA.data0 = (MAP_PIXEL_MAX-scrollX)+x;
+        VERA.data0 = ((MAP_PIXEL_MAX-scrollX)+x)>>8;
+    }
+
+    if (y>scrollY) {
+        VERA.data0 = y-scrollY;
+        VERA.data0 = (y-scrollY)>>8;
+    } else {
+        VERA.data0 = (MAP_PIXEL_MAX-scrollY)+y;
+        VERA.data0 = ((MAP_PIXEL_MAX-scrollY)+y)>>8;
+    }
 }
 
 void moveSpriteId(unsigned char spriteId, unsigned short x, unsigned short y) {

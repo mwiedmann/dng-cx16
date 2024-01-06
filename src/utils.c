@@ -195,13 +195,23 @@ unsigned char tileDistance(unsigned char tileA, unsigned tileB) {
 
 unsigned char offScreen(unsigned short x, unsigned short y) {
     if (levelWrap) {
-        if (scrollX + SCROLL_PIXEL_SIZE >= 512 /* X is wrapping*/ && x+16 < scrollX && x > SCROLL_PIXEL_SIZE-scrollX) {
-            return 1;
-        } else if (scrollY + SCROLL_PIXEL_SIZE >= 512 /* Y is wrapping*/ && y+16 < scrollY && y > SCROLL_PIXEL_SIZE-scrollY) {
+        if (scrollX + SCROLL_PIXEL_SIZE >= 512 /* X is wrapping*/) {
+            if (x+16 < scrollX && x > (SCROLL_PIXEL_SIZE - (MAP_PIXEL_MAX-scrollX))) {
+                return 1;
+            }
+        } else if (x >= scrollX + SCROLL_PIXEL_SIZE || x+16 <= scrollX) {
             return 1;
         }
-        // Scrolling not wrapping, use normal calc
-        return (x >= scrollX + SCROLL_PIXEL_SIZE || x+16 <= scrollX || y >= scrollY + SCROLL_PIXEL_SIZE || y+16 <= scrollY); 
+        
+        if (scrollY + SCROLL_PIXEL_SIZE >= 512 /* Y is wrapping*/) {
+            if (y+16 < scrollY && y > (SCROLL_PIXEL_SIZE - (MAP_PIXEL_MAX-scrollY))) {
+                return 1;
+            }
+        } else if (y >= scrollY + SCROLL_PIXEL_SIZE || y+16 <= scrollY) {
+            return 1;
+        }
+
+        return 0;
      } else {
         // No level wrap, scrolling should be normal
         return (x >= scrollX + SCROLL_PIXEL_SIZE || x+16 <= scrollX || y >= scrollY + SCROLL_PIXEL_SIZE || y+16 <= scrollY);

@@ -35,6 +35,7 @@ void activateEntities() {
             // Off screen
         } else {
             entity->visible = 1;
+            printf("Moving entity to ACTIVE from sleep: %i\n", entity->spriteId);
             moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, entity->animationFrame, entity->facingX);
             moveEntityToList(entity, &entityTempActiveList, &entitySleepList);
         }
@@ -63,7 +64,7 @@ void deactivateEntities() {
             // Off screen
             toggleEntity(entity->spriteId, 0);
             entity->visible = 0;
-            // printf("Moving entity to sleep from active: %i\n", entity->spriteId);
+            printf("Moving entity to SLEEP from active: %i\n", entity->spriteId);
             moveEntityToList(entity, &entitySleepList, &entityActiveList);
         }
 
@@ -479,7 +480,7 @@ void moveEntity(Entity *entity) {
     } else {
         if (posLessThan(POS_ADJ(entity->y+8), POS_ADJ(((entity->currentTileY)<<4)+8))) {
             entity->y = POS_ADJ(entity->y + entity->stats->moves[entity->statsId]);
-        } else if (entity->y+8 > ((entity->currentTileY)<<4)+8) {
+        } else if (posGreaterThan(POS_ADJ(entity->y+8), POS_ADJ(((entity->currentTileY)<<4)+8))) {
             entity->y = POS_ADJ(entity->y - entity->stats->moves[entity->statsId]);
         }
     }
