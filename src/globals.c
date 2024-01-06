@@ -15,9 +15,6 @@ Entity *entityTempActiveList = 0;
 Guy players[NUM_PLAYERS];
 Weapon weapons[NUM_PLAYERS];
 
-unsigned short maxMapX;
-unsigned short maxMapY;
-
 unsigned char entityWeakMelee[4] = { 0, 1, 1, 1 };
 unsigned char entityNormalMelee[4] = { 1, 1, 1, 1 };
 unsigned char entityStrongMelee[4] = { 2, 1, 1, 1 };
@@ -163,6 +160,7 @@ PlayerStats *playerStatsByType[4] = {
 Hints hints = { 0, 0, 0 };
 
 unsigned char weaponRotation[4] = {0, 1, 3, 2};
-signed short scrollX, scrollY;
-unsigned char overlayChanged = 0;
+unsigned short scrollX, scrollY;
+unsigned char overlayChanged=0;
 unsigned char activePlayers=0;
+unsigned char levelWrap=0;

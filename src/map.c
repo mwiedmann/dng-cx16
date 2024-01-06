@@ -57,21 +57,9 @@ void createMapStatus(unsigned char level) {
     BANK_NUM = MAP_BANK;
 
     entitySleepList = 0;
-    
-    maxMapX = 0;
-    maxMapY = 0;
 
     for (y=0,i=0; y<MAP_MAX; y++) {
         for (x=0; x<MAP_MAX; x++) {
-            if (mapStatus[y][x] != 0) {
-                if (x*16 > maxMapX) {
-                    maxMapX = x*16;
-                }
-
-                if (y*16 > maxMapY) {
-                    maxMapY = y*16;
-                }
-            }
             if (mapStatus[y][x] >= TILE_GENERATOR_START && mapStatus[y][x] <= TILE_ENTITY_END) {
                 createEntity(mapStatus[y][x], i, x, y);
 
@@ -99,9 +87,6 @@ void createMapStatus(unsigned char level) {
             }
         }
     }
-
-    maxMapX -= SCROLL_PIXEL_SIZE-16;
-    maxMapY -= SCROLL_PIXEL_SIZE-16;
 
     // This will put all the entities in the sleeping list
     entitySleepList = &entityList[0];

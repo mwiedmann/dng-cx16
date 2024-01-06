@@ -35,19 +35,25 @@ void setScroll() {
 
     // Just follow P0 for now
     scrollX = x-112;
-    if (scrollX < 0) {
-        scrollX = 0;
-    } else if (scrollX > maxMapX) {
-        scrollX = maxMapX;
+    scrollY = y-112;
+
+    if (!levelWrap) {
+        if (scrollX >= 16384) { // TODO: Maybe bit check this?
+            scrollX = 0;
+        } else if (scrollX > MAP_SCROLL_MAX) {
+            scrollX = MAP_SCROLL_MAX;
+        }
+
+        if (scrollY >= 16384) {
+            scrollY = 0;
+        } else if (scrollY > MAP_SCROLL_MAX) {
+            scrollY = MAP_SCROLL_MAX;
+        }
+    } else {
+        x = x % 512;
+        y = y % 512;
     }
 
-    scrollY = y-112;
-    if (scrollY < 0) {
-        scrollY = 0;
-    } else if (scrollY > maxMapY) {
-        scrollY = maxMapY;
-    }
-    
     VERA.layer0.vscroll = scrollY;
     VERA.layer0.hscroll = scrollX;
 }
@@ -128,9 +134,9 @@ void main() {
 
                     if (players[i].animationChange) {
                         players[i].animationChange = 0;
-                        moveAndSetAnimationFrame(i, players[i].x, players[i].y, scrollX, scrollY, players[i].animationTile, players[i].animationFrame, players[i].facingX);
+                        moveAndSetAnimationFrame(i, players[i].x, players[i].y, players[i].animationTile, players[i].animationFrame, players[i].facingX);
                     } else {
-                        moveSpriteId(i, players[i].x, players[i].y, scrollX, scrollY);
+                        moveSpriteId(i, players[i].x, players[i].y);
                     }
 
                     moveWeapon(i);
@@ -138,8 +144,8 @@ void main() {
 
                 if (count == 0 || count == 2) {
                     // activation/deactivation phase
-                    activateEntities(scrollX, scrollY);
-                    deactivateEntities(scrollX, scrollY);
+                    activateEntities();
+                    deactivateEntities();
                     tempActiveToActiveEntities();
 
                     // Move "some" active entities
@@ -147,7 +153,7 @@ void main() {
                     entity = entityActiveList;
                     load=0;
                     while(entity && load<15) {
-                        moveEntity(entity, scrollX, scrollY);   
+                        moveEntity(entity);   
                         entity->movedPrevTick=1;
                         entity = entity->next;
                         load++;
@@ -158,7 +164,7 @@ void main() {
 
                     while(entity) {
                         if (!entity->movedPrevTick) {
-                            moveEntity(entity, scrollX, scrollY);   
+                            moveEntity(entity);   
                         } else {
                             entity->movedPrevTick = 0;
                         }

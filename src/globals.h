@@ -24,6 +24,10 @@
 #define NORMAL_HEATH 8
 #define STRONG_HEALTH 12
 
+// X,Y positions may wrap below 0 back to high numbers. Keep them in the 0-511 range.
+#define POS_ADJ(a) (a%512)
+#define TILE_ADJ(a) (a%32)
+
 enum Character {
   BARBARIAN,
   MAGE,
@@ -147,9 +151,6 @@ extern Entity *entityTempActiveList;
 extern Guy players[NUM_PLAYERS];
 extern Weapon weapons[NUM_PLAYERS];
 
-extern unsigned short maxMapX;
-extern unsigned short maxMapY;
-
 extern EntityStats *entityStatsByType[10];
 extern PlayerStats *playerStatsByType[4];
 
@@ -158,10 +159,11 @@ extern unsigned char playerMoveChunks[4];
 extern Hints hints;
 
 extern unsigned char weaponRotation[4];
-extern short scrollX;
-extern short scrollY;
+extern unsigned short scrollX;
+extern unsigned short scrollY;
 
 extern unsigned char overlayChanged;
 extern unsigned char activePlayers;
+extern unsigned char levelWrap;
 
 #endif

@@ -8,13 +8,28 @@
 #include "tiles.h"
 #include "list.h"
 
+unsigned char offScreen(unsigned short x, unsigned short y) {
+    if (levelWrap) {
+        if (scrollX + SCROLL_PIXEL_SIZE >= 512 /* X is wrapping*/ && x+16 < scrollX && x > SCROLL_PIXEL_SIZE-scrollX) {
+            return 1;
+        } else if (scrollY + SCROLL_PIXEL_SIZE >= 512 /* Y is wrapping*/ && y+16 < scrollY && y > SCROLL_PIXEL_SIZE-scrollY) {
+            return 1;
+        }
+        // Scrolling not wrapping, use normal calc
+        return (x >= scrollX + SCROLL_PIXEL_SIZE || x+16 <= scrollX || y >= scrollY + SCROLL_PIXEL_SIZE || y+16 <= scrollY); 
+     } else {
+        // No level wrap, scrolling should be normal
+        return (x >= scrollX + SCROLL_PIXEL_SIZE || x+16 <= scrollX || y >= scrollY + SCROLL_PIXEL_SIZE || y+16 <= scrollY);
+     }
+}
+
 void toggleEntity(unsigned char spriteId, unsigned char show) {
     unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
 
     toggleSprite(spriteAddr, show);
 }
 
-void activateEntities(short scrollX, short scrollY) {
+void activateEntities() {
     Entity *entity;
     Entity *nextEntity;
 
@@ -30,11 +45,11 @@ void activateEntities(short scrollX, short scrollY) {
         nextEntity = entity->next;
 
         // Activate this entity if it is on the screen
-        if (entity->x >= scrollX + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX || entity->y >= scrollY + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY) {
+        if (offScreen(entity->x, entity->y)) {
             // Off screen
         } else {
             entity->visible = 1;
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, entity->animationFrame, entity->facingX);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, entity->animationFrame, entity->facingX);
             moveEntityToList(entity, &entityTempActiveList, &entitySleepList);
         }
 
@@ -42,7 +57,7 @@ void activateEntities(short scrollX, short scrollY) {
     } while (entity);
 }
 
-void deactivateEntities(short scrollX, short scrollY) {
+void deactivateEntities() {
     Entity *entity;
     Entity *nextEntity;
 
@@ -58,7 +73,7 @@ void deactivateEntities(short scrollX, short scrollY) {
         nextEntity = entity->next;
 
         // Deactivate this entity if it is out of range
-        if (entity->x >= scrollX + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX || entity->y >= scrollY + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY) {
+        if (offScreen(entity->x, entity->y)) {
             // Off screen
             toggleEntity(entity->spriteId, 0);
             entity->visible = 0;
@@ -163,7 +178,118 @@ Guy *getClosestPlayer(unsigned short x, unsigned short y) {
     return &players[closest];
 }
 
-void moveEntity(Entity *entity, short scrollX, short scrollY) {
+unsigned char posLessThan(unsigned short posA, unsigned short posB) {
+    if (levelWrap) {
+        /*
+        If B>A, then use method:
+        A to right = B-A
+        A to left = A+(16-B)
+
+        If B<A, then use method:
+        A to left = A-B
+        A to right = B+(16-A)
+        */
+        return posA == posB
+            ? 0
+            : posB > posA
+                ? posB-posA < posA+(MAP_PIXEL_MAX-posB)
+                : posB+(MAP_PIXEL_MAX-posA) < posA-posB;
+    } else {
+        return posA < posB;
+    }
+}
+
+unsigned char tileLessThan(unsigned char tileA, unsigned char tileB) {
+    if (levelWrap) {
+        /*
+        If B>A, then use method:
+        A to right = B-A
+        A to left = A+(16-B)
+
+        If B<A, then use method:
+        A to left = A-B
+        A to right = B+(16-A)
+        */
+        return tileA == tileB
+            ? 0
+            : tileB > tileA
+                ? tileB-tileA < tileA+(MAP_MAX-tileB)
+                : tileB+(MAP_MAX-tileA) < tileA-tileB;
+    } else {
+        return tileA < tileB;
+    }
+}
+
+unsigned char posGreaterThan(unsigned char posA, unsigned posB) {
+    if (levelWrap) {
+        /*
+        If B>A, then use method:
+        A to right = B-A
+        A to left = A+(16-B)
+
+        If B<A, then use method:
+        A to left = A-B
+        A to right = B+(16-A)
+        */
+        return posA == posB
+            ? 0
+            : posB > posA
+                ? posB-posA > posA+(MAP_PIXEL_MAX-posB)
+                : posB+(MAP_PIXEL_MAX-posA) > posA-posB;
+    } else {
+        return posA > posB;
+    }
+}
+
+unsigned char tileGreaterThan(unsigned char tileA, unsigned tileB) {
+    if (levelWrap) {
+        /*
+        If B>A, then use method:
+        A to right = B-A
+        A to left = A+(16-B)
+
+        If B<A, then use method:
+        A to left = A-B
+        A to right = B+(16-A)
+        */
+        return tileA == tileB
+            ? 0
+            : tileB > tileA
+                ? tileB-tileA > tileA+(MAP_MAX-tileB)
+                : tileB+(MAP_MAX-tileA) > tileA-tileB;
+    } else {
+        return tileA > tileB;
+    }
+}
+
+unsigned char tileDistance(unsigned char tileA, unsigned tileB) {
+    unsigned char tempA, tempB;
+
+    if (levelWrap) {
+        /*
+        If B>A, then use method:
+        A to right = B-A
+        A to left = A+(16-B)
+
+        If B<A, then use method:
+        A to left = A-B
+        A to right = B+(16-A)
+        */
+        if (tileB > tileA) {
+            tempA = tileB-tileA;
+            tempB = tileA+(MAP_MAX-tileB);
+            return tempA > tempB ? tempB : tempA;
+        } else {
+            tempA = tileB+(MAP_MAX-tileA);
+            tempB = tileA-tileB;
+            return tempA > tempB ? tempB : tempA;
+        }
+    } else {
+        return abs(tileA - tileB);
+    }
+}
+
+void moveEntity(Entity *entity) {
     unsigned char newTileX, newTileY, i;
     signed char tileXChange = 0, tileYChange = 0, x, y;
     unsigned char distX, distY;
@@ -180,8 +306,8 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
 
     // Is this a projectile entity?
     if (entity->isShot) {
-        entity->x += entity->xDir;
-        entity->y += entity->yDir;
+        entity->x = POS_ADJ(entity->x + entity->xDir);
+        entity->y = POS_ADJ(entity->y + entity->yDir);
 
         entity->animationCount -= 1;
         if (entity->animationCount == 0) {
@@ -190,14 +316,14 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
             if (entity->animationFrame == 4) {
                 entity->animationFrame = 0;
             }
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, 0, weaponRotation[entity->animationFrame]);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, 0, weaponRotation[entity->animationFrame]);
         } else {
-            moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+            moveSpriteId(entity->spriteId, entity->x, entity->y);
         }
 
         // Get the new tile
-        entity->currentTileX = (entity->x + 8) >> 4;
-        entity->currentTileY = (entity->y + 8) >> 4;
+        entity->currentTileX = POS_ADJ(entity->x + 8) >> 4;
+        entity->currentTileY = POS_ADJ(entity->y + 8) >> 4;
 
         if (entity->isLob) {
             if (entity->rangedTicks == 0) {
@@ -210,6 +336,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                 toggleEntity(entity->spriteId, 0);
             }
 
+            // TODO: Need wrapping logic here
             entity->xDir = (entity->xLobTarget - (signed short)entity->x) / entity->rangedTicks;
             entity->yDir = (entity->yLobTarget - (signed short)entity->y) / entity->rangedTicks;
             entity->rangedTicks -= 1;
@@ -237,6 +364,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
             if (entity->stats->lob) {
                 entity->rangedTicks = entity->stats->rangedRate;
 
+                // Need wrapping logic here
                 // See where target will be in 1 sec
                 xTemp = (signed short)guy->x + (signed short)(guy->pressedX * playerMoveChunks[guy->characterType] * LOB_PLAYER_CHUNK);
                 yTemp = (signed short)guy->y + (signed short)(guy->pressedY * playerMoveChunks[guy->characterType] * LOB_PLAYER_CHUNK);
@@ -259,7 +387,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                             entityList[i].yLobTarget= yTemp;
                             entityList[i].rangedTicks = LOB_MOVE_TICKS;
                             addNewEntityToList(&entityList[i], &entitySleepList);
-                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
+                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, entityList[i].tileId, 0, 0);
                             break;
                         }
                     }
@@ -287,7 +415,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                             entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -RANGED_SPEED : RANGED_SPEED;
                             entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -RANGED_SPEED : RANGED_SPEED;
                             addNewEntityToList(&entityList[i], &entitySleepList);
-                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
+                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, entityList[i].tileId, 0, 0);
                             break;
                         }
                     }
@@ -309,6 +437,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
             entity->nextSpawn = entity->spawnRate;
             // Create an entity
             // Find an empty tile
+            // TODO: Need wrapping logic here
             if (guyTileX < entity->currentTileX) {
                 newTileX = entity->currentTileX-1;
             } else if (guyTileX > entity->currentTileX) {
@@ -355,9 +484,9 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
 
         if (entity->animationChange) {
             entity->animationChange = 0;
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, 0, 0);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, 0, 0);
         } else {
-            moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+            moveSpriteId(entity->spriteId, entity->x, entity->y);
         }
 
         return;
@@ -373,18 +502,18 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
 
     if (!entity->hasTarget) {
         // Try to move X towards the guy
-        if (entity->currentTileX < guyTileX) {
+        if (tileLessThan(entity->currentTileX, guyTileX)) {
             tileXChange = 1;
             entity->facingX = 0;
-        } else if (entity->currentTileX > guyTileX) {
+        } else if (tileGreaterThan(entity->currentTileX, guyTileX)) {
             tileXChange = -1;
             entity->facingX = 1;
         }
 
         // Try to move Y towards guy
-        if (entity->currentTileY < guyTileY) {
+        if (tileLessThan(entity->currentTileY, guyTileY)) {
             tileYChange = 1;
-        } else if (entity->currentTileY > guyTileY) {
+        } else if (tileGreaterThan(entity->currentTileY, guyTileY)) {
             tileYChange = -1;
         }
 
@@ -411,8 +540,8 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
             if (mapStatus[entity->currentTileY+tileYChange][entity->currentTileX+tileXChange] >= GUY_CLAIM) {
                 attack = mapStatus[entity->currentTileY+tileYChange][entity->currentTileX+tileXChange];
             } else {
-                distX = abs(guyTileX - entity->currentTileX);
-                distY = abs(guyTileY - entity->currentTileY);
+                distX = tileDistance(guyTileX, entity->currentTileX);
+                distY = tileDistance(guyTileY, entity->currentTileY);
 
                 // Move whichever direction is farther to close the gap
                 if (distX > distY) {
@@ -435,8 +564,8 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
             // Set the new start and target for the entity
             entity->startTileX = entity->currentTileX;
             entity->startTileY = entity->currentTileY;
-            entity->targetTileX = entity->currentTileX+tileXChange;
-            entity->targetTileY = entity->currentTileY+tileYChange;
+            entity->targetTileX = TILE_ADJ(entity->currentTileX+tileXChange);
+            entity->targetTileY = TILE_ADJ(entity->currentTileY+tileYChange);
     
             // Claim the tile and now entity has a target
             mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_CLAIM;
@@ -444,47 +573,47 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
         }
     } else {
         // Try to move X towards the target
-        if (entity->currentTileX < entity->targetTileX) {
+        if (tileLessThan(entity->currentTileX, entity->targetTileX)) {
             tileXChange = 1;
             entity->facingX = 0;
-        } else if (entity->currentTileX > entity->targetTileX) {
+        } else if (tileGreaterThan(entity->currentTileX, entity->targetTileX)) {
             tileXChange = -1;
             entity->facingX = 1;
         }
 
         // Try to move Y towards target
-        if (entity->currentTileY < entity->targetTileY) {
+        if (tileLessThan(entity->currentTileY, entity->targetTileY)) {
             tileYChange = 1;
-        } else if (entity->currentTileY > entity->targetTileY) {
+        } else if (tileGreaterThan(entity->currentTileY, entity->targetTileY)) {
             tileYChange = -1;
         }
     }
 
     if (tileXChange != 0) {
-        entity->x+= tileXChange * entity->stats->moves[entity->statsId];
+        entity->x = POS_ADJ(entity->x + (tileXChange * entity->stats->moves[entity->statsId]));
     } else {
-        if (entity->x+8 < ((entity->currentTileX)<<4)+8) {
-            entity->x+= entity->stats->moves[entity->statsId];
-        } else if (entity->x+8 > ((entity->currentTileX)<<4)+8) {
-            entity->x-= entity->stats->moves[entity->statsId];
+        if (posLessThan(POS_ADJ(entity->x+8), POS_ADJ(((entity->currentTileX)<<4)+8))) {
+            entity->x = POS_ADJ(entity->x + entity->stats->moves[entity->statsId]);
+        } else if (posGreaterThan(POS_ADJ(entity->x+8), POS_ADJ(((entity->currentTileX)<<4)+8))) {
+            entity->x = POS_ADJ(entity->x - entity->stats->moves[entity->statsId]);
         }
     }
 
     if (tileYChange != 0) {
-        entity->y+= tileYChange * entity->stats->moves[entity->statsId];
+        entity->y = POS_ADJ(entity->y + (tileYChange * entity->stats->moves[entity->statsId]));
     } else {
-        if (entity->y+8 < ((entity->currentTileY)<<4)+8) {
-            entity->y+= entity->stats->moves[entity->statsId];
+        if (posLessThan(POS_ADJ(entity->y+8), POS_ADJ(((entity->currentTileY)<<4)+8))) {
+            entity->y = POS_ADJ(entity->y + entity->stats->moves[entity->statsId]);
         } else if (entity->y+8 > ((entity->currentTileY)<<4)+8) {
-            entity->y-= entity->stats->moves[entity->statsId];
+            entity->y = POS_ADJ(entity->y - entity->stats->moves[entity->statsId]);
         }
     }
 
     // If moved towards another tile...
     if (tileXChange != 0 || tileYChange != 0) {
         // Get the new tile
-        newTileX = (entity->x + 8) >> 4;
-        newTileY = (entity->y + 8) >> 4;
+        newTileX = POS_ADJ(entity->x + 8) >> 4;
+        newTileY = POS_ADJ(entity->y + 8) >> 4;
 
         // See if the entity has moved to its target tile
         if (entity->targetTileX == newTileX && entity->targetTileY == newTileY) {
@@ -516,7 +645,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                 entity->animationFrame += 1;
             }
 
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, entity->animationFrame, entity->facingX);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, entity->animationFrame, entity->facingX);
             needsMove = 0;
         } else {
             entity->animationCount -= 1;
@@ -524,7 +653,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
     }
 
     if (needsMove) {
-        moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+        moveSpriteId(entity->spriteId, entity->x, entity->y);
     }
 }
 

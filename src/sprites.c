@@ -86,8 +86,7 @@ void spritesConfig() {
     }
 }
 
-void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned short y, short scrollX, short scrollY,
-    unsigned char tileId, unsigned char frame, unsigned char dir) {
+void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned short y, unsigned char tileId, unsigned char frame, unsigned char dir) {
     unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
     // VRAM address for sprite 1 (this is fixed)
     unsigned long spriteGraphicAddress = L0_TILEBASE_ADDR + ((tileId+frame)*L0_TILE_SIZE);
@@ -122,7 +121,7 @@ void toggleWeapon(unsigned char playerId, unsigned short show) {
     toggleSprite(playerId == 0 ? WEAPON_1_SPRITE_ADDR : WEAPON_2_SPRITE_ADDR, show);
 }
 
-void moveSprite(unsigned long spriteAddr, unsigned short x, unsigned short y, short scrollX, short scrollY) {
+void moveSprite(unsigned long spriteAddr, unsigned short x, unsigned short y) {
     // Update Sprite 1 X/Y Position
     // Point to Sprite 1 byte 2
     VERA.address = spriteAddr+2;
@@ -137,8 +136,8 @@ void moveSprite(unsigned long spriteAddr, unsigned short x, unsigned short y, sh
     VERA.data0 = (y-scrollY)>>8;
 }
 
-void moveSpriteId(unsigned char spriteId, unsigned short x, unsigned short y, short scrollX, short scrollY) {
+void moveSpriteId(unsigned char spriteId, unsigned short x, unsigned short y) {
     unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
 
-    moveSprite(spriteAddr, x, y, scrollX, scrollY);
+    moveSprite(spriteAddr, x, y);
 }
