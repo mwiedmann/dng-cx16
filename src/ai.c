@@ -7,21 +7,7 @@
 #include "ai.h"
 #include "tiles.h"
 #include "list.h"
-
-unsigned char offScreen(unsigned short x, unsigned short y) {
-    if (levelWrap) {
-        if (scrollX + SCROLL_PIXEL_SIZE >= 512 /* X is wrapping*/ && x+16 < scrollX && x > SCROLL_PIXEL_SIZE-scrollX) {
-            return 1;
-        } else if (scrollY + SCROLL_PIXEL_SIZE >= 512 /* Y is wrapping*/ && y+16 < scrollY && y > SCROLL_PIXEL_SIZE-scrollY) {
-            return 1;
-        }
-        // Scrolling not wrapping, use normal calc
-        return (x >= scrollX + SCROLL_PIXEL_SIZE || x+16 <= scrollX || y >= scrollY + SCROLL_PIXEL_SIZE || y+16 <= scrollY); 
-     } else {
-        // No level wrap, scrolling should be normal
-        return (x >= scrollX + SCROLL_PIXEL_SIZE || x+16 <= scrollX || y >= scrollY + SCROLL_PIXEL_SIZE || y+16 <= scrollY);
-     }
-}
+#include "utils.h"
 
 void toggleEntity(unsigned char spriteId, unsigned char show) {
     unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
@@ -176,117 +162,6 @@ Guy *getClosestPlayer(unsigned short x, unsigned short y) {
     }
 
     return &players[closest];
-}
-
-unsigned char posLessThan(unsigned short posA, unsigned short posB) {
-    if (levelWrap) {
-        /*
-        If B>A, then use method:
-        A to right = B-A
-        A to left = A+(16-B)
-
-        If B<A, then use method:
-        A to left = A-B
-        A to right = B+(16-A)
-        */
-        return posA == posB
-            ? 0
-            : posB > posA
-                ? posB-posA < posA+(MAP_PIXEL_MAX-posB)
-                : posB+(MAP_PIXEL_MAX-posA) < posA-posB;
-    } else {
-        return posA < posB;
-    }
-}
-
-unsigned char tileLessThan(unsigned char tileA, unsigned char tileB) {
-    if (levelWrap) {
-        /*
-        If B>A, then use method:
-        A to right = B-A
-        A to left = A+(16-B)
-
-        If B<A, then use method:
-        A to left = A-B
-        A to right = B+(16-A)
-        */
-        return tileA == tileB
-            ? 0
-            : tileB > tileA
-                ? tileB-tileA < tileA+(MAP_MAX-tileB)
-                : tileB+(MAP_MAX-tileA) < tileA-tileB;
-    } else {
-        return tileA < tileB;
-    }
-}
-
-unsigned char posGreaterThan(unsigned char posA, unsigned posB) {
-    if (levelWrap) {
-        /*
-        If B>A, then use method:
-        A to right = B-A
-        A to left = A+(16-B)
-
-        If B<A, then use method:
-        A to left = A-B
-        A to right = B+(16-A)
-        */
-        return posA == posB
-            ? 0
-            : posB > posA
-                ? posB-posA > posA+(MAP_PIXEL_MAX-posB)
-                : posB+(MAP_PIXEL_MAX-posA) > posA-posB;
-    } else {
-        return posA > posB;
-    }
-}
-
-unsigned char tileGreaterThan(unsigned char tileA, unsigned tileB) {
-    if (levelWrap) {
-        /*
-        If B>A, then use method:
-        A to right = B-A
-        A to left = A+(16-B)
-
-        If B<A, then use method:
-        A to left = A-B
-        A to right = B+(16-A)
-        */
-        return tileA == tileB
-            ? 0
-            : tileB > tileA
-                ? tileB-tileA > tileA+(MAP_MAX-tileB)
-                : tileB+(MAP_MAX-tileA) > tileA-tileB;
-    } else {
-        return tileA > tileB;
-    }
-}
-
-unsigned char tileDistance(unsigned char tileA, unsigned tileB) {
-    unsigned char tempA, tempB;
-
-    if (levelWrap) {
-        /*
-        If B>A, then use method:
-        A to right = B-A
-        A to left = A+(16-B)
-
-        If B<A, then use method:
-        A to left = A-B
-        A to right = B+(16-A)
-        */
-        if (tileB > tileA) {
-            tempA = tileB-tileA;
-            tempB = tileA+(MAP_MAX-tileB);
-            return tempA > tempB ? tempB : tempA;
-        } else {
-            tempA = tileB+(MAP_MAX-tileA);
-            tempB = tileA-tileB;
-            return tempA > tempB ? tempB : tempA;
-        }
-    } else {
-        return abs(tileA - tileB);
-    }
 }
 
 void moveEntity(Entity *entity) {

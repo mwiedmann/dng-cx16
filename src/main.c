@@ -58,6 +58,18 @@ void setScroll() {
     VERA.layer0.hscroll = scrollX;
 }
 
+// void main() {
+//     // unsigned char speed = 2;
+
+//     // players[0].x = 0;
+
+//     // players[0].x = POS_ADJ(players[0].x - speed);
+
+//     // printf("%u", players[0].x);
+
+//     printf("%u %u %u", tileLessThan(2, 22), tileLessThan(18, 22), tileLessThan(8, 24));
+// }
+
 void main() {
     unsigned char count = 0, load, level, exitLevel, gameOver, i;
     unsigned char inputTicks = 0;

@@ -16,4 +16,12 @@ void loadFileToBankedRAM(char *filename, unsigned char bank, unsigned short addr
 void copyBankedRAMToVRAM(unsigned char startMemBank, unsigned long vramAddr, unsigned long length);
 void restoreRow(char* save, unsigned char row0, unsigned char row1, short scrollY, unsigned short zoomMode);
 
+unsigned char posLessThan(unsigned short posA, unsigned short posB);
+unsigned char tileLessThan(unsigned char tileA, unsigned char tileB);
+unsigned char posGreaterThan(unsigned char posA, unsigned posB);
+unsigned char tileGreaterThan(unsigned char tileA, unsigned tileB);
+
+unsigned char tileDistance(unsigned char tileA, unsigned tileB);
+unsigned char offScreen(unsigned short x, unsigned short y);
+
 #endif

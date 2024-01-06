@@ -163,4 +163,4 @@ unsigned char weaponRotation[4] = {0, 1, 3, 2};
 unsigned short scrollX, scrollY;
 unsigned char overlayChanged=0;
 unsigned char activePlayers=0;
-unsigned char levelWrap=0;
+unsigned char levelWrap=1;

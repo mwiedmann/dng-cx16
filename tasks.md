@@ -6,6 +6,7 @@
     - getClosestPlayer
     - Lobbing direction logic
     - Ranged attacks targetting
+    - Center scrolling position when 2 players
 
 # Questions
 
