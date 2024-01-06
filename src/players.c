@@ -55,7 +55,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     if (tile == TILE_KEY) {
         if (!hints.keys) {
             hints.keys = 1;
-            gameMessage(8, 15, "COLLECT KEYS", 8, 16, "TO OPEN DOORS");
+            gameMessage("COLLECT KEYS", "TO OPEN DOORS");
         }
 
         players[playerId].keys += 1;
@@ -64,12 +64,20 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         mapStatus[toTileY][toTileX] = TILE_FLOOR;
         copyTile(fromX, fromY, toTileX, toTileY);
     } if (tile == TILE_TREASURE_CHEST || tile == TILE_TREASURE_GOLD || tile == TILE_TREASURE_SILVER) {
+        if (!hints.treasure) {
+            hints.treasure = 1;
+            gameMessage("COLLECT GOLD AND", "SPEND ON UPGRADES LATER");
+        }
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
         players[playerId].score += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
         overlayChanged = 1;
         mapStatus[toTileY][toTileX] = TILE_FLOOR;
         copyTile(fromX, fromY, toTileX, toTileY);
     } else if (tile == TILE_SCROLL) {
+        if (!hints.scrolls) {
+            hints.scrolls = 1;
+            gameMessage("USE SCROLLS TO", "DAMAGE ALL ENEMIES");
+        }
         players[playerId].scrolls += 1;
         players[playerId].score += 250;
         overlayChanged = 1;
@@ -77,6 +85,10 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         copyTile(fromX, fromY, toTileX, toTileY);
         return 0;
     } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
+        if (!hints.food) {
+            hints.food = 1;
+            gameMessage("EAT FOOD TO", "GAIN HEALTH");
+        }
         players[playerId].health += tile == TILE_FOOD_BIG ? players[playerId].stats->foodHealthBig : players[playerId].stats->foodHealthSmall;
         players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         overlayChanged = 1;

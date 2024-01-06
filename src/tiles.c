@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <cx16.h>
 #include <joystick.h>
 
@@ -193,6 +194,20 @@ void message(unsigned char x, unsigned char y, char *msg) {
     } while(msg[i] != 0 || i > 30);
 }
 
+void messageCenter(char *msg1, char *msg2) {
+    unsigned char len, col;
+
+    len = strlen(msg1);
+    col = 15 - (len>>1);
+    message(col, 12, msg1);
+
+    if (msg2) {
+        len = strlen(msg2);
+        col = 15 - (len>>1);
+        message(col, 13, msg2);
+    }
+}
+
 void l0TileShow(unsigned char x, unsigned char y, unsigned char tile) {
     unsigned long addr = L0_MAPBASE_ADDR + (y*L0_MAPBASE_TILE_WIDTH*2) + (x*2);
 
@@ -268,14 +283,13 @@ void flashLayer1() {
     }
 }
 
-void gameMessage(unsigned char x1, unsigned char y1, char *msg1, unsigned char x2, unsigned char y2, char *msg2) {
+void gameMessage(char *msg1, char *msg2) {
     unsigned char y, x, i;
     unsigned long addr;
 
-    message(x1, y1, msg1);
-    message(x2, y2, msg2);
-
-    waitCount(180);
+    messageCenter(msg1, msg2);
+    
+    waitCount(150);
 
     for (i=0; i<2; i++) {
         for (y=0; y<L1_OVERLAY_X; y++) {

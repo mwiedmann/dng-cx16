@@ -160,7 +160,7 @@ PlayerStats *playerStatsByType[4] = {
     &rangerStats
 };
 
-Hints hints = { 0, 0, 0 };
+Hints hints = { 0, 0, 0, 0 };
 
 unsigned char weaponRotation[4] = {0, 1, 3, 2};
 signed short scrollX, scrollY;

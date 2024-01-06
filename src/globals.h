@@ -135,6 +135,7 @@ typedef struct Hints {
     unsigned char keys;
     unsigned char treasure;
     unsigned char scrolls;
+    unsigned char food;
 } Hints;
 
 extern unsigned char (*mapStatus)[MAP_MAX];
