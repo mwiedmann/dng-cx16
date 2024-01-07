@@ -210,21 +210,26 @@ void main() {
                 wait();
             }
 
-            level++;
+            // Players can go to next level or jump 5 or 10 levels
+            level += exitLevel == TILE_EXIT_1 ? 1 : exitLevel == TILE_EXIT_5 ? 5 : 10;
 
             for (i=0; i<NUM_PLAYERS; i++) {
                 players[i].exit = 0;
             }
 
-            // Cleanup active entities
-            entity = entityActiveList;
-            while(entity) {
-                toggleEntity(entity->spriteId, 0);
-                entity = entity->next;
-            };
+            // Cleanup all entities
+            for (i=0; i < ENTITY_COUNT; i++) {
+                if (entityList[i].spriteId) {
+                    toggleEntity(entityList[i].spriteId, 0);
+                }
+                entityList[i].health = 0;
+                entityList[i].prev = 0;
+                entityList[i].next = 0;
+            }
 
             entityActiveList = 0;
             entitySleepList = 0;
+            entityTempActiveList = 0;
         }
     }
 }

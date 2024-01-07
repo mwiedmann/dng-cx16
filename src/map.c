@@ -103,8 +103,10 @@ void createMapStatus(unsigned char level) {
     maxMapX -= SCROLL_PIXEL_SIZE-16;
     maxMapY -= SCROLL_PIXEL_SIZE-16;
 
-    // This will put all the entities in the sleeping list
-    entitySleepList = &entityList[0];
+    // This will put all the entities in the sleeping list (if there are any)
+    if (entityList[0].health > 0) {
+        entitySleepList = &entityList[0];
+    }
 }
 
 void drawMap(unsigned char level) {
