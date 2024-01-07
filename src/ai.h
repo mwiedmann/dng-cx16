@@ -3,11 +3,11 @@
 
 #include "globals.h"
 
-// How many 4 tick chunks to lead player on a lob
-// The tick count would be LOB_PLAYER_CHUNK*5
-#define LOB_PLAYER_CHUNK 15
+// How many 6 tick chunks to lead player on a lob
+// The tick count would be LOB_PLAYER_CHUNK*4
+#define LOB_PLAYER_CHUNK 10
 
-// This is ((LOB_PLAYER_CHUNK * 4) / 2)
+// This is ((LOB_PLAYER_CHUNK * 6) / 2)
 // Entities move 30/sec
 #define LOB_MOVE_TICKS 30
 
@@ -16,11 +16,11 @@
 #define RANGED_SPEED 4
 
 void toggleEntity(unsigned char spriteId, unsigned char show);
-void activateEntities(short scrollX, short scrollY);
-void deactivateEntities(short scrollX, short scrollY);
+void activateEntities();
+void deactivateEntities();
 void tempActiveToActiveEntities();
 
-void moveEntity(Entity *entity, short scrollX, short scrollY);
+void moveEntity(Entity *entity);
 void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage);
 void useScrollOnEntities(unsigned char playerId);
 #endif

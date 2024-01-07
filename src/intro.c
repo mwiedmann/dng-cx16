@@ -78,7 +78,7 @@ void instructions2() {
     l0TileShow(7, 5, GUY_TILE_START+8);
 
     message(0, startY,   "      BARB. MAGE DRUID RANGER");
-    message(0, startY+1, "SPEED  **   **   ***   ****");
+    message(0, startY+1, "SPEED  *    **   **    ****");
     message(0, startY+2, "MELEE  **** *    **    ***");
     message(0, startY+3, "RANGED");
     message(0, startY+4, "   DMG **** ***  **    **");

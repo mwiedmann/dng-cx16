@@ -128,18 +128,18 @@ void main() {
 
                     if (players[i].animationChange) {
                         players[i].animationChange = 0;
-                        moveAndSetAnimationFrame(i, players[i].x, players[i].y, scrollX, scrollY, players[i].animationTile, players[i].animationFrame, players[i].facingX);
+                        moveAndSetAnimationFrame(i, players[i].x, players[i].y, players[i].animationTile, players[i].animationFrame, players[i].facingX);
                     } else {
-                        moveSpriteId(i, players[i].x, players[i].y, scrollX, scrollY);
+                        moveSpriteId(i, players[i].x, players[i].y);
                     }
 
                     moveWeapon(i);
                 }
 
-                if (count == 0 || count == 2) {
+                if (count == 0 || count == 2 || count == 4) {
                     // activation/deactivation phase
-                    activateEntities(scrollX, scrollY);
-                    deactivateEntities(scrollX, scrollY);
+                    activateEntities();
+                    deactivateEntities();
                     tempActiveToActiveEntities();
 
                     // Move "some" active entities
@@ -147,7 +147,7 @@ void main() {
                     entity = entityActiveList;
                     load=0;
                     while(entity && load<15) {
-                        moveEntity(entity, scrollX, scrollY);   
+                        moveEntity(entity);   
                         entity->movedPrevTick=1;
                         entity = entity->next;
                         load++;
@@ -158,7 +158,7 @@ void main() {
 
                     while(entity) {
                         if (!entity->movedPrevTick) {
-                            moveEntity(entity, scrollX, scrollY);   
+                            moveEntity(entity);   
                         } else {
                             entity->movedPrevTick = 0;
                         }
@@ -172,7 +172,7 @@ void main() {
                 }
 
                 count++;
-                if (count == 4) {
+                if (count == 6) {
                     count = 0;
                 }
 

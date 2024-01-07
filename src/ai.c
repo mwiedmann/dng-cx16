@@ -14,7 +14,7 @@ void toggleEntity(unsigned char spriteId, unsigned char show) {
     toggleSprite(spriteAddr, show);
 }
 
-void activateEntities(short scrollX, short scrollY) {
+void activateEntities() {
     Entity *entity;
     Entity *nextEntity;
 
@@ -34,7 +34,7 @@ void activateEntities(short scrollX, short scrollY) {
             // Off screen
         } else {
             entity->visible = 1;
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, entity->animationFrame, entity->facingX);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, entity->animationFrame, entity->facingX);
             moveEntityToList(entity, &entityTempActiveList, &entitySleepList);
         }
 
@@ -42,7 +42,7 @@ void activateEntities(short scrollX, short scrollY) {
     } while (entity);
 }
 
-void deactivateEntities(short scrollX, short scrollY) {
+void deactivateEntities() {
     Entity *entity;
     Entity *nextEntity;
 
@@ -163,7 +163,7 @@ Guy *getClosestPlayer(unsigned short x, unsigned short y) {
     return &players[closest];
 }
 
-void moveEntity(Entity *entity, short scrollX, short scrollY) {
+void moveEntity(Entity *entity) {
     unsigned char newTileX, newTileY, i;
     signed char tileXChange = 0, tileYChange = 0, x, y;
     unsigned char distX, distY;
@@ -190,9 +190,9 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
             if (entity->animationFrame == 4) {
                 entity->animationFrame = 0;
             }
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, 0, weaponRotation[entity->animationFrame]);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, 0, weaponRotation[entity->animationFrame]);
         } else {
-            moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+            moveSpriteId(entity->spriteId, entity->x, entity->y);
         }
 
         // Get the new tile
@@ -259,7 +259,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                             entityList[i].yLobTarget= yTemp;
                             entityList[i].rangedTicks = LOB_MOVE_TICKS;
                             addNewEntityToList(&entityList[i], &entitySleepList);
-                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
+                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, entityList[i].tileId, 0, 0);
                             break;
                         }
                     }
@@ -287,7 +287,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                             entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -RANGED_SPEED : RANGED_SPEED;
                             entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -RANGED_SPEED : RANGED_SPEED;
                             addNewEntityToList(&entityList[i], &entitySleepList);
-                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, scrollX, scrollY, entityList[i].tileId, 0, 0);
+                            moveAndSetAnimationFrame(entityList[i].spriteId, entityList[i].x, entityList[i].y, entityList[i].tileId, 0, 0);
                             break;
                         }
                     }
@@ -355,9 +355,9 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
 
         if (entity->animationChange) {
             entity->animationChange = 0;
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, 0, 0);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, 0, 0);
         } else {
-            moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+            moveSpriteId(entity->spriteId, entity->x, entity->y);
         }
 
         return;
@@ -516,7 +516,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
                 entity->animationFrame += 1;
             }
 
-            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, scrollX, scrollY, entity->tileId, entity->animationFrame, entity->facingX);
+            moveAndSetAnimationFrame(entity->spriteId, entity->x, entity->y, entity->tileId, entity->animationFrame, entity->facingX);
             needsMove = 0;
         } else {
             entity->animationCount -= 1;
@@ -524,7 +524,7 @@ void moveEntity(Entity *entity, short scrollX, short scrollY) {
     }
 
     if (needsMove) {
-        moveSpriteId(entity->spriteId, entity->x, entity->y, scrollX, scrollY);
+        moveSpriteId(entity->spriteId, entity->x, entity->y);
     }
 }
 

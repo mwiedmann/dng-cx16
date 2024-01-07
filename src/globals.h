@@ -78,7 +78,7 @@ typedef struct Entity {
 } Entity;
 
 typedef struct PlayerStats {
-    unsigned char speeds[4];
+    unsigned char speeds[6];
     unsigned char meleeDamage;
     unsigned char ticksToMelee;
     unsigned char rangedDamage;

@@ -132,9 +132,10 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile == TILE_EXIT) {
         players[playerId].exit = 1;
         return 0;
-    }
-
-    if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+    } else if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
+        return 1;
+    } else if (tile >= GUY_CLAIM && tile != GUY_CLAIM+playerId) {
+        // Don't collide with other player
         return 1;
     }
 
@@ -383,7 +384,7 @@ void moveWeapon(unsigned char playerId) {
         // We check before and after the move because of tile boundary edge cases
         // Probably a better way but tile checking is really fast...so, maybe this is ok
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
-        if (tile != TILE_FLOOR && tile < GUY_CLAIM && tile != ENTITY_CLAIM) {
+        if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
             toggleWeapon(playerId, 0);
@@ -408,11 +409,11 @@ void moveWeapon(unsigned char playerId) {
             return;
         }
 
-        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, scrollX, scrollY, players[playerId].weaponTile, 0, weaponRotation[weapons[playerId].animationFrame]);
+        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, players[playerId].weaponTile, 0, weaponRotation[weapons[playerId].animationFrame]);
 
         // Check if hit something after the move
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
-        if (tile != TILE_FLOOR && tile < GUY_CLAIM && tile != ENTITY_CLAIM) {
+        if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
             toggleWeapon(playerId, 0);
