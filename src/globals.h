@@ -165,4 +165,6 @@ extern short scrollY;
 extern unsigned char overlayChanged;
 extern unsigned char activePlayers;
 
+extern unsigned char level;
+
 #endif

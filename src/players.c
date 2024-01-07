@@ -46,20 +46,35 @@ void setGuyDirection(unsigned char playerId) {
     }
 }
 
+#define KEY_PRICE 500
+#define SCROLL_PRICE 1000
+#define BIG_FOOD_PRICE 2500
+#define SMALL_FOOD_PRICE 1500
+
 unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char fromY, unsigned short toX, unsigned short toY) {
     unsigned char toTileX = toX>>4;
     unsigned char toTileY = toY>>4;
     unsigned char tile = mapStatus[toTileY][toTileX];
     signed char i;
+    unsigned char isShopLevel = level != 0 && level % 5 == 0;
 
     if (tile == TILE_KEY) {
-        if (!hints.keys) {
-            hints.keys = 1;
-            gameMessage("COLLECT KEYS", "TO OPEN DOORS");
+        if (isShopLevel) {
+            if (players[playerId].gold < KEY_PRICE) {
+                return 1;
+            }
+
+            players[playerId].gold -= KEY_PRICE;
+        } else {
+            if (!hints.keys) {
+                hints.keys = 1;
+                gameMessage("COLLECT KEYS", "TO OPEN DOORS");
+            }
+
+            players[playerId].score += 100;
         }
 
         players[playerId].keys += 1;
-        players[playerId].score += 100;
         overlayChanged = 1;
         mapStatus[toTileY][toTileX] = TILE_FLOOR;
         copyTile(fromX, fromY, toTileX, toTileY);
@@ -74,23 +89,51 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         mapStatus[toTileY][toTileX] = TILE_FLOOR;
         copyTile(fromX, fromY, toTileX, toTileY);
     } else if (tile == TILE_SCROLL) {
-        if (!hints.scrolls) {
-            hints.scrolls = 1;
-            gameMessage("USE SCROLLS TO", "DAMAGE ALL ENEMIES");
+        if (isShopLevel) {
+            if (players[playerId].gold < SCROLL_PRICE) {
+                return 1;
+            }
+
+            players[playerId].gold -= SCROLL_PRICE;
+        } else {
+            if (!hints.scrolls) {
+                hints.scrolls = 1;
+                gameMessage("USE SCROLLS TO", "DAMAGE ALL ENEMIES");
+            }
+            players[playerId].score += 250;
         }
+
         players[playerId].scrolls += 1;
-        players[playerId].score += 250;
         overlayChanged = 1;
         mapStatus[toTileY][toTileX] = TILE_FLOOR;
         copyTile(fromX, fromY, toTileX, toTileY);
         return 0;
     } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
-        if (!hints.food) {
-            hints.food = 1;
-            gameMessage("EAT FOOD TO", "GAIN HEALTH");
+        if (isShopLevel) {
+            if (tile == TILE_FOOD_BIG) {
+                if (players[playerId].gold < BIG_FOOD_PRICE) {
+                    return 1;
+                } else {
+                    players[playerId].gold -= BIG_FOOD_PRICE;
+                }
+            }
+
+            if (tile == TILE_FOOD_SMALL) {
+                if (players[playerId].gold < SMALL_FOOD_PRICE) {
+                    return 1;
+                } else {
+                    players[playerId].gold -= SMALL_FOOD_PRICE;
+                }
+            }
+        } else {
+            if (!hints.food) {
+                hints.food = 1;
+                gameMessage("EAT FOOD TO", "GAIN HEALTH");
+            }
+            players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         }
+
         players[playerId].health += tile == TILE_FOOD_BIG ? players[playerId].stats->foodHealthBig : players[playerId].stats->foodHealthSmall;
-        players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         overlayChanged = 1;
         mapStatus[toTileY][toTileX] = TILE_FLOOR;
         copyTile(fromX, fromY, toTileX, toTileY);

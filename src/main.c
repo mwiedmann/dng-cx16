@@ -53,7 +53,7 @@ void setScroll() {
 }
 
 void main() {
-    unsigned char count = 0, load, level, exitLevel, gameOver, i, healthTicks;
+    unsigned char count = 0, load, exitLevel, gameOver, i, healthTicks;
     unsigned char inputTicks = 0;
     Entity *entity;
 
