@@ -20,6 +20,7 @@ void activateEntities();
 void deactivateEntities();
 void tempActiveToActiveEntities();
 
+void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char dmg);
 void moveEntity(Entity *entity);
 void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage);
 void useScrollOnEntities(unsigned char playerId);

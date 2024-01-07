@@ -103,7 +103,15 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
         overlayChanged = 1;
         players[playerId].score += entity->points;
         entity->health = 0;
-        mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
+        
+        // Generators leave treasure behind
+        if (entity->isGenerator) {
+            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_TREASURE_SILVER;
+            l0TileShow(entity->currentTileX, entity->currentTileY, 46);
+        } else {
+            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
+        }
+
         if (entity->hasTarget) {
             mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
         }

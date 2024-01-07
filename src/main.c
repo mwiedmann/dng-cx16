@@ -53,7 +53,7 @@ void setScroll() {
 }
 
 void main() {
-    unsigned char count = 0, load, level, exitLevel, gameOver, i;
+    unsigned char count = 0, load, level, exitLevel, gameOver, i, healthTicks;
     unsigned char inputTicks = 0;
     Entity *entity;
 
@@ -93,6 +93,7 @@ void main() {
             createMapStatus(level);
             drawMap(level);
             exitLevel = 0;
+            healthTicks = 0;
 
             while(!exitLevel && !gameOver) {
                 // Get joystick input only periodically
@@ -169,6 +170,17 @@ void main() {
                     }
                 }
 
+                // Player slowly loses health
+                healthTicks++;
+                if (healthTicks == 60) {
+                    healthTicks = 0;
+                    for (i=0; i<NUM_PLAYERS; i++) {
+                        if (players[i].active) {
+                            meleeAttackGuy(i, 0, 1);
+                        }
+                    }
+                }
+                
                 count++;
                 if (count == 6) {
                     count = 0;
