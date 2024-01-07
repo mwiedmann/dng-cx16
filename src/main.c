@@ -75,9 +75,7 @@ void main() {
         spritesConfig();
         clearLayers();
 
-        // Only player 0 for now
-        setupPlayer(0, BARBARIAN);
-        setupPlayer(1, DRUID);
+        players[0].active = 0;
         players[1].active = 0;
 
         drawOverlayBackground();

@@ -34,14 +34,24 @@ void instructions1() {
     message(19, 5, "RANGER");
     l0TileShow(8, 2, GUY_TILE_START+24);
 
-    message(8, 7, "SHOOT ENEMIES");
-    message(7, 8, "OR MELEE ATTACK");
+    message(1, 8, "SHOOT OR MELEE ATTACK ENEMIES");
+    l0TileShow(3, 5, 128);
+    l0TileShow(5, 5, 132);
+    l0TileShow(7, 5, 136);
+    l0TileShow(9, 5, 140);
+    l0TileShow(11, 5, 144);
+
+    l0TileShow(3, 6, 148);
+    l0TileShow(5, 6, 152);
+    l0TileShow(7, 6, 156);
+    l0TileShow(9, 6, 160);
+    l0TileShow(11, 6, 164);
 
     l0TileShow(0, 8, 46);
     l0TileShow(1, 8, 45);
     l0TileShow(2, 8, 44);
-    message(7, 16, "GET TREASURE FOR GOLD");
-    message(7, 17, "SPEND ON UPGRADES!");
+    message(7, 16, "GET GOLD TO SPEND");
+    message(7, 17, "ON UPGRADES LATER");
 
     l0TileShow(1, 10, 49);
     message(5, 20, "SCROLLS HIT ALL ENEMIES");
@@ -87,7 +97,7 @@ void instructions2() {
     message(0, startY+7, "HEALTH **** *    ***   **");
     message(0, startY+8, "ARMOR  **   *    ****  **");  
 
-    message(5, 28, "PRESS A BUTTON TO START");
+    message(5, 28, "PRESS START WHEN READY");
 }
 
 unsigned char getCharacterChoice(Guy *guy, unsigned char joy) {
@@ -133,6 +143,7 @@ void instructions() {
                 if (change) {
                     waitForRelease();
                     setupPlayer(i, players[i].characterType);
+                    message(30, 6+(i*9), "          "); // Clear out any previous text
                     updateCharacterTypeInOverlay(i);
                     updateOverlay();
                 }
@@ -140,7 +151,8 @@ void instructions() {
             wait();
         }
 
-        if (JOY_BTN_1(joy)) {
+        // If at least 1 player has joined the game, the game can start
+        if (JOY_START(joy) && (players[0].active || players[1].active)) {
             waitForRelease();
             break;
         }

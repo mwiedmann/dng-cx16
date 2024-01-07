@@ -81,7 +81,9 @@ void clearLayer1() {
 
 void updateCharacterTypeInOverlay(unsigned char playerId) {
     unsigned char x;
-    unsigned long addr = L1_MAPBASE_ADDR + ((6+(playerId*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+    unsigned long addr;
+
+    addr = L1_MAPBASE_ADDR + ((6+(playerId*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
     VERA.address = addr;
     VERA.address_hi = addr>>16;
     // Always set the Increment Mode, turn on bit 4
@@ -132,17 +134,12 @@ void drawOverlayBackground() {
     }
 
     for (i=0; i<NUM_PLAYERS; i++) {
-        updateCharacterTypeInOverlay(i);
-        // addr = L1_MAPBASE_ADDR + ((6+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
-        // VERA.address = addr;
-        // VERA.address_hi = addr>>16;
-        // // Always set the Increment Mode, turn on bit 4
-        // VERA.address_hi |= 0b10000;
-
-        // for (x=0; x<8; x++) {
-        //     VERA.data0 = (CHARACTER_NAME_TILES+(players[i].characterType*16))+x+(i*8);
-        //     VERA.data0 = 0;
-        // }
+        if (!players[i].active) {
+            message(30, 6+(i*9), "JOIN GAME!");
+        } else {
+            message(30, 6+(i*9), "          "); // Clear out any previous text
+            updateCharacterTypeInOverlay(i);
+        }
 
         // Show SCORE and GOLD
         addr = L1_MAPBASE_ADDR + ((7+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
