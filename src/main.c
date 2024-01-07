@@ -95,11 +95,18 @@ void main() {
             exitLevel = 0;
             healthTicks = 0;
 
+            // Show the active players
+            for (i=0; i<NUM_PLAYERS; i++) {
+                if (players[i].active) {
+                    toggleEntity(i, 1);
+                }
+            }
+
             while(!exitLevel && !gameOver) {
                 // Get joystick input only periodically
                 if (inputTicks == 4) {
                     for (i=0; i<NUM_PLAYERS; i++) {
-                        if (!players[i].active) {
+                        if (!players[i].active || players[i].exit) {
                             continue;
                         }
                         setGuyDirection(i);
@@ -110,7 +117,7 @@ void main() {
                 }
 
                 for (i=0; i<NUM_PLAYERS; i++) {
-                    if (!players[i].active) {
+                    if (!players[i].active || players[i].exit) {
                         continue;
                     }
                     moveGuy(i, players[i].stats->speeds[count]);
@@ -121,7 +128,7 @@ void main() {
                 // Only set his animation frame if needed (this is more expensive)
                 // Otherwise just move him
                 for (i=0; i<NUM_PLAYERS; i++) {
-                    if (!players[i].active) {
+                    if (!players[i].active || players[i].exit) {
                         continue;
                     }
 
@@ -175,7 +182,7 @@ void main() {
                 if (healthTicks == 60) {
                     healthTicks = 0;
                     for (i=0; i<NUM_PLAYERS; i++) {
-                        if (players[i].active) {
+                        if (players[i].active && !players[i].exit) {
                             meleeAttackGuy(i, 0, 1);
                         }
                     }
@@ -191,8 +198,12 @@ void main() {
                 for (i=0; i<NUM_PLAYERS; i++) {
                     if (players[i].active) {
                         gameOver = 0;
-                        if (!players[i].exit) {
+                        if (players[i].exit) {
+                            exitLevel = players[i].exit;
+                        } else {
+                            // 1 player has not exited...continue level
                             exitLevel = 0;
+                            break;
                         }
                     }
                 }

@@ -129,8 +129,10 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             i++;
         }
         
-    } else if (tile == TILE_EXIT) {
-        players[playerId].exit = 1;
+    } else if (tile == TILE_EXIT_1 || tile == TILE_EXIT_5 || tile == TILE_EXIT_10) {
+        players[playerId].exit = tile;
+        mapStatus[toTileY][toTileX+i] = TILE_FLOOR;
+        toggleEntity(playerId, 0);
         return 0;
     } else if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
         return 1;
@@ -259,6 +261,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
             if (players[playerId].ticksUntilNextMelee == 0) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
                 if (entity) {
+                    shot = 1; // Just used to trigger attack animation
                     players[playerId].ticksUntilNextMelee = players[playerId].stats->ticksToMelee + 1;
                     attackEntity(playerId, entity, players[playerId].stats->meleeDamage);
                     if (entity->health > 0) {

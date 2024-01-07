@@ -23,21 +23,25 @@ const createLevelCode = (levelNum, level) => {
       return 3;
     } else if (tileId >= 40 && tileId <= 42) { // Door
       return 7;
-    } else if (tileId == 48) { // Key
+    } else if (tileId == 49) { // Key
       return 8;
-    } else if (tileId == 44) { // Chest
+    } else if (tileId == 46) { // Chest
       return 9;
-    } else if (tileId == 45) { // Gold
+    } else if (tileId == 47) { // Gold
       return 13;
-    } else if (tileId == 46) { // Silver
+    } else if (tileId == 48) { // Silver
       return 14;
-    } else if (tileId == 43) { // Exit
+    } else if (tileId == 43) { // Exit 1
       return 10;
-    } else if (tileId == 49) { // Scroll
+    } else if (tileId == 44) { // Exit +5
+      return 16;
+    } else if (tileId == 45) { // Exit +10
+      return 17;
+    } else if (tileId == 50) { // Scroll
       return 11;
-    } else if (tileId == 50) { // Food Big
+    } else if (tileId == 51) { // Food Big
       return 12;
-    } else if (tileId == 51) { // Food Small
+    } else if (tileId == 52) { // Food Small
       return 15;
     } else {
       return 2; // Floor

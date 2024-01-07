@@ -104,13 +104,16 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
         players[playerId].score += entity->points;
         entity->health = 0;
         
-        // Generators leave treasure behind
-        if (entity->isGenerator) {
-            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_TREASURE_SILVER;
-            l0TileShow(entity->currentTileX, entity->currentTileY, 46);
-        } else {
-            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
-        }
+        // Took this out because the gold left behind would block player shots.
+        // This was a punishment if there were other generators/entities behind it.
+        // Cool idea but think more about this.
+        // // Generators leave treasure behind
+        // if (entity->isGenerator) {
+        //     mapStatus[entity->currentTileY][entity->currentTileX] = TILE_TREASURE_SILVER;
+        //     l0TileShow(entity->currentTileX, entity->currentTileY, 46);
+        // } else {
+        
+        mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
 
         if (entity->hasTarget) {
             mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
