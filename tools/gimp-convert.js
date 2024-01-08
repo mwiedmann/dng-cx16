@@ -30,7 +30,7 @@ const l1FlattenedTiles = [];
 let frameWidth = 16
 let frameHeight = 16
 let xTiles = 8
-let yTiles = 21
+let yTiles = 22
 
 let ty, tx, y, x, start, pixelIdx;
 const l0Size = xTiles * yTiles * frameWidth * frameHeight

@@ -56,8 +56,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     unsigned char toTileY = toY>>4;
     unsigned char tile = mapStatus[toTileY][toTileX];
     signed char i;
-    unsigned char isShopLevel = level != 0 && level % 5 == 0;
-
+    
     // There is an inventory limit on keys+scrolls
     if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
         if (isShopLevel) {
@@ -307,7 +306,9 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
                 if (entity) {
                     shot = 1; // Just used to trigger attack animation
                     players[playerId].ticksUntilNextMelee = players[playerId].stats->ticksToMelee + 1;
-                    attackEntity(playerId, entity, players[playerId].stats->meleeDamage);
+                    attackEntity(playerId, entity, players[playerId].hasBoostedMelee
+                        ? players[playerId].boostedStats->meleeDamage
+                        : players[playerId].stats->meleeDamage);
                     if (entity->health > 0) {
                         // Entity not dead yet...guy doesn't move
                         players[playerId].x = prevX;
@@ -393,6 +394,7 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].active = 1;
     players[playerId].characterType = characterType;
     players[playerId].stats =  playerStatsByType[characterType];
+    players[playerId].boostedStats =  playerBoostedStatsByType[characterType];
     players[playerId].health = players[playerId].stats->startingHealth;
     players[playerId].animationCount = ANIMATION_FRAME_SPEED;
     players[playerId].animationFrame = 0;
@@ -410,6 +412,11 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].scrolls = 0;
     players[playerId].exit = 0;
     players[playerId].animationChange = 1; // Trigger immediate animation
+    players[playerId].hasBoostedSpeed = 0;
+    players[playerId].hasBoostedMelee = 0;
+    players[playerId].hasBoostedRanged = 0;
+    players[playerId].hasBoostedMagic = 0;
+    players[playerId].hasBoostedArmor = 0;
 
     overlayChanged = 1;
 }
@@ -439,7 +446,9 @@ void moveWeapon(unsigned char playerId) {
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
                 if (entity) {
-                    attackEntity(playerId, entity, players[playerId].stats->rangedDamage);
+                    attackEntity(playerId, entity, players[playerId].hasBoostedRanged
+                        ? players[playerId].boostedStats->rangedDamage
+                        : players[playerId].stats->rangedDamage);
                 }
             }
             return;
@@ -468,7 +477,9 @@ void moveWeapon(unsigned char playerId) {
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
                 if (entity) {
-                    attackEntity(playerId, entity, players[playerId].stats->rangedDamage);
+                    attackEntity(playerId, entity, players[playerId].hasBoostedRanged
+                        ? players[playerId].boostedStats->rangedDamage
+                        : players[playerId].stats->rangedDamage);
                 }
             }
         }

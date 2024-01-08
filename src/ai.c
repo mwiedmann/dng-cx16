@@ -548,7 +548,9 @@ void useScrollOnEntities(unsigned char playerId) {
 
     while(entity) {
         nextEntity = entity->next;
-        attackEntity(playerId, entity, players[playerId].stats->scrollDamage);
+        attackEntity(playerId, entity, players[playerId].hasBoostedMagic
+            ? players[playerId].boostedStats->scrollDamage
+            : players[playerId].stats->scrollDamage);
         entity = nextEntity;
     }
 }

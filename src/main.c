@@ -95,8 +95,21 @@ void main() {
             exitLevel = 0;
             healthTicks = 0;
 
+            // Shop levels are every 5 levels
+            // Items need to be purchased on these levels
+            isShopLevel = level != 0 && level % 5 == 0;
+
             // Show the active players
             for (i=0; i<NUM_PLAYERS; i++) {
+                // All boosted stats are reset when reaching a shop level
+                if (isShopLevel) {
+                    players[i].hasBoostedSpeed = 0;
+                    players[i].hasBoostedMelee = 0;
+                    players[i].hasBoostedRanged = 0;
+                    players[i].hasBoostedMagic = 0;
+                    players[i].hasBoostedArmor = 0;
+                }
+
                 if (players[i].active) {
                     toggleEntity(i, 1);
                 }
@@ -213,6 +226,7 @@ void main() {
             // Players can go to next level or jump 5 or 10 levels
             level += exitLevel == TILE_EXIT_1 ? 1 : exitLevel == TILE_EXIT_5 ? 5 : 10;
 
+            
             for (i=0; i<NUM_PLAYERS; i++) {
                 players[i].exit = 0;
             }

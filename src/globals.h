@@ -96,6 +96,7 @@ typedef struct Guy {
     unsigned char active;
     enum Character characterType;
     PlayerStats *stats;
+    PlayerStats *boostedStats;
     unsigned short x;
     unsigned short y;
     unsigned char currentTileX;
@@ -121,6 +122,11 @@ typedef struct Guy {
     unsigned char keys;
     unsigned char scrolls;
     unsigned char exit;
+    unsigned char hasBoostedSpeed;
+    unsigned char hasBoostedMelee;
+    unsigned char hasBoostedRanged;
+    unsigned char hasBoostedMagic;
+    unsigned char hasBoostedArmor;
 } Guy;
 
 typedef struct Weapon {
@@ -155,6 +161,7 @@ extern unsigned short maxMapY;
 
 extern EntityStats *entityStatsByType[10];
 extern PlayerStats *playerStatsByType[4];
+extern PlayerStats *playerBoostedStatsByType[4];
 
 extern unsigned char playerMoveChunks[4];
 
@@ -168,5 +175,6 @@ extern unsigned char overlayChanged;
 extern unsigned char activePlayers;
 
 extern unsigned char level;
+extern unsigned char isShopLevel;
 
 #endif

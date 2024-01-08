@@ -151,6 +151,12 @@ PlayerStats mageStats =      { {1, 1, 1, 1, 1, 2}, 1, 10 /* 6-sec */,   6, 10 /*
 PlayerStats druidStats =     { {1, 1, 1, 1, 1, 2}, 1, 7  /* 8.5-sec */, 4, 12 /* 20-sec */, 12,  900, 150, 50, { 0, 0, 1, 1 } };
 PlayerStats rangerStats =    { {1, 1, 1, 1, 2, 2}, 1, 6  /* 10-sec */,  4, 10 /* 24-sec */,  8,  800, 125, 25, { 0, 0, 0, 1 } };
 
+PlayerStats boostedBarbarianStats = { {1, 1, 1, 1, 1, 2}, 1, 5  /* 12-sec */,  8, 12 /* 32-sec */,  8, 1000, 200, 75, { 0, 0, 1, 1 } };
+PlayerStats boostedMageStats =      { {1, 1, 1, 1, 2, 2}, 1, 7 /* 6-sec */,   8, 10 /* 36-sec */, 12,  700, 100, 10, { 0, 0, 0, 1 } };
+PlayerStats boostedDruidStats =     { {1, 1, 1, 1, 2, 2}, 1, 6  /* 8.5-sec */, 6, 10 /* 20-sec */, 12,  900, 150, 50, { 0, 0, 1, 1 } };
+PlayerStats boostedRangerStats =    { {1, 1, 1, 1, 2, 2}, 1, 5  /* 10-sec */,  6, 10 /* 24-sec */,  12,  800, 125, 25, { 0, 0, 1, 1 } };
+
+
 unsigned char playerMoveChunks[4] = { 6, 7, 7, 8 };
 
 // Barb, Mage, Druid, Ranger
@@ -161,6 +167,14 @@ PlayerStats *playerStatsByType[4] = {
     &rangerStats
 };
 
+// Barb, Mage, Druid, Ranger
+PlayerStats *playerBoostedStatsByType[4] = {
+    &boostedBarbarianStats,
+    &boostedMageStats,
+    &boostedDruidStats,
+    &boostedRangerStats
+};
+
 Hints hints = { 0, 0, 0, 0 };
 
 unsigned char weaponRotation[4] = {0, 1, 3, 2};
@@ -168,3 +182,4 @@ signed short scrollX, scrollY;
 unsigned char overlayChanged = 0;
 unsigned char activePlayers=0;
 unsigned char level=0;
+unsigned char isShopLevel = 0;
