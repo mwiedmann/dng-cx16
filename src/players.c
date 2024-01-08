@@ -58,7 +58,8 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     signed char i;
     unsigned char isShopLevel = level != 0 && level % 5 == 0;
 
-    if (tile == TILE_KEY) {
+    // There is an inventory limit on keys+scrolls
+    if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
         if (isShopLevel) {
             if (players[playerId].gold < KEY_PRICE) {
                 return 1;
@@ -88,7 +89,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         overlayChanged = 1;
         mapStatus[toTileY][toTileX] = TILE_FLOOR;
         copyTile(fromX, fromY, toTileX, toTileY);
-    } else if (tile == TILE_SCROLL) {
+    } else if (tile == TILE_SCROLL && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
         if (isShopLevel) {
             if (players[playerId].gold < SCROLL_PRICE) {
                 return 1;

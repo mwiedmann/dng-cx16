@@ -24,8 +24,8 @@
 #define TILE_ENTITY_START 33
 #define TILE_ENTITY_END 45
 
-#define L1_TILE_TRANS 46
-#define L1_TILE_BLACK 47
+#define L1_TILE_TRANS 43
+#define L1_TILE_BLACK 44
 #define L1_TILE_WHITE 45
 
 #define AXE_TILE 69

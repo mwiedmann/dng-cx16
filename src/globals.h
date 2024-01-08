@@ -24,6 +24,8 @@
 #define NORMAL_HEATH 8
 #define STRONG_HEALTH 12
 
+#define INVENTORY_LIMIT 10
+
 enum Character {
   BARBARIAN,
   MAGE,

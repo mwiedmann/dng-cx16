@@ -38,8 +38,12 @@ unsigned char letterToTile(char letter) {
         tile = 41;
     } else if (letter == 42) {
         tile = 42;
+    } else if (letter == 60) { // '<' Key
+        tile = 46;
+    } else if (letter == 62) { // '>' Scroll
+        tile = 47;
     } else {
-        return 47;
+        return 44;
     }
 
     return tile;
@@ -135,14 +139,14 @@ void drawOverlayBackground() {
 
     for (i=0; i<NUM_PLAYERS; i++) {
         if (!players[i].active) {
-            message(30, 6+(i*9), "JOIN GAME!");
+            message(30, 6+(i*10), "JOIN GAME!");
         } else {
-            message(30, 6+(i*9), "          "); // Clear out any previous text
+            message(30, 6+(i*10), "          "); // Clear out any previous text
             updateCharacterTypeInOverlay(i);
         }
 
         // Show SCORE and GOLD
-        addr = L1_MAPBASE_ADDR + ((7+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        addr = L1_MAPBASE_ADDR + ((7+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
@@ -162,7 +166,7 @@ void drawOverlayBackground() {
         }
 
         // Show HEALTH
-        addr = L1_MAPBASE_ADDR + ((9+(i*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        addr = L1_MAPBASE_ADDR + ((9+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
@@ -184,11 +188,11 @@ void message(unsigned char x, unsigned char y, char *msg) {
     // Always set the Increment Mode, turn on bit 4
     VERA.address_hi |= 0b10000;
 
-    do {
+    while(msg[i] != 0 || i > 30) {
         VERA.data0 = letterToTile(msg[i]);
         VERA.data0 = 0;
         i++;
-    } while(msg[i] != 0 || i > 30);
+    };
 }
 
 void messageCenter(char *msg1, char *msg2) {
@@ -218,19 +222,32 @@ void l0TileShow(unsigned char x, unsigned char y, unsigned char tile) {
 }
 
 void updateOverlay() {
+    unsigned char i,p;
     char buf[16];
 
-    sprintf(buf, "% 5u % 4u", players[0].score, players[0].gold);
-    message(30, 8, buf);
+    for (p=0; p<NUM_PLAYERS; p++) {
+        sprintf(buf, "% 5u % 4u", players[p].score, players[p].gold);
+        message(30, 8+(p*10), buf);
 
-    sprintf(buf, "% 5u", players[0].health);
-    message(30, 10, buf);
+        sprintf(buf, "% 5u", players[p].health);
+        message(30, 10+(p*10), buf);
 
-    sprintf(buf, "% 5u % 4u", players[1].score, players[1].gold);
-    message(30, 17, buf);
+        // Set the buffer to all spaces to start
+        for (i=0; i<INVENTORY_LIMIT; i++) {
+            buf[i] = ' ';
+        }
 
-    sprintf(buf, "% 5u", players[1].health);
-    message(30, 19, buf);
+        for (i=0; i<players[p].keys; i++) {
+            buf[i]=60;
+        }
+
+        for (i=0; i<players[p].scrolls; i++) {
+            buf[(INVENTORY_LIMIT-1)-i]=62;
+        }
+
+        buf[10] = 0;
+        message(30, 11+(p*10), buf);
+    }
 }
 
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {
