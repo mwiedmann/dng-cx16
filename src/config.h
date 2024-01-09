@@ -31,6 +31,7 @@
 #define PALETTE_ADDR 0x1FA00L
 
 #define MAP_BANK 1
+#define INSTRUCTIONS_BANK 2
 
 void init();
 

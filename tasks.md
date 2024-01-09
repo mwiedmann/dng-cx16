@@ -3,9 +3,8 @@
 
 # Fixes
 
+- Because we only check player input every 4 ticks, inputs are repeated when rejecting a purchase
 
 # Questions
 
-- How to show players the price of upgrades?
-    - Should touching it bring up a Y/N option?
-    - Do we show price over it? (Problem is how? We don't have text for layer 0)
+- We only check inputs periocially to make it easier to stay in a diagonal direction. We may need to check button input every tick or ranged attack firing rate can be limited. Also the issue with sticky direction above.

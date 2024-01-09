@@ -3,8 +3,15 @@
 #include <stdio.h>
 
 #include "config.h"
+#include "utils.h"
 
 void init() {
+    // Load some hi-ram code
+    BANK_NUM = INSTRUCTIONS_BANK;
+    cbm_k_setnam("dng.prg.02");
+    cbm_k_setlfs(0, 8, 0); // Skip the first 2 bytes of the file. They just hold the size in bytes.
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+
     // Configure the joysticks
     joy_install(cx16_std_joy);
 

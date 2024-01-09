@@ -80,6 +80,8 @@ void main() {
 
         drawOverlayBackground();
         updateOverlay();
+
+        BANK_NUM = INSTRUCTIONS_BANK;
         instructions();
 
         activePlayers=0;

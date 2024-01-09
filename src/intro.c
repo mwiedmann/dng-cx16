@@ -19,6 +19,8 @@ Health     ****      *       ***      **
 Armor      **        *       ****     **
 */
 
+#pragma code-name (push, "BANKRAM02")
+
 void instructions1() {
     message(9, 0, "YOUR HEROES");
 
@@ -161,3 +163,5 @@ void instructions() {
     clearLayer0();
     drawOverlayBackground();
 }
+
+#pragma code-name (pop)

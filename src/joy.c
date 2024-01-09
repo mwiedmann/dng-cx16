@@ -15,18 +15,20 @@ void waitForRelease() {
     }
 }
 
-void waitForButtonPress() {
-    unsigned char joy;
+unsigned char waitForButtonPress() {
+    unsigned char joy, pressed;
 
     while(1) {
         joy = joy_read(0);
 
-        if (JOY_BTN_1(joy) || JOY_BTN_2(joy)) {
-            while(JOY_BTN_1(joy) || JOY_BTN_2(joy)) {
+        if (JOY_BTN_1(joy) || JOY_BTN_2(joy) || JOY_BTN_3(joy) || JOY_START(joy) || JOY_SELECT(joy)) {
+            pressed = joy;
+
+            while(JOY_BTN_1(joy) || JOY_BTN_2(joy) || JOY_BTN_3(joy) || JOY_START(joy) || JOY_SELECT(joy)) {
                 wait();
                 joy = joy_read(0);
             }
-            break;
+            return pressed;
         }
     }
 }

@@ -193,17 +193,15 @@ void message(unsigned char x, unsigned char y, char *msg) {
     };
 }
 
-void messageCenter(char *msg1, char *msg2) {
-    unsigned char len, col;
+void messageCenter(char *msg[4]) {
+    unsigned char len, col, i;
 
-    len = strlen(msg1);
-    col = 15 - (len>>1);
-    message(col, 12, msg1);
-
-    if (msg2) {
-        len = strlen(msg2);
-        col = 15 - (len>>1);
-        message(col, 13, msg2);
+    for (i=0; i<4; i++) {
+        if (msg[i]) {
+            len = strlen(msg[i]);
+            col = 15 - (len>>1);
+            message(col, 12+i, msg[i]);
+        }
     }
 }
 
@@ -302,13 +300,9 @@ void flashLayer1() {
     }
 }
 
-void gameMessage(char *msg1, char *msg2) {
+void clearL1PlayArea() {
     unsigned char y, x, i;
     unsigned long addr;
-
-    messageCenter(msg1, msg2);
-    
-    waitCount(150);
 
     for (i=0; i<2; i++) {
         for (y=0; y<L1_OVERLAY_X; y++) {
@@ -325,4 +319,33 @@ void gameMessage(char *msg1, char *msg2) {
             }
         }
     }
+}
+
+unsigned char gameQuestion(char *msg1, char *msg2) {
+    char * msg[4] = {0,0,"BUTTON TO ACCEPT","START TO CANCEL"};
+    unsigned char pressed;
+
+    msg[0] = msg1;
+    msg[1] = msg2;
+
+    messageCenter(msg);
+
+    pressed = waitForButtonPress();
+
+    clearL1PlayArea();
+
+    return !JOY_START(pressed);
+}
+
+void gameMessage(char *msg1, char *msg2) {
+    char * msg[4] = {0,0,0,0};
+
+    msg[0] = msg1;
+    msg[1] = msg2;
+
+    messageCenter(msg);
+    
+    waitCount(150);
+
+    clearL1PlayArea();
 }

@@ -1,5 +1,6 @@
 #include <cx16.h>
 #include <joystick.h>
+#include <stdio.h>
 
 #include "globals.h"
 #include "tiles.h"
@@ -67,7 +68,8 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     unsigned char tile = mapStatus[toTileY][toTileX];
     signed char i;
     unsigned char clearTile=0, id;
-    
+    char buf[30];
+
     // Scrolling is split between both players in 2 player game
     // Make sure players aren't leaving the scroll field
     if (activePlayers == 2) {
@@ -83,7 +85,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                 return 1;
             }
 
-            players[playerId].gold -= KEY_PRICE;
+            sprintf(buf, "%u GOLD", KEY_PRICE);
+            if (gameQuestion("PURCHASE KEY FOR", buf)) {
+                players[playerId].gold -= KEY_PRICE;
+            } else {
+                return 1;
+            }
         } else {
             if (!hints.keys) {
                 hints.keys = 1;

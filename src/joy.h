@@ -2,6 +2,6 @@
 #define JOY_H
 
 void waitForRelease();
-void waitForButtonPress();
+unsigned char waitForButtonPress();
 
 #endif
