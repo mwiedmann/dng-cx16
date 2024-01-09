@@ -16,7 +16,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].health =  12;
         entityList[entityId].animationCount = 0;
         entityList[entityId].animationFrame = 0;
-        entityList[entityId].spawnRate = 60;
+        entityList[entityId].spawnRate = level < 5 ? 60 : level < 10 ? 55 : level < 15 ? 50 : level < 20 ? 45 : level < 25 ? 40 : level < 30 ? 35 : 30;
         entityList[entityId].nextSpawn = entityList[entityId].spawnRate;
         entityList[entityId].points = 1000;
     } else {
