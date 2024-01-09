@@ -38,10 +38,8 @@ unsigned char letterToTile(char letter) {
         tile = 41;
     } else if (letter == 42) {
         tile = 42;
-    } else if (letter == 60) { // '<' Key
-        tile = 46;
-    } else if (letter == 62) { // '>' Scroll
-        tile = 47;
+    } else if (letter >= 60 && letter <= 66) { // Key through upgrades
+        tile = letter - 14;
     } else {
         return 44;
     }
@@ -242,11 +240,18 @@ void updateOverlay() {
         }
 
         for (i=0; i<players[p].scrolls; i++) {
-            buf[(INVENTORY_LIMIT-1)-i]=62;
+            buf[(INVENTORY_LIMIT-1)-i]=61;
         }
 
         buf[10] = 0;
         message(30, 11+(p*10), buf);
+
+        for (i=0; i<5; i++) {
+            buf[i] = players[p].hasBoosts[i] ? 62+i : ' ';
+        }
+
+        buf[5] = 0;
+        message(30, 12+(p*10), buf);
     }
 }
 
