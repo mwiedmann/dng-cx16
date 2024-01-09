@@ -53,7 +53,7 @@ void setScroll() {
 }
 
 void main() {
-    unsigned char count = 0, load, exitLevel, gameOver, i, healthTicks;
+    unsigned char count = 0, load, exitLevel, gameOver, i, j, healthTicks;
     unsigned char inputTicks = 0;
     Entity *entity;
 
@@ -103,11 +103,9 @@ void main() {
             for (i=0; i<NUM_PLAYERS; i++) {
                 // All boosted stats are reset when reaching a shop level
                 if (isShopLevel) {
-                    players[i].hasBoostedSpeed = 0;
-                    players[i].hasBoostedMelee = 0;
-                    players[i].hasBoostedRanged = 0;
-                    players[i].hasBoostedMagic = 0;
-                    players[i].hasBoostedArmor = 0;
+                    for (j=0; j<5; j++) {
+                        players[i].hasBoosts[j] = 0;
+                    }
                 }
 
                 if (players[i].active) {

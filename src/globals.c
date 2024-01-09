@@ -156,7 +156,6 @@ PlayerStats boostedMageStats =      { {1, 1, 1, 1, 2, 2}, 1, 7 /* 6-sec */,   8,
 PlayerStats boostedDruidStats =     { {1, 1, 1, 1, 2, 2}, 1, 6  /* 8.5-sec */, 6, 10 /* 20-sec */, 12,  900, 150, 50, { 0, 0, 1, 1 } };
 PlayerStats boostedRangerStats =    { {1, 1, 1, 1, 2, 2}, 1, 5  /* 10-sec */,  6, 10 /* 24-sec */,  12,  800, 125, 25, { 0, 0, 1, 1 } };
 
-
 unsigned char playerMoveChunks[4] = { 6, 7, 7, 8 };
 
 // Barb, Mage, Druid, Ranger
@@ -173,6 +172,15 @@ PlayerStats *playerBoostedStatsByType[4] = {
     &boostedMageStats,
     &boostedDruidStats,
     &boostedRangerStats
+};
+
+// What boosts can a character type use.
+// e.g. Barbarian cannot boost his melee...he is already maxed
+unsigned char playerCanBoostByType[4][5] = {
+    {1, 0, 1, 1, 1},
+    {1, 1, 1, 0, 1},
+    {1, 1, 1, 0, 0},
+    {0, 1, 1, 1, 1}
 };
 
 Hints hints = { 0, 0, 0, 0 };

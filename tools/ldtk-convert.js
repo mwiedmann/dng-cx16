@@ -43,6 +43,16 @@ const createLevelCode = (levelNum, level) => {
       return 12;
     } else if (tileId == 52) { // Food Small
       return 15;
+    } else if (tileId == 53) { // Speed Boost
+      return 18;
+    } else if (tileId == 54) { // Melee Boost
+      return 19;
+    } else if (tileId == 55) { // Ranged Boost
+      return 20;
+    } else if (tileId == 56) { // Magic Boost
+      return 21;
+    } else if (tileId == 57) { // Armor Boost
+      return 22;
     } else {
       return 2; // Floor
     }
@@ -73,10 +83,10 @@ const createLevelCode = (levelNum, level) => {
       const x = g.px[0] / 16;
       const y = g.px[1] / 16;
       currentMapData[(y * tileWidth) + x] = 
-        g.t >= 136 && g.t <= 172 // Entity: TODO: Lots of these
-          ? 33 + ((g.t-136)/4) // 33?
-          : g.t >= 64 && g.t <= 68  // Generator: Which type of monster?
-            ? 20 + g.t-64
+        g.t >= 136 && g.t <= 172 // Entities
+          ? 33 + ((g.t-136)/4) // 33 Entity map tile start
+          : g.t >= 64 && g.t <= 68  // Generator
+            ? 23 + g.t-64 // 23 Generator map tile start
             : g.t >= 40 && g.t <= 42
               ? 7 // Door
               : 5; // Guy

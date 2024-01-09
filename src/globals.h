@@ -26,6 +26,12 @@
 
 #define INVENTORY_LIMIT 10
 
+#define BOOST_ID_SPEED 0
+#define BOOST_ID_MELEE 1
+#define BOOST_ID_RANGED 2
+#define BOOST_ID_MAGIC 3
+#define BOOST_ID_ARMOR 4
+
 enum Character {
   BARBARIAN,
   MAGE,
@@ -122,11 +128,8 @@ typedef struct Guy {
     unsigned char keys;
     unsigned char scrolls;
     unsigned char exit;
-    unsigned char hasBoostedSpeed;
-    unsigned char hasBoostedMelee;
-    unsigned char hasBoostedRanged;
-    unsigned char hasBoostedMagic;
-    unsigned char hasBoostedArmor;
+    unsigned char *canBoost;
+    unsigned char hasBoosts[5]; // speed, melee, ranged, magic, armor
 } Guy;
 
 typedef struct Weapon {
@@ -144,6 +147,7 @@ typedef struct Hints {
     unsigned char treasure;
     unsigned char scrolls;
     unsigned char food;
+    unsigned char boosts[5];
 } Hints;
 
 extern unsigned char (*mapStatus)[MAP_MAX];
@@ -163,6 +167,7 @@ extern EntityStats *entityStatsByType[10];
 extern PlayerStats *playerStatsByType[4];
 extern PlayerStats *playerBoostedStatsByType[4];
 
+extern unsigned char playerCanBoostByType[4][5];
 extern unsigned char playerMoveChunks[4];
 
 extern Hints hints;
