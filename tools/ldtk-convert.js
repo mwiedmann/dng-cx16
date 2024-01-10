@@ -21,37 +21,37 @@ const createLevelCode = (levelNum, level) => {
   const getMapIdFromTile = (tileId) => {
     if (tileId >= 2 && tileId <= 17) { // Wall
       return 3;
-    } else if (tileId >= 40 && tileId <= 42) { // Door
+    } else if (tileId == 30 || tileId == 31) { // Door
       return 7;
-    } else if (tileId == 49) { // Key
+    } else if (tileId == 38) { // Key
       return 8;
-    } else if (tileId == 46) { // Chest
+    } else if (tileId == 35) { // Chest
       return 9;
-    } else if (tileId == 47) { // Gold
+    } else if (tileId == 36) { // Gold
       return 13;
-    } else if (tileId == 48) { // Silver
+    } else if (tileId == 37) { // Silver
       return 14;
-    } else if (tileId == 43) { // Exit 1
+    } else if (tileId == 32) { // Exit 1
       return 10;
-    } else if (tileId == 44) { // Exit +5
+    } else if (tileId == 33) { // Exit +5
       return 16;
-    } else if (tileId == 45) { // Exit +10
+    } else if (tileId == 34) { // Exit +10
       return 17;
-    } else if (tileId == 50) { // Scroll
+    } else if (tileId == 39) { // Scroll
       return 11;
-    } else if (tileId == 51) { // Food Big
+    } else if (tileId == 40) { // Food Big
       return 12;
-    } else if (tileId == 52) { // Food Small
+    } else if (tileId == 41) { // Food Small
       return 15;
-    } else if (tileId == 53) { // Speed Boost
+    } else if (tileId == 42) { // Speed Boost
       return 18;
-    } else if (tileId == 54) { // Melee Boost
+    } else if (tileId == 43) { // Melee Boost
       return 19;
-    } else if (tileId == 55) { // Ranged Boost
+    } else if (tileId == 44) { // Ranged Boost
       return 20;
-    } else if (tileId == 56) { // Magic Boost
+    } else if (tileId == 45) { // Magic Boost
       return 21;
-    } else if (tileId == 57) { // Armor Boost
+    } else if (tileId == 46) { // Armor Boost
       return 22;
     } else {
       return 2; // Floor
@@ -83,11 +83,11 @@ const createLevelCode = (levelNum, level) => {
       const x = g.px[0] / 16;
       const y = g.px[1] / 16;
       currentMapData[(y * tileWidth) + x] = 
-        g.t >= 136 && g.t <= 172 // Entities
-          ? 33 + ((g.t-136)/4) // 33 Entity map tile start
-          : g.t >= 64 && g.t <= 68  // Generator
-            ? 23 + g.t-64 // 23 Generator map tile start
-            : g.t >= 40 && g.t <= 42
+        g.t >= 96 && g.t <= 132 // Entities
+          ? 33 + ((g.t-96)/4) // 33 Entity map tile start
+          : g.t >= 47 && g.t <= 55  // Generator
+            ? 23 + g.t-47 // 23 Generator map tile start
+            : g.t == 30 || g.t == 31
               ? 7 // Door
               : 5; // Guy
     });

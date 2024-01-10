@@ -13,8 +13,26 @@ run:
 ldtk:
 	node tools/ldtk-convert.js
 
-gimp:
-	node tools/gimp-convert.js tiles
+
+const inputFile = process.argv[2];
+const outputFile = process.argv[3];
+
+const frameWidth = process.argv[4];
+const frameHeight = process.argv[5];
+const startingTile = process.argv[6];
+const xTiles = process.argv[7];
+const yTiles = process.argv[8];
+
+img:
+	node tools/gimp-img-convert.js gfx/tiles.data build/D0TILES.BIN 16 16 0 8 4
+	node tools/gimp-img-convert.js gfx/tiles.data build/D1TILES.BIN 16 16 32 8 4
+	node tools/gimp-img-convert.js gfx/tiles.data build/D2TILES.BIN 16 16 64 8 4
+	node tools/gimp-img-convert.js gfx/tiles.data build/D3TILES.BIN 16 16 96 8 4
+	node tools/gimp-img-convert.js gfx/tiles.data build/GMTILES.BIN 16 16 128 8 13
+	node tools/gimp-img-convert.js gfx/tiles.data build/OVTILES.BIN 8 8 928 16 16
+
+pal:
+	node tools/gimp-pal-convert.js
 
 zip:
 	cd build && \
@@ -26,7 +44,8 @@ clean:
 
 all:
 	make ldtk
-	make gimp
+	make pal
+	make img
 	make
 	make clean
 	make zip

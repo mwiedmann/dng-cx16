@@ -11,7 +11,7 @@ void spritesConfig() {
     unsigned char i;
 
     // VRAM address for sprite 1 (this is fixed)
-    unsigned long spriteGraphicAddress = L0_TILEBASE_ADDR + (GUY_TILE_START*L0_TILE_SIZE);
+    unsigned long spriteGraphicAddress = L0_TILEBASE_ADDR + (GUY_TILE_START*L0_TILE_SIZE); // This will change
 
     // Point to Sprite
     VERA.address = GUY_1_SPRITE_ADDR;
@@ -46,7 +46,7 @@ void spritesConfig() {
     VERA.data0 = 0b01010000; // 16x16 pixel image
 
     // Configure Weapon 1
-    spriteGraphicAddress = L0_TILEBASE_ADDR + (AXE_TILE*L0_TILE_SIZE);
+    spriteGraphicAddress = L0_TILEBASE_ADDR + (GUY_TILE_START*L0_TILE_SIZE); // This will change
 
     // Graphic address bits 12:5
     VERA.data0 = spriteGraphicAddress>>5;

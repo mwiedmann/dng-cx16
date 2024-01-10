@@ -37,35 +37,34 @@ void instructions1() {
     l0TileShow(8, 2, GUY_TILE_START+24);
 
     message(1, 8, "SHOOT OR MELEE ATTACK ENEMIES");
-    l0TileShow(3, 5, 128);
-    l0TileShow(5, 5, 132);
-    l0TileShow(7, 5, 136);
-    l0TileShow(9, 5, 140);
-    l0TileShow(11, 5, 144);
+    l0TileShow(3, 5, 96);
+    l0TileShow(5, 5, 100);
+    l0TileShow(7, 5, 104);
+    l0TileShow(9, 5, 108);
+    l0TileShow(11, 5, 112);
 
-    l0TileShow(3, 6, 148);
-    l0TileShow(5, 6, 152);
-    l0TileShow(7, 6, 156);
-    l0TileShow(9, 6, 160);
-    l0TileShow(11, 6, 164);
+    l0TileShow(3, 6, 116);
+    l0TileShow(5, 6, 120);
+    l0TileShow(7, 6, 124);
+    l0TileShow(9, 6, 128);
+    l0TileShow(11, 6, 132);
 
-    l0TileShow(0, 8, 46);
-    l0TileShow(1, 8, 45);
-    l0TileShow(2, 8, 44);
+    l0TileShow(0, 8, 35);
+    l0TileShow(1, 8, 36);
+    l0TileShow(2, 8, 37);
     message(7, 16, "GET GOLD TO SPEND");
     message(7, 17, "ON UPGRADES LATER");
 
-    l0TileShow(1, 10, 49);
+    l0TileShow(1, 10, 39);
     message(5, 20, "SCROLLS HIT ALL ENEMIES");
 
-    l0TileShow(1, 11, 48);
+    l0TileShow(1, 11, 38);
     message(5, 22, "KEYS OPEN DOORS:");
-    l0TileShow(11, 11, 40);
-    l0TileShow(12, 11, 41);
-    l0TileShow(13, 11, 42);
+    l0TileShow(11, 11, 30);
+    l0TileShow(12, 11, 31);
 
-    l0TileShow(1, 12, 50);
-    l0TileShow(2, 12, 51);
+    l0TileShow(1, 12, 40);
+    l0TileShow(2, 12, 41);
     message(7, 25, "FOOD RESTORES HEALTH");
 
     message(5, 28, "PRESS A BUTTON TO START");

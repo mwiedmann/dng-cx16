@@ -109,7 +109,6 @@ EntityStats insectsStats = {
 
 EntityStats *entityStatsByType[10] = {
     &skeletonStats,
-    &slimeStats,
     &snakeStats,
     &dragonStats,
     &spiderStats,
@@ -117,7 +116,8 @@ EntityStats *entityStatsByType[10] = {
     &batStats,
     &beholderStats,
     &demonStats,
-    &insectsStats
+    &insectsStats,
+    &slimeStats
 };
 
 

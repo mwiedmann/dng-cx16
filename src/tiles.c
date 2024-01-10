@@ -12,8 +12,9 @@
 #include "players.h"
 
 void initTiles() {
-    loadFileToVRAM("l0tiles.bin", L0_TILEBASE_ADDR);
-    loadFileToVRAM("l1tiles.bin", L1_TILEBASE_ADDR);
+    loadFileToVRAM("d0tiles.bin", L0_TILEBASE_DNG_ADDR);
+    loadFileToVRAM("gmtiles.bin", L0_TILEBASE_GAME_ADDR);
+    loadFileToVRAM("ovtiles.bin", L1_TILEBASE_ADDR);
     loadFileToVRAM("tiles.pal", PALETTE_ADDR);
 }
 
