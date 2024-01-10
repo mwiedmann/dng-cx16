@@ -49,8 +49,7 @@
 #define ENTITY_CLAIM 253
 #define GUY_CLAIM 254
 
-// 4 types: BARBARIAN, MAGE, PALADIN, RANGER
-
+void loadDungeonTiles();
 void initTiles();
 unsigned char letterToTile(char letter);
 void clearLayers();

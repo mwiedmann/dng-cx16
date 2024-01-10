@@ -72,6 +72,7 @@ void main() {
         entityActiveList = 0;
         entitySleepList = 0;
 
+        loadDungeonTiles();
         spritesConfig();
         clearLayers();
 
@@ -92,6 +93,7 @@ void main() {
         }
 
         while(!gameOver) {
+            loadDungeonTiles();
             createMapStatus(level);
             drawMap(level);
             exitLevel = 0;

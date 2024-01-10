@@ -434,8 +434,8 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].health = players[playerId].stats->startingHealth;
     players[playerId].animationCount = ANIMATION_FRAME_SPEED;
     players[playerId].animationFrame = 0;
-    players[playerId].animationTile = GUY_TILE_START + (playerId*32) + (characterType*8);
-    players[playerId].weaponTile = GUY_TILE_START + (playerId*32) + (characterType*8) + 5;
+    players[playerId].animationTile = GUY_TILE_START + (playerId*20) + (characterType*5);
+    players[playerId].weaponTile = GUY_TILE_START + (playerId*20) + (characterType*5) + 4;
     players[playerId].ticksUntilNextMelee = 0;
     players[playerId].ticksUntilNextShot = 0;
     players[playerId].shooting = 0;

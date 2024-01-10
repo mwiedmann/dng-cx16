@@ -11,8 +11,15 @@
 #include "joy.h"
 #include "players.h"
 
+void loadDungeonTiles() {
+    char buf[16];
+    unsigned char dngType = level % 5 == 0 ? 0 : (level % 5) - 1;
+
+    sprintf(buf, "d%utiles.bin", dngType);
+    loadFileToVRAM(buf, L0_TILEBASE_DNG_ADDR);
+}
+
 void initTiles() {
-    loadFileToVRAM("d0tiles.bin", L0_TILEBASE_DNG_ADDR);
     loadFileToVRAM("gmtiles.bin", L0_TILEBASE_GAME_ADDR);
     loadFileToVRAM("ovtiles.bin", L1_TILEBASE_ADDR);
     loadFileToVRAM("tiles.pal", PALETTE_ADDR);
@@ -152,7 +159,7 @@ void drawOverlayBackground() {
         VERA.address_hi |= 0b10000;
 
         for (x=0; x<5; x++) {
-            VERA.data0 = 240+x+(i*8);
+            VERA.data0 = 208+x+(i*8);
             VERA.data0 = 0;
         }
 
@@ -160,8 +167,8 @@ void drawOverlayBackground() {
         VERA.data0 = 0;
 
         for (x=0; x<4; x++) {
-            VERA.data0 = x+(i*8);
-            VERA.data0 = 1;
+            VERA.data0 = 224+x+(i*8);
+            VERA.data0 = 0;
         }
 
         // Show HEALTH
@@ -172,8 +179,8 @@ void drawOverlayBackground() {
         VERA.address_hi |= 0b10000;
 
         for (x=0; x<6; x++) {
-            VERA.data0 = 16+x+(i*8);
-            VERA.data0 = 1;
+            VERA.data0 = 240+x+(i*8);
+            VERA.data0 = 0;
         }
     }
 }
