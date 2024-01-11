@@ -109,14 +109,14 @@ EntityStats insectsStats = {
 
 EntityStats *entityStatsByType[10] = {
     &skeletonStats,
-    &snakeStats,
     &dragonStats,
-    &spiderStats,
+    &snakeStats,
     &golemStats,
-    &batStats,
+    &spiderStats,
     &beholderStats,
-    &demonStats,
+    &batStats,
     &insectsStats,
+    &demonStats,
     &slimeStats
 };
 
@@ -146,12 +146,12 @@ Health     ****      *       ***      **
 Armor      **        *       ****     **
 */
 
-PlayerStats barbarianStats = { {1, 1, 1, 1, 1, 1}, 1, 5  /* 12-sec */,  8, 15 /* 32-sec */,  4, 1000, 200, 75, { 0, 0, 0, 1 } };
+PlayerStats barbarianStats = { {1, 1, 1, 1, 1, 1}, 1, 5  /* 12-sec */,  8, 20 /* 32-sec */,  4, 1000, 200, 75, { 0, 0, 0, 1 } };
 PlayerStats mageStats =      { {1, 1, 1, 1, 1, 2}, 1, 10 /* 6-sec */,   6, 10 /* 36-sec */, 12,  700, 100, 10, { 0, 0, 0, 0 } };
 PlayerStats druidStats =     { {1, 1, 1, 1, 1, 2}, 1, 7  /* 8.5-sec */, 4, 12 /* 20-sec */, 12,  900, 150, 50, { 0, 0, 1, 1 } };
 PlayerStats rangerStats =    { {1, 1, 1, 1, 2, 2}, 1, 6  /* 10-sec */,  4, 10 /* 24-sec */,  8,  800, 125, 25, { 0, 0, 0, 1 } };
 
-PlayerStats boostedBarbarianStats = { {1, 1, 1, 1, 1, 2}, 1, 5  /* 12-sec */,  8, 12 /* 32-sec */,  8, 1000, 200, 75, { 0, 0, 1, 1 } };
+PlayerStats boostedBarbarianStats = { {1, 1, 1, 1, 1, 2}, 1, 5  /* 12-sec */,  8, 15 /* 32-sec */,  8, 1000, 200, 75, { 0, 0, 1, 1 } };
 PlayerStats boostedMageStats =      { {1, 1, 1, 1, 2, 2}, 1, 7 /* 6-sec */,   8, 10 /* 36-sec */, 12,  700, 100, 10, { 0, 0, 0, 1 } };
 PlayerStats boostedDruidStats =     { {1, 1, 1, 1, 2, 2}, 1, 6  /* 8.5-sec */, 6, 10 /* 20-sec */, 12,  900, 150, 50, { 0, 0, 1, 1 } };
 PlayerStats boostedRangerStats =    { {1, 1, 1, 1, 2, 2}, 1, 5  /* 10-sec */,  6, 10 /* 24-sec */,  12,  800, 125, 25, { 0, 0, 1, 1 } };

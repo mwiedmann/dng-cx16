@@ -383,6 +383,12 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
         weapons[playerId].visible = 1;
         weapons[playerId].dirX = players[playerId].aimX;
         weapons[playerId].dirY = players[playerId].aimY;
+
+        // Adjust some diagonal shots by 1 pixel on x to make sure they can go through corners
+        if ((weapons[playerId].dirX == -1 && weapons[playerId].dirY == 1) ||
+            (weapons[playerId].dirX == 1 && weapons[playerId].dirY == -1)) {
+                weapons[playerId].x -= 1;
+            }
         weapons[playerId].animationCount = WEAPON_ROTATION_SPEED;
         weapons[playerId].animationFrame = 0;
 

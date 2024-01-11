@@ -62,7 +62,7 @@ void main() {
 
     while(1) {
         gameOver=0;
-        level=0;
+        level=STARTING_LEVEL;
 
         scrollX=0;
         scrollY=0;

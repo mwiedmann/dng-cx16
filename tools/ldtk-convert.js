@@ -65,8 +65,12 @@ const createLevelCode = (levelNum, level) => {
       gridTiles.forEach((g) => {
         const xTile = g.px[0]/16;
         const yTile = g.px[1]/16;
+        const flip =
+          ((g.f === 2 || g.f === 3 ? 1 : 0) << 3) +
+          ((g.f === 1 || g.f === 3 ? 1 : 0) << 2);
 
         tileBytes[(yTile*2*tileWidth)+(xTile*2)] = g.t
+        tileBytes[((yTile*2*tileWidth)+(xTile*2))+1] = flip
 
         mapBytes[(yTile*tileWidth)+xTile] = getMapIdFromTile(g.t);
       });
@@ -95,7 +99,6 @@ const createLevelCode = (levelNum, level) => {
 
   let data = undefined
   level.layerInstances.forEach((li) => {
-
     switch (li.__identifier) {
       case "Map":
         data = getTileData(li.gridTiles);

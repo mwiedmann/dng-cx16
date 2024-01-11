@@ -3,6 +3,8 @@
 
 #include "map.h"
 
+#define STARTING_LEVEL 0  // Should be 0 except for testing
+
 #define ENTITY_COUNT 75
 #define GUY_SPEED_1 1
 #define GUY_SPEED_2 2
