@@ -213,7 +213,7 @@ void moveEntity(Entity *entity) {
         if (entity->isLob) {
             if (entity->rangedTicks == 0) {
                 if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
-                    meleeAttackGuy(mapStatus[entity->currentTileY][entity->currentTileX]-GUY_CLAIM, entity->statsId, 1);   
+                    meleeAttackGuy(mapStatus[entity->currentTileY][entity->currentTileX]-GUY_CLAIM, entity->statsId, entity->stats->ranged);   
                 }
 
                 entity->health=0;
@@ -230,7 +230,7 @@ void moveEntity(Entity *entity) {
                 mapStatus[entity->currentTileY][entity->currentTileX] != ENTITY_CLAIM) {
                 // See if guy is in this tile!
                 if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
-                    meleeAttackGuy(mapStatus[entity->currentTileY][entity->currentTileX]-GUY_CLAIM, entity->statsId, 100);   
+                    meleeAttackGuy(mapStatus[entity->currentTileY][entity->currentTileX]-GUY_CLAIM, entity->statsId, entity->stats->ranged);   
                 }
 
                 entity->health=0;
