@@ -27,84 +27,87 @@ unsigned char entitySlowMove[4] = { 2, 1, 1, 1 };
 unsigned char entityMediumMove[4] = { 2, 1, 2, 1 };
 unsigned char entityFastMove[4] = { 2, 2, 2, 2 };
 
+// Melee Only Monsters
 EntityStats skeletonStats = {
     entityWeakMelee,
-    entityMediumMove,
+    entitySlowMove,
     0, // ranged
-    NORMAL_HEATH, // health
-    0, 0
+    NORMAL_HEALTH, // health
+    0, 0 // lob, rate
 };
 
-EntityStats slimeStats = {
+EntityStats batStats = {
     entityWeakMelee,
-    entityNoMove, // entityMediumMove,
-    10, // ranged
-    WEAK_HEALTH, // health
-    1, 15
+    entityFastMove,
+    0,
+    WEAK_HEALTH,
+    0, 0
 };
 
 EntityStats snakeStats = {
     entityNormalMelee,
     entityMediumMove,
-    0, // ranged
-    NORMAL_HEATH, // health
+    0,
+    NORMAL_HEALTH,
     0, 0
-};
-
-EntityStats dragonStats = {
-    entityNormalMelee,
-    entityMediumMove,
-    15, // ranged
-    NORMAL_HEATH, // health
-    0, 30
 };
 
 EntityStats spiderStats = {
     entityStrongMelee,
     entityMediumMove,
-    0, // ranged
-    NORMAL_HEATH, // health
+    0,
+    NORMAL_HEALTH,
     0, 0
 };
 
 EntityStats golemStats = {
     entityStrongMelee,
     entitySlowMove,
-    0, // ranged
-    STRONG_HEALTH, // health
+    0,
+    STRONG_HEALTH,
     0, 0
-};
-
-EntityStats batStats = {
-    entityWeakMelee,
-    entityFastMove,
-    0, // ranged
-    WEAK_HEALTH, // health
-    0, 0
-};
-
-EntityStats beholderStats = {
-    entityWeakMelee,
-    entityFastMove,
-    15, // ranged
-    NORMAL_HEATH, // health
-    0, 30
 };
 
 EntityStats demonStats = {
     entityStrongMelee,
     entityMediumMove,
-    0, // ranged
-    STRONG_HEALTH, // health
+    0,
+    STRONG_HEALTH,
     0, 0
 };
 
+// Ranged attackers
 EntityStats insectsStats = {
     entityWeakMelee,
     entityFastMove,
-    0, // ranged
-    WEAK_HEALTH, // health
-    0, 0
+    5,
+    WEAK_HEALTH,
+    0, 30
+};
+
+EntityStats dragonStats = {
+    entityNormalMelee,
+    entityMediumMove,
+    10,
+    NORMAL_HEALTH,
+    0, 30
+};
+
+EntityStats beholderStats = {
+    entityNormalMelee,
+    entityFastMove,
+    15,
+    STRONG_HEALTH,
+    0, 30
+};
+
+// Lobbers
+EntityStats slimeStats = {
+    entityWeakMelee,
+    entityMediumMove,
+    10,
+    WEAK_HEALTH,
+    1, 15
 };
 
 EntityStats *entityStatsByType[10] = {

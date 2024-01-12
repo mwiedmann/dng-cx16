@@ -23,7 +23,7 @@
 #define GUY_MAX MAP_PIXEL_MAX-(16+GUY_SPEED_2) // Right edge - Sprite width and move speed
 
 #define WEAK_HEALTH 4
-#define NORMAL_HEATH 8
+#define NORMAL_HEALTH 8
 #define STRONG_HEALTH 12
 
 #define INVENTORY_LIMIT 10
