@@ -95,6 +95,10 @@ void main() {
 
         while(!gameOver) {
             loadDungeonTiles();
+
+            BANK_NUM = INSTRUCTIONS_BANK;
+            showLevelIntro();
+            
             createMapStatus(level);
             drawMap(level);
 
@@ -248,6 +252,12 @@ void main() {
             entityActiveList = 0;
             entitySleepList = 0;
             entityTempActiveList = 0;
+
+            // Reset scrolling
+            scrollX=0;
+            scrollY=0;
+            VERA.layer0.vscroll = scrollY;
+            VERA.layer0.hscroll = scrollX;
         }
     }
 }

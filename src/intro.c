@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <cx16.h>
 #include <joystick.h>
 
@@ -262,6 +263,21 @@ void instructions() {
 
     clearLayer0();
     drawOverlayBackground();
+}
+
+void showLevelIntro() {
+    char *msg[4] = {0,0,0,0};
+    char buf[40];
+
+    clearVisibleLayers();
+
+    sprintf(buf, "LEVEL %u", level);
+    msg[0] = buf;
+
+    messageCenter(msg);
+
+    waitCount(240);
+    clearLayer1VisibleArea();
 }
 
 #pragma code-name (pop)

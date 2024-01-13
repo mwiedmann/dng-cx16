@@ -5,5 +5,6 @@
 #define SCREEN_CHANGE_COUNT 720
 
 void instructions();
+void showLevelIntro();
 
 #endif
