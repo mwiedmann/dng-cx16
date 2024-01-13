@@ -19,12 +19,6 @@ void loadDungeonTiles() {
     loadFileToVRAM(buf, L0_TILEBASE_DNG_ADDR);
 }
 
-void initTiles() {
-    loadFileToVRAM("gmtiles.bin", L0_TILEBASE_GAME_ADDR);
-    loadFileToVRAM("ovtiles.bin", L1_TILEBASE_ADDR);
-    loadFileToVRAM("tiles.pal", PALETTE_ADDR);
-}
-
 unsigned char letterToTile(char letter) {
     unsigned char tile;
 
@@ -89,11 +83,57 @@ void clearLayer1() {
     }
 }
 
+void clearLayer1VisibleArea() {
+    // Note we need a `short` here because there are more than 255 tiles
+    unsigned short x, y;
+
+    // Empty tiles
+    for (y=0; y<30; y++) {
+        VERA.address = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2);
+        VERA.address_hi = (L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2))>>16;
+        // Always set the Increment Mode, turn on bit 4
+        VERA.address_hi |= 0b10000;
+
+        for (x=0; x<30; x++) {
+            VERA.data0 = L1_TILE_TRANS;
+            VERA.data0 = 0;
+        }
+    }
+}
+
+void clearLayer0VisibleArea() {
+    // Note we need a `short` here because there are more than 255 tiles
+    unsigned short x, y;
+
+    // Empty tiles
+    for (y=0; y<15; y++) {
+        VERA.address = L0_MAPBASE_ADDR + (y*L0_MAPBASE_TILE_WIDTH*2);
+        VERA.address_hi = (L0_MAPBASE_ADDR + (y*L0_MAPBASE_TILE_WIDTH*2))>>16;
+        // Always set the Increment Mode, turn on bit 4
+        VERA.address_hi |= 0b10000;
+        
+        for (x=0; x<15; x++) {
+            VERA.data0 = TILE_TRANS;
+            VERA.data0 = 0;
+        }
+    }
+}
+
+void clearLayers() {
+    clearLayer0();
+    clearLayer1();
+}
+
+void clearVisibleLayers() {
+    clearLayer0VisibleArea();
+    clearLayer1VisibleArea();
+}
+
 void updateCharacterTypeInOverlay(unsigned char playerId) {
     unsigned char x;
     unsigned long addr;
 
-    addr = L1_MAPBASE_ADDR + ((6+(playerId*9))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+    addr = L1_MAPBASE_ADDR + ((6+(playerId*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
     VERA.address = addr;
     VERA.address_hi = addr>>16;
     // Always set the Increment Mode, turn on bit 4
@@ -274,11 +314,6 @@ void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsig
     VERA.address_hi = addr>>16;
 
     VERA.data0 = tile;
-}
-
-void clearLayers() {
-    clearLayer0();
-    clearLayer1();
 }
 
 void flashLayer1() {

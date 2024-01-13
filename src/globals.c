@@ -28,20 +28,20 @@ unsigned char entityMediumMove[4] = { 2, 1, 2, 1 };
 unsigned char entityFastMove[4] = { 2, 2, 2, 2 };
 
 // Melee Only Monsters
-EntityStats skeletonStats = {
-    entityWeakMelee,
-    entitySlowMove,
-    0, // ranged
-    NORMAL_HEALTH, // health
-    0, 0 // lob, rate
-};
-
 EntityStats batStats = {
     entityWeakMelee,
     entityFastMove,
     0,
     WEAK_HEALTH,
     0, 0
+};
+
+EntityStats skeletonStats = {
+    entityWeakMelee,
+    entitySlowMove,
+    0, // ranged
+    NORMAL_HEALTH, // health
+    0, 0 // lob, rate
 };
 
 EntityStats snakeStats = {

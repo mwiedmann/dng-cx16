@@ -50,11 +50,13 @@
 #define GUY_CLAIM 254
 
 void loadDungeonTiles();
-void initTiles();
 unsigned char letterToTile(char letter);
 void clearLayers();
 void clearLayer0();
 void clearLayer1();
+void clearLayer0VisibleArea();
+void clearLayer1VisibleArea();
+void clearVisibleLayers();
 void updateCharacterTypeInOverlay(unsigned char playerId);
 void drawOverlayBackground();
 void updateOverlay();

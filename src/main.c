@@ -57,6 +57,9 @@ void main() {
     unsigned char inputTicks = 0;
     Entity *entity;
 
+    loadBankedCode();
+
+    BANK_NUM = CONFIG_BANK;
     init();
     initTiles();
 
@@ -73,14 +76,12 @@ void main() {
         entitySleepList = 0;
 
         loadDungeonTiles();
+
+        BANK_NUM = CONFIG_BANK;
         spritesConfig();
-        clearLayers();
 
         players[0].active = 0;
         players[1].active = 0;
-
-        drawOverlayBackground();
-        updateOverlay();
 
         BANK_NUM = INSTRUCTIONS_BANK;
         instructions();
@@ -96,6 +97,7 @@ void main() {
             loadDungeonTiles();
             createMapStatus(level);
             drawMap(level);
+
             exitLevel = 0;
             healthTicks = 0;
 
