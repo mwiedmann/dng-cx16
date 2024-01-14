@@ -16,7 +16,6 @@ void loadBankedCode() {
     cbm_k_load(0, (unsigned short)BANK_RAM);
 }
 
-
 #pragma code-name (push, "BANKRAM02")
 
 void init() {

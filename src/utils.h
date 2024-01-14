@@ -7,5 +7,6 @@
 
 void loadFileToVRAM(char *filename, unsigned long addr);
 void loadFileToBankedRAM(char *filename, unsigned char bank, unsigned short addr);
+void clearBank(unsigned char bank);
 
 #endif

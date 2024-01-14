@@ -22,6 +22,5 @@ void soundStopChannel(unsigned char priority);
 
 void soundLoadMusic(unsigned char music);
 void soundPlayMusic(unsigned char music);
-void soundAnticipateMusic(unsigned char music); //mutes current music if new music is different
 
 #endif

@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "players.h"
 #include "intro.h"
+#include "sound.h"
 
 void setScroll() {
     unsigned short x, y;
@@ -67,7 +68,14 @@ void main() {
     init();
     initTiles();
 
+    // soundInit();
+    // soundPlayMusic(SOUND_MUSIC_TITLE);
+
+    // BANK_NUM = CODE_BANK;
+
     while(1) {
+        BANK_NUM = CODE_BANK;
+        
         gameOver=0;
         deadCount=0;
         level=STARTING_LEVEL;
@@ -99,12 +107,13 @@ void main() {
             loadDungeonTiles();
             showLevelIntro();
             
+            clearBank(MAP_BANK);
             createMapStatus(level);
 
             BANK_NUM = CODE_BANK;
             drawMap(level);
             BANK_NUM = MAP_BANK;
-            
+
             exitLevel = 0;
             healthTicks = 0;
 
@@ -196,7 +205,9 @@ void main() {
                     };
 
                     if (overlayChanged) {
+                        BANK_NUM = CODE_BANK;
                         updateOverlay();
+                        BANK_NUM = MAP_BANK;
                         overlayChanged = 0;
                     }
                 }

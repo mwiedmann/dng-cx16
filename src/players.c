@@ -7,6 +7,8 @@
 #include "sprites.h"
 #include "list.h"
 #include "ai.h"
+#include "utils.h"
+#include "config.h"
 
 char *boostHints[5][2] = {
     {"MUSHROOM INCREASES", "PLAYER SPEED"},
@@ -68,7 +70,6 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     unsigned char tile = mapStatus[toTileY][toTileX];
     signed char i;
     unsigned char clearTile=0, id;
-    char buf[30];
 
     // Scrolling is split between both players in 2 player game
     // Make sure players aren't leaving the scroll field
@@ -85,16 +86,13 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                 return 1;
             }
 
-            sprintf(buf, "%u GOLD", KEY_PRICE);
-            if (gameQuestion("PURCHASE KEY FOR", buf)) {
-                players[playerId].gold -= KEY_PRICE;
-            } else {
-                return 1;
-            }
+            players[playerId].gold -= KEY_PRICE;
         } else {
             if (!hints.keys) {
                 hints.keys = 1;
+                BANK_NUM = CODE_BANK;
                 gameMessage("COLLECT KEYS", "TO OPEN DOORS");
+                BANK_NUM = MAP_BANK;
             }
 
             players[playerId].score += 100;
@@ -105,7 +103,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile == TILE_TREASURE_CHEST || tile == TILE_TREASURE_GOLD || tile == TILE_TREASURE_SILVER) {
         if (!hints.treasure) {
             hints.treasure = 1;
+            BANK_NUM = CODE_BANK;
             gameMessage("COLLECT GOLD AND", "SPEND ON UPGRADES LATER");
+            BANK_NUM = MAP_BANK;
         }
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
         players[playerId].score += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
@@ -120,7 +120,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         } else {
             if (!hints.scrolls) {
                 hints.scrolls = 1;
+                BANK_NUM = CODE_BANK;
                 gameMessage("USE SCROLLS TO", "DAMAGE ALL ENEMIES");
+                BANK_NUM = MAP_BANK;
             }
             players[playerId].score += 250;
         }
@@ -146,7 +148,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
         if (!hints.boosts[id]) {
             hints.boosts[id] = 1;
+            BANK_NUM = CODE_BANK;
             gameMessage(boostHints[id][0], boostHints[id][1]);
+            BANK_NUM = MAP_BANK;
         }
 
         players[playerId].hasBoosts[id] = 1;
@@ -171,7 +175,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         } else {
             if (!hints.food) {
                 hints.food = 1;
+                BANK_NUM = CODE_BANK;
                 gameMessage("EAT FOOD TO", "GAIN HEALTH");
+                BANK_NUM = MAP_BANK;
             }
             players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         }
@@ -490,8 +496,6 @@ void moveWeapon(unsigned char playerId) {
     }
 }
 
-#pragma code-name (push, "BANKRAM02")
-
 unsigned char destroyPlayer(unsigned char playerId) {
     unsigned char i, entityId;
 
@@ -516,6 +520,8 @@ unsigned char destroyPlayer(unsigned char playerId) {
 
     return entityId;
 }
+
+#pragma code-name (push, "BANKRAM02")
 
 void setupPlayer(unsigned char playerId, enum Character characterType) {
     unsigned char i;

@@ -50,6 +50,7 @@ typedef struct EntityStats {
     unsigned char rangedRate;
 } EntityStats;
 
+// 47 bytes
 typedef struct Entity {
     EntityStats *stats;
     unsigned char statsId;
@@ -154,7 +155,7 @@ typedef struct Hints {
 
 extern unsigned char (*mapStatus)[MAP_MAX];
 
-extern Entity entityList[ENTITY_COUNT];
+extern Entity *entityList;
 extern Entity *entitySleepList;
 extern Entity *entityActiveList;
 extern Entity *entityTempActiveList;

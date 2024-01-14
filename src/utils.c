@@ -1,6 +1,5 @@
 #include <cx16.h>
 #include <cbm.h>
-#include <string.h>
 
 #include "utils.h"
 #include "config.h"
@@ -51,4 +50,16 @@ void loadFileToBankedRAM(char *filename, unsigned char bank, unsigned short addr
     // BANK_RAM is a #define provided by cx16.h
     // as a pointer to 0xA000 (which is where Bank RAM starts)
     cbm_k_load(0, (unsigned short)BANK_RAM + addr);
+}
+
+void clearBank(unsigned char bank) {
+    unsigned short i;
+    unsigned char *ptr;
+
+    BANK_NUM = bank;
+
+    for (i=0; i<8192; i++) {
+        ptr = (BANK_RAM + i);
+        *ptr = 0;
+    }
 }

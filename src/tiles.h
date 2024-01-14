@@ -64,6 +64,6 @@ void l0TileShow(unsigned char x, unsigned char y, unsigned char tile);
 void gameMessage(char *msg1, char *msg2);
 void message(unsigned char x, unsigned char y, char *msg);
 void messageCenter(char *msg[4]);
-unsigned char gameQuestion(char *msg1, char *msg2);
+// unsigned char gameQuestion(char *msg1, char *msg2);
 
 #endif

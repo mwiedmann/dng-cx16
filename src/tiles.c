@@ -96,38 +96,6 @@ void updateCharacterTypeInOverlay(unsigned char playerId) {
     }
 }
 
-#pragma code-name (pop)
-
-unsigned char letterToTile(char letter) {
-    unsigned char tile;
-
-    if (letter >= 193 && letter <= 218) {
-        tile = letter - 193;
-    } else if (letter >= 48 && letter <= 57) {
-        tile = letter - 22;
-    } else if (letter == 58) {
-        tile = 36;
-    } else if (letter == 46) {
-        tile = 37;
-    } else if (letter == 63) {
-        tile = 38;
-    } else if (letter == 45) {
-        tile = 39;
-    } else if (letter == 33) {
-        tile = 40;
-    } else if (letter == 39) {
-        tile = 41;
-    } else if (letter == 42) {
-        tile = 42;
-    } else if (letter >= 60 && letter <= 66) { // Key through upgrades
-        tile = letter - 14;
-    } else {
-        return 44;
-    }
-
-    return tile;
-}
-
 void drawOverlayBackground() {
     // Note we need a `short` here because there are more than 255 tiles
     unsigned char y, x, tile=WARLOCKS_DUNGEON_TILE, i;
@@ -208,34 +176,6 @@ void drawOverlayBackground() {
     }
 }
 
-void message(unsigned char x, unsigned char y, char *msg) {
-    unsigned char i=0;
-    unsigned long addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2) + (x*2);
-
-    VERA.address = addr;
-    VERA.address_hi = addr>>16;
-    // Always set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
-
-    while(msg[i] != 0 || i > 30) {
-        VERA.data0 = letterToTile(msg[i]);
-        VERA.data0 = 0;
-        i++;
-    };
-}
-
-void messageCenter(char *msg[4]) {
-    unsigned char len, col, i;
-
-    for (i=0; i<4; i++) {
-        if (msg[i]) {
-            len = strlen(msg[i]);
-            col = 15 - (len>>1);
-            message(col, 12+i, msg[i]);
-        }
-    }
-}
-
 void l0TileShow(unsigned char x, unsigned char y, unsigned char tile) {
     unsigned long addr = L0_MAPBASE_ADDR + (y*L0_MAPBASE_TILE_WIDTH*2) + (x*2);
 
@@ -246,6 +186,86 @@ void l0TileShow(unsigned char x, unsigned char y, unsigned char tile) {
 
     VERA.data0 = tile;
     VERA.data0 = 0;
+}
+
+
+void flashLayer1() {
+     // Note we need a `short` here because there are more than 255 tiles
+    unsigned char y, x, i;
+    unsigned long addr;
+
+    
+    for (i=0; i<2; i++) {
+        for (y=0; y<L1_OVERLAY_X; y++) {
+            addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2);
+        
+            VERA.address = addr;
+            VERA.address_hi = addr>>16;
+            // Always set the Increment Mode, turn on bit 4
+            VERA.address_hi |= 0b10000;
+
+            for (x=0; x<L1_OVERLAY_X; x++) {
+                VERA.data0 = i == 0 ? L1_TILE_WHITE : L1_TILE_TRANS;
+                VERA.data0 = 0;
+            }
+        }
+
+        if (i==0) {
+            waitCount(10);
+        }
+    }
+}
+
+// unsigned char gameQuestion(char *msg1, char *msg2) {
+//     char * msg[4] = {0,0,"BUTTON TO ACCEPT","START TO CANCEL"};
+//     unsigned char pressed;
+
+//     msg[0] = msg1;
+//     msg[1] = msg2;
+
+//     messageCenter(msg);
+
+//     BANK_NUM = CODE_BANK;
+//     pressed = waitForButtonPress();
+//     BANK_NUM = MAP_BANK;
+
+//     clearL1PlayArea();
+
+//     return !JOY_START(pressed);
+// }
+
+void clearL1PlayArea() {
+    unsigned char y, x, i;
+    unsigned long addr;
+
+    for (i=0; i<2; i++) {
+        for (y=0; y<L1_OVERLAY_X; y++) {
+            addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2);
+        
+            VERA.address = addr;
+            VERA.address_hi = addr>>16;
+            // Always set the Increment Mode, turn on bit 4
+            VERA.address_hi |= 0b10000;
+
+            for (x=0; x<L1_OVERLAY_X; x++) {
+                VERA.data0 = L1_TILE_TRANS;
+                VERA.data0 = 0;
+            }
+        }
+    }
+}
+
+void gameMessage(char *msg1, char *msg2) {
+    char * msg[4] = {0,0,0,0};
+
+    msg[0] = msg1;
+    msg[1] = msg2;
+
+    messageCenter(msg);
+    
+    waitCount(150);
+
+    clearL1PlayArea();
 }
 
 void updateOverlay() {
@@ -284,6 +304,66 @@ void updateOverlay() {
     }
 }
 
+void message(unsigned char x, unsigned char y, char *msg) {
+    unsigned char i=0;
+    unsigned long addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2) + (x*2);
+
+    VERA.address = addr;
+    VERA.address_hi = addr>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    while(msg[i] != 0 || i > 30) {
+        VERA.data0 = letterToTile(msg[i]);
+        VERA.data0 = 0;
+        i++;
+    };
+}
+
+void messageCenter(char *msg[4]) {
+    unsigned char len, col, i;
+
+    for (i=0; i<4; i++) {
+        if (msg[i]) {
+            len = strlen(msg[i]);
+            col = 15 - (len>>1);
+            message(col, 12+i, msg[i]);
+        }
+    }
+}
+
+ unsigned char letterToTile(char letter) {
+    unsigned char tile;
+
+    if (letter >= 193 && letter <= 218) {
+        tile = letter - 193;
+    } else if (letter >= 48 && letter <= 57) {
+        tile = letter - 22;
+    } else if (letter == 58) {
+        tile = 36;
+    } else if (letter == 46) {
+        tile = 37;
+    } else if (letter == 63) {
+        tile = 38;
+    } else if (letter == 45) {
+        tile = 39;
+    } else if (letter == 33) {
+        tile = 40;
+    } else if (letter == 39) {
+        tile = 41;
+    } else if (letter == 42) {
+        tile = 42;
+    } else if (letter >= 60 && letter <= 66) { // Key through upgrades
+        tile = letter - 14;
+    } else {
+        return 44;
+    }
+
+    return tile;
+}
+
+#pragma code-name (pop)
+
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY) {
     unsigned char tile;
     unsigned long addr = L0_MAPBASE_ADDR + (fromY*L0_MAPBASE_TILE_WIDTH*2) + (fromX*2);
@@ -297,83 +377,4 @@ void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsig
     VERA.address_hi = addr>>16;
 
     VERA.data0 = tile;
-}
-
-void flashLayer1() {
-     // Note we need a `short` here because there are more than 255 tiles
-    unsigned char y, x, i;
-    unsigned long addr;
-
-    
-    for (i=0; i<2; i++) {
-        for (y=0; y<L1_OVERLAY_X; y++) {
-            addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2);
-        
-            VERA.address = addr;
-            VERA.address_hi = addr>>16;
-            // Always set the Increment Mode, turn on bit 4
-            VERA.address_hi |= 0b10000;
-
-            for (x=0; x<L1_OVERLAY_X; x++) {
-                VERA.data0 = i == 0 ? L1_TILE_WHITE : L1_TILE_TRANS;
-                VERA.data0 = 0;
-            }
-        }
-
-        if (i==0) {
-            waitCount(10);
-        }
-    }
-}
-
-void clearL1PlayArea() {
-    unsigned char y, x, i;
-    unsigned long addr;
-
-    for (i=0; i<2; i++) {
-        for (y=0; y<L1_OVERLAY_X; y++) {
-            addr = L1_MAPBASE_ADDR + (y*L1_MAPBASE_TILE_WIDTH*2);
-        
-            VERA.address = addr;
-            VERA.address_hi = addr>>16;
-            // Always set the Increment Mode, turn on bit 4
-            VERA.address_hi |= 0b10000;
-
-            for (x=0; x<L1_OVERLAY_X; x++) {
-                VERA.data0 = L1_TILE_TRANS;
-                VERA.data0 = 0;
-            }
-        }
-    }
-}
-
-unsigned char gameQuestion(char *msg1, char *msg2) {
-    char * msg[4] = {0,0,"BUTTON TO ACCEPT","START TO CANCEL"};
-    unsigned char pressed;
-
-    msg[0] = msg1;
-    msg[1] = msg2;
-
-    messageCenter(msg);
-
-    BANK_NUM = CODE_BANK;
-    pressed = waitForButtonPress();
-    BANK_NUM = MAP_BANK;
-    
-    clearL1PlayArea();
-
-    return !JOY_START(pressed);
-}
-
-void gameMessage(char *msg1, char *msg2) {
-    char * msg[4] = {0,0,0,0};
-
-    msg[0] = msg1;
-    msg[1] = msg2;
-
-    messageCenter(msg);
-    
-    waitCount(150);
-
-    clearL1PlayArea();
 }

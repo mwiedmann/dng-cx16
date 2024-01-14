@@ -31,7 +31,6 @@ void loadSound(char* name, unsigned char index) {
 	cbm_k_load(0, ((unsigned short)sfxAddressHigh[index])<<8);
 }
 
-
 void soundInit() {
 	unsigned char i=0;
 	asm volatile ("lda #%b", ZSM_BANK);
@@ -78,15 +77,6 @@ void soundStopChannel(unsigned char priority) {
 	param2 = priority;
 	asm volatile ("ldx %v", param2);
 	asm volatile ("jsr zsm_stop");
-}
-
-void soundAnticipateMusic(unsigned char music) {
-	if (music != currentMusic) {
-		param2 = SOUND_PRIORITY_MUSIC;
-
-		asm volatile ("ldx %v", param2);
-		asm volatile ("jsr zsm_stop");
-	}
 }
 
 void soundLoadMusic(unsigned char music) {
