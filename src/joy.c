@@ -3,6 +3,8 @@
 
 #include "wait.h"
 
+#pragma code-name (push, "BANKRAM02")
+
 void waitForRelease() {
     unsigned char joy;
 
@@ -32,3 +34,5 @@ unsigned char waitForButtonPress() {
         }
     }
 }
+
+#pragma code-name (pop)

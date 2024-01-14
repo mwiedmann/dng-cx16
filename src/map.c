@@ -8,6 +8,8 @@
 #include "utils.h"
 #include "sprites.h"
 
+#pragma code-name (push, "BANKRAM02")
+
 void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y) {
     if (tile >= TILE_GENERATOR_START && tile <= TILE_GENERATOR_END) {
         entityList[entityId].isGenerator = 1;
@@ -46,9 +48,18 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     entityList[entityId].isLob = 0;
 }
 
+void drawMap(unsigned char level) {
+    char buf[16];
+
+    sprintf(buf, "l%utile.bin", level);
+    loadFileToVRAM(buf, L0_MAPBASE_ADDR);
+}
+
+#pragma code-name (pop)
+
 void createMapStatus(unsigned char level) {
     char buf[16];
-    unsigned char x,y,i;
+    unsigned char x,y,i,temp;
     Entity *lastEntity = 0;
 
     sprintf(buf, "l%umap.bin", level);
@@ -73,7 +84,11 @@ void createMapStatus(unsigned char level) {
                 }
             }
             if (mapStatus[y][x] >= TILE_GENERATOR_START && mapStatus[y][x] <= TILE_ENTITY_END) {
-                createEntity(mapStatus[y][x], i, x, y);
+                temp = mapStatus[y][x];
+
+                BANK_NUM = CODE_BANK;
+                createEntity(temp, i, x, y);
+                BANK_NUM = MAP_BANK;
 
                 entityList[i].prev = lastEntity; // For the LL, prev entity
                 entityList[i].next = 0;
@@ -107,11 +122,4 @@ void createMapStatus(unsigned char level) {
     if (entityList[0].health > 0) {
         entitySleepList = &entityList[0];
     }
-}
-
-void drawMap(unsigned char level) {
-    char buf[16];
-
-    sprintf(buf, "l%utile.bin", level);
-    loadFileToVRAM(buf, L0_MAPBASE_ADDR);
 }

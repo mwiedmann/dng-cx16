@@ -63,7 +63,7 @@ void main() {
 
     loadBankedCode();
 
-    BANK_NUM = CONFIG_BANK;
+    BANK_NUM = CODE_BANK;
     init();
     initTiles();
 
@@ -81,14 +81,11 @@ void main() {
         entitySleepList = 0;
 
         loadDungeonTiles();
-
-        BANK_NUM = CONFIG_BANK;
         spritesConfig();
 
         players[0].active = 0;
         players[1].active = 0;
 
-        BANK_NUM = INSTRUCTIONS_BANK;
         instructions();
 
         activePlayers=0;
@@ -100,13 +97,14 @@ void main() {
 
         while(!gameOver) {
             loadDungeonTiles();
-
-            BANK_NUM = INSTRUCTIONS_BANK;
             showLevelIntro();
             
             createMapStatus(level);
-            drawMap(level);
 
+            BANK_NUM = CODE_BANK;
+            drawMap(level);
+            BANK_NUM = MAP_BANK;
+            
             exitLevel = 0;
             healthTicks = 0;
 

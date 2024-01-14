@@ -10,24 +10,14 @@
 
 void loadBankedCode() {
     // Load some hi-ram code
-    BANK_NUM = INSTRUCTIONS_BANK;
+    BANK_NUM = CODE_BANK;
     cbm_k_setnam("dng.prg.02");
-    cbm_k_setlfs(0, 8, 0); // Skip the first 2 bytes of the file. They just hold the size in bytes.
-    cbm_k_load(0, (unsigned short)BANK_RAM);
-
-    BANK_NUM = CONFIG_BANK;
-    cbm_k_setnam("dng.prg.03");
-    cbm_k_setlfs(0, 8, 0); // Skip the first 2 bytes of the file. They just hold the size in bytes.
-    cbm_k_load(0, (unsigned short)BANK_RAM);
-
-    BANK_NUM = PLAYER_BANK;
-    cbm_k_setnam("dng.prg.04");
     cbm_k_setlfs(0, 8, 0); // Skip the first 2 bytes of the file. They just hold the size in bytes.
     cbm_k_load(0, (unsigned short)BANK_RAM);
 }
 
 
-#pragma code-name (push, "BANKRAM03")
+#pragma code-name (push, "BANKRAM02")
 
 void init() {
     // Configure the joysticks

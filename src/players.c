@@ -238,11 +238,6 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     players[playerId].currentTileX = (players[playerId].x+8)>>4;
     players[playerId].currentTileY = (players[playerId].y+8)>>4;
 
-    // Pause
-    // if (JOY_BTN_1(joy)) {
-    //     waitForRelease();
-    //     waitForButtonPress();
-    // }
     prevX = players[playerId].x;
     prevY = players[playerId].y;
 
@@ -430,40 +425,6 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     }
 }
 
-void setupPlayer(unsigned char playerId, enum Character characterType) {
-    unsigned char i;
-
-    players[playerId].active = 1;
-    players[playerId].characterType = characterType;
-    players[playerId].stats =  playerStatsByType[characterType];
-    players[playerId].boostedStats =  playerBoostedStatsByType[characterType];
-    players[playerId].health = players[playerId].stats->startingHealth;
-    players[playerId].animationCount = ANIMATION_FRAME_SPEED;
-    players[playerId].animationFrame = 0;
-    players[playerId].animationTile = GUY_TILE_START + (playerId*20) + (characterType*5);
-    players[playerId].weaponTile = GUY_TILE_START + (playerId*20) + (characterType*5) + 4;
-    players[playerId].ticksUntilNextMelee = 0;
-    players[playerId].ticksUntilNextShot = 0;
-    players[playerId].shooting = 0;
-    players[playerId].aimX = 1;
-    players[playerId].aimY = 0;
-    players[playerId].facingX = 0;
-    players[playerId].score = 0;
-    players[playerId].gold = 0;
-    players[playerId].keys = 0;
-    players[playerId].scrolls = 0;
-    players[playerId].exit = 0;
-    players[playerId].animationChange = 1; // Trigger immediate animation
-
-    for (i=0; i<5; i++) {
-        players[playerId].hasBoosts[i] = 0;
-    }
-
-    players[playerId].canBoost = playerCanBoostByType[characterType];
-
-    overlayChanged = 1;
-}
-
 void moveWeapon(unsigned char playerId) {
     unsigned char tile;
     Entity *entity;
@@ -529,7 +490,7 @@ void moveWeapon(unsigned char playerId) {
     }
 }
 
-#pragma code-name (push, "BANKRAM04")
+#pragma code-name (push, "BANKRAM02")
 
 unsigned char destroyPlayer(unsigned char playerId) {
     unsigned char i, entityId;
@@ -554,6 +515,40 @@ unsigned char destroyPlayer(unsigned char playerId) {
     }
 
     return entityId;
+}
+
+void setupPlayer(unsigned char playerId, enum Character characterType) {
+    unsigned char i;
+
+    players[playerId].active = 1;
+    players[playerId].characterType = characterType;
+    players[playerId].stats =  playerStatsByType[characterType];
+    players[playerId].boostedStats =  playerBoostedStatsByType[characterType];
+    players[playerId].health = players[playerId].stats->startingHealth;
+    players[playerId].animationCount = ANIMATION_FRAME_SPEED;
+    players[playerId].animationFrame = 0;
+    players[playerId].animationTile = GUY_TILE_START + (playerId*20) + (characterType*5);
+    players[playerId].weaponTile = GUY_TILE_START + (playerId*20) + (characterType*5) + 4;
+    players[playerId].ticksUntilNextMelee = 0;
+    players[playerId].ticksUntilNextShot = 0;
+    players[playerId].shooting = 0;
+    players[playerId].aimX = 1;
+    players[playerId].aimY = 0;
+    players[playerId].facingX = 0;
+    players[playerId].score = 0;
+    players[playerId].gold = 0;
+    players[playerId].keys = 0;
+    players[playerId].scrolls = 0;
+    players[playerId].exit = 0;
+    players[playerId].animationChange = 1; // Trigger immediate animation
+
+    for (i=0; i<5; i++) {
+        players[playerId].hasBoosts[i] = 0;
+    }
+
+    players[playerId].canBoost = playerCanBoostByType[characterType];
+
+    overlayChanged = 1;
 }
 
 #pragma code-name (pop)

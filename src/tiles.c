@@ -11,6 +11,8 @@
 #include "joy.h"
 #include "players.h"
 
+#pragma code-name (push, "BANKRAM02")
+
 void loadDungeonTiles() {
     char buf[16];
     unsigned char dngType = level % 5 == 0 ? 0 : (level % 5) - 1;
@@ -19,35 +21,6 @@ void loadDungeonTiles() {
     loadFileToVRAM(buf, L0_TILEBASE_DNG_ADDR);
 }
 
-unsigned char letterToTile(char letter) {
-    unsigned char tile;
-
-    if (letter >= 193 && letter <= 218) {
-        tile = letter - 193;
-    } else if (letter >= 48 && letter <= 57) {
-        tile = letter - 22;
-    } else if (letter == 58) {
-        tile = 36;
-    } else if (letter == 46) {
-        tile = 37;
-    } else if (letter == 63) {
-        tile = 38;
-    } else if (letter == 45) {
-        tile = 39;
-    } else if (letter == 33) {
-        tile = 40;
-    } else if (letter == 39) {
-        tile = 41;
-    } else if (letter == 42) {
-        tile = 42;
-    } else if (letter >= 60 && letter <= 66) { // Key through upgrades
-        tile = letter - 14;
-    } else {
-        return 44;
-    }
-
-    return tile;
-}
 
 void clearLayer0() {
     // Note we need a `short` here because there are more than 255 tiles
@@ -62,23 +35,6 @@ void clearLayer0() {
     // Empty tiles
     for (i=0; i<L0_MAPBASE_TILE_COUNT; i++) {
         VERA.data0 = TILE_TRANS;
-        VERA.data0 = 0;
-    }
-}
-
-void clearLayer1() {
-    // Note we need a `short` here because there are more than 255 tiles
-    unsigned short i;
-
-    // Clear layer 1
-    VERA.address = L1_MAPBASE_ADDR;
-    VERA.address_hi = L1_MAPBASE_ADDR>>16;
-    // Always set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
-
-    // Empty tiles
-    for (i=0; i<L1_MAPBASE_TILE_COUNT; i++) {
-        VERA.data0 = L1_TILE_TRANS;
         VERA.data0 = 0;
     }
 }
@@ -119,11 +75,6 @@ void clearLayer0VisibleArea() {
     }
 }
 
-void clearLayers() {
-    clearLayer0();
-    clearLayer1();
-}
-
 void clearVisibleLayers() {
     clearLayer0VisibleArea();
     clearLayer1VisibleArea();
@@ -143,6 +94,38 @@ void updateCharacterTypeInOverlay(unsigned char playerId) {
         VERA.data0 = (CHARACTER_NAME_TILES+(players[playerId].characterType*16))+x+(playerId*8);
         VERA.data0 = 0;
     }
+}
+
+#pragma code-name (pop)
+
+unsigned char letterToTile(char letter) {
+    unsigned char tile;
+
+    if (letter >= 193 && letter <= 218) {
+        tile = letter - 193;
+    } else if (letter >= 48 && letter <= 57) {
+        tile = letter - 22;
+    } else if (letter == 58) {
+        tile = 36;
+    } else if (letter == 46) {
+        tile = 37;
+    } else if (letter == 63) {
+        tile = 38;
+    } else if (letter == 45) {
+        tile = 39;
+    } else if (letter == 33) {
+        tile = 40;
+    } else if (letter == 39) {
+        tile = 41;
+    } else if (letter == 42) {
+        tile = 42;
+    } else if (letter >= 60 && letter <= 66) { // Key through upgrades
+        tile = letter - 14;
+    } else {
+        return 44;
+    }
+
+    return tile;
 }
 
 void drawOverlayBackground() {
@@ -373,8 +356,10 @@ unsigned char gameQuestion(char *msg1, char *msg2) {
 
     messageCenter(msg);
 
+    BANK_NUM = CODE_BANK;
     pressed = waitForButtonPress();
-
+    BANK_NUM = MAP_BANK;
+    
     clearL1PlayArea();
 
     return !JOY_START(pressed);

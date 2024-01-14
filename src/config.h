@@ -35,9 +35,7 @@
 #define PALETTE_ADDR 0x1FA00L
 
 #define MAP_BANK 1
-#define INSTRUCTIONS_BANK 2
-#define CONFIG_BANK 3
-#define PLAYER_BANK 4
+#define CODE_BANK 2
 
 #define ZSM_BANK 10
 #define SFX_BANK_1 11

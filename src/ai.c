@@ -146,7 +146,7 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     if (players[playerId].health > adjustedDmg) {
         players[playerId].health -= adjustedDmg;
     } else {
-        BANK_NUM = PLAYER_BANK;
+        BANK_NUM = CODE_BANK;
         genEntityId = destroyPlayer(playerId);
         BANK_NUM = MAP_BANK;
         // Update the map here because we switched banks
@@ -272,7 +272,9 @@ void moveEntity(Entity *entity) {
                 if (xTemp > 0 && yTemp > 0 && distX<=LOB_PIXEL_MAX && distY<=LOB_PIXEL_MAX) {
                     for (i=0; i < ENTITY_COUNT; i++) {
                         if (entityList[i].health == 0) {
+                            BANK_NUM = CODE_BANK;
                             createEntity(TILE_ENTITY_START+entity->entityTypeId, i, entity->currentTileX, entity->currentTileY);
+                            BANK_NUM = MAP_BANK;
                             entityList[i].tileId += 3; // Move to the shot tile for this entity
                             entityList[i].isShot = 1; 
                             entityList[i].isLob = 1;
@@ -304,7 +306,9 @@ void moveEntity(Entity *entity) {
                             newTileX = distX == 0 ? entity->currentTileX : entity->currentTileX > guyTileX ? entity->currentTileX-1 : entity->currentTileX+1;
                             newTileY = distY == 0 ? entity->currentTileY : entity->currentTileY > guyTileY ? entity->currentTileY-1 : entity->currentTileY+1;
 
+                            BANK_NUM = CODE_BANK;
                             createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
+                            BANK_NUM = MAP_BANK;
                             entityList[i].tileId += 3; // Move to the shot tile for this entity
                             entityList[i].isShot = 1;
                             entityList[i].animationCount = 2;
@@ -368,7 +372,9 @@ void moveEntity(Entity *entity) {
             if (foundEmptyTile) {
                 for (i=0; i < ENTITY_COUNT; i++) {
                     if (entityList[i].health == 0) {
+                        BANK_NUM = CODE_BANK;
                         createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
+                        BANK_NUM = MAP_BANK;
                         addNewEntityToList(&entityList[i], &entitySleepList);
                         mapStatus[newTileY][newTileX] = ENTITY_TILE_START + entityList[i].spriteId;
                         break;
