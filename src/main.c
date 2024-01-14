@@ -27,10 +27,14 @@ void setScroll() {
             x = players[1].x;
             y = players[1].y;
         }
-    } else {
+    } else if (activePlayers == 2) {
         // Both players active, scroll around the midpoint
         x = (players[0].x + players[1].x) >>1;
         y = (players[0].y + players[1].y) >>1;
+    } else {
+        // Nobody active...just keep the scroll where it is
+        // Game is probably over
+        return;
     }
 
     // Just follow P0 for now
@@ -53,7 +57,7 @@ void setScroll() {
 }
 
 void main() {
-    unsigned char count = 0, load, exitLevel, gameOver, i, j, healthTicks;
+    unsigned char count = 0, load, exitLevel, gameOver, i, j, healthTicks, deadCount;
     unsigned char inputTicks = 0;
     Entity *entity;
 
@@ -65,6 +69,7 @@ void main() {
 
     while(1) {
         gameOver=0;
+        deadCount=0;
         level=STARTING_LEVEL;
 
         scrollX=0;
@@ -226,6 +231,15 @@ void main() {
                             exitLevel = 0;
                             break;
                         }
+                    }
+                }
+
+                // Let the game continue for a few seconds after the players are dead
+                if (gameOver) {
+                    deadCount+= 1;
+                    if (deadCount < 180) {
+                        gameOver = 0;
+                        exitLevel = 0;
                     }
                 }
                 wait();

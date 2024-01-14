@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <cx16.h>
 
 #include "map.h"
 #include "sprites.h"
@@ -7,6 +8,9 @@
 #include "ai.h"
 #include "tiles.h"
 #include "list.h"
+#include "players.h"
+#include "config.h"
+#include "utils.h"
 
 void toggleEntity(unsigned char spriteId, unsigned char show) {
     unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
@@ -124,7 +128,13 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
 }
 
 void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char dmg) {
+    unsigned char genEntityId;
     signed char adjustedDmg = dmg - players[playerId].stats->armor[statsId];
+
+    // Make sure the player is still active
+    if (!players[playerId].active) {
+        return;
+    }
 
     // See if all damage blocked
     if (adjustedDmg<=0) {
@@ -136,9 +146,12 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     if (players[playerId].health > adjustedDmg) {
         players[playerId].health -= adjustedDmg;
     } else {
-        players[playerId].health = 0;
-        players[playerId].active = 0;
-        activePlayers -= 1;
+        BANK_NUM = PLAYER_BANK;
+        genEntityId = destroyPlayer(playerId);
+        BANK_NUM = MAP_BANK;
+        // Update the map here because we switched banks
+        mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = ENTITY_TILE_START + entityList[genEntityId].spriteId;
+        
     }
 }
 

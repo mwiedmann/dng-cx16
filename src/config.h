@@ -37,6 +37,7 @@
 #define MAP_BANK 1
 #define INSTRUCTIONS_BANK 2
 #define CONFIG_BANK 3
+#define PLAYER_BANK 4
 
 void loadBankedCode();
 void init();

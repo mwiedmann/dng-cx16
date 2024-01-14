@@ -528,3 +528,32 @@ void moveWeapon(unsigned char playerId) {
         }
     }
 }
+
+#pragma code-name (push, "BANKRAM04")
+
+unsigned char destroyPlayer(unsigned char playerId) {
+    unsigned char i, entityId;
+
+    players[playerId].health = 0;
+    players[playerId].active = 0;
+    activePlayers -= 1;
+    toggleEntity(playerId, 0);
+
+    for (i=0; i < ENTITY_COUNT; i++) {
+        if (entityList[i].health == 0) {
+            createEntity(TILE_GENERATOR_START, i, players[playerId].currentTileX, players[playerId].currentTileY);
+            addNewEntityToList(&entityList[i], &entitySleepList);
+            entityId = i;
+            break;
+        }
+    }
+
+    // Player died, retarget all entities
+    for (i=0; i < ENTITY_COUNT; i++) {
+        entityList[i].hasTarget = 0;        
+    }
+
+    return entityId;
+}
+
+#pragma code-name (pop)
