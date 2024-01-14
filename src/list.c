@@ -2,21 +2,6 @@
 #include "list.h"
 #include "globals.h"
 
-void printList(char *name, Entity *list) {
-    Entity *entity;
-
-    entity = list;
-    
-    printf("%s: ", name);
-
-    while (entity) {
-        printf("%i ", entity->spriteId);
-        entity = entity->next;
-    }
-
-    printf("\n");
-}
-
 void addNewEntityToList(Entity *entity, Entity **to) {
     // Add to the beginning of the new list
     // There is never a prev since 1st Entity in list

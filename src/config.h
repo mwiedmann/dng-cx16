@@ -39,6 +39,11 @@
 #define CONFIG_BANK 3
 #define PLAYER_BANK 4
 
+#define ZSM_BANK 10
+#define SFX_BANK_1 11
+#define MUSIC_BANK_START 12
+
+
 void loadBankedCode();
 void init();
 void initTiles();
