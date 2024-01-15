@@ -68,14 +68,13 @@ void main() {
     init();
     initTiles();
 
-    // soundInit();
-    // soundPlayMusic(SOUND_MUSIC_TITLE);
-
-    // BANK_NUM = CODE_BANK;
+    soundInit();
+    waitCount(30);
 
     while(1) {
+        soundPlayMusic(SOUND_MUSIC_TITLE);
         BANK_NUM = CODE_BANK;
-        
+
         gameOver=0;
         deadCount=0;
         level=STARTING_LEVEL;
@@ -96,6 +95,8 @@ void main() {
 
         instructions();
 
+        soundStopChannel(SOUND_PRIORITY_MUSIC);
+
         activePlayers=0;
         for (i=0; i<NUM_PLAYERS; i++) {
             if (players[i].active) {
@@ -104,6 +105,7 @@ void main() {
         }
 
         while(!gameOver) {
+            BANK_NUM = CODE_BANK;
             loadDungeonTiles();
             showLevelIntro();
             

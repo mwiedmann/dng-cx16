@@ -39,11 +39,7 @@ void soundInit() {
 
 	BANK_NUM = SFX_BANK_1;
 
-	loadSound("spray.zsm", 0);
-	loadSound("woo.zsm", 1);
-	loadSound("crash.zsm", 2);
-	loadSound("yes.zsm", 3);
-	loadSound("no.zsm", 4);
+	loadSound("barbatk.zsm", 0);
 }
 
 void soundPlaySFX(unsigned char effect, unsigned char priority) {

@@ -9,6 +9,7 @@
 #include "ai.h"
 #include "utils.h"
 #include "config.h"
+#include "sound.h"
 
 char *boostHints[5][2] = {
     {"MUSHROOM INCREASES", "PLAYER SPEED"},
@@ -378,6 +379,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = GUY_CLAIM+playerId;
 
     if (players[playerId].pressedShoot && !weapons[playerId].visible && players[playerId].ticksUntilNextShot == 0) {
+        soundPlaySFX(SOUND_SFX_BARBATK, SOUND_PRIORITY_ATTACK);
         players[playerId].ticksUntilNextShot = players[playerId].stats->ticksToRanged;
         weapons[playerId].x = players[playerId].x;
         weapons[playerId].y = players[playerId].y;
