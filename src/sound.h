@@ -7,6 +7,7 @@
 
 #define SOUND_MUSIC_NONE 0
 #define SOUND_MUSIC_TITLE 1
+#define SOUND_MUSIC_WELCOME 2
 
 #define SOUND_SFX_BARBATK 0
 

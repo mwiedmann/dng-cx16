@@ -23,6 +23,7 @@ unsigned char sound_tmp, param1, param2;
 char * musicNames[] = {
 	"",
 	"title.zsm",
+	"welcome.zsm"
 };
 
 void loadSound(char* name, unsigned char index) {
@@ -90,6 +91,8 @@ void soundLoadMusic(unsigned char music) {
 }
 
 void soundPlayMusic(unsigned char music) {
+	unsigned char prevBank = BANK_NUM;
+
 	if (!musicOn || music == currentMusic) {
 		return;
 	}
@@ -124,4 +127,6 @@ void soundPlayMusic(unsigned char music) {
 	asm volatile ("ldx %v", param2); //music loops
 	asm volatile ("sec");
 	asm volatile ("jsr zsm_setloop");
+
+	BANK_NUM = prevBank;
 }

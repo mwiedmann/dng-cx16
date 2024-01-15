@@ -95,8 +95,6 @@ void main() {
 
         instructions();
 
-        soundStopChannel(SOUND_PRIORITY_MUSIC);
-
         activePlayers=0;
         for (i=0; i<NUM_PLAYERS; i++) {
             if (players[i].active) {
@@ -104,6 +102,9 @@ void main() {
             }
         }
 
+        soundStopChannel(SOUND_PRIORITY_MUSIC);
+        soundLoadMusic(SOUND_MUSIC_WELCOME);
+        
         while(!gameOver) {
             BANK_NUM = CODE_BANK;
             loadDungeonTiles();
@@ -115,6 +116,10 @@ void main() {
             BANK_NUM = CODE_BANK;
             drawMap(level);
             BANK_NUM = MAP_BANK;
+
+            if (level == 0) {
+                soundPlayMusic(SOUND_MUSIC_WELCOME);
+            }
 
             exitLevel = 0;
             healthTicks = 0;
