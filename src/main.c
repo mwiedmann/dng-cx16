@@ -172,9 +172,14 @@ void main() {
                         continue;
                     }
 
-                    if (players[i].animationChange) {
+                    if (players[i].wasHit || players[i].animationChange) {
                         players[i].animationChange = 0;
-                        moveAndSetAnimationFrame(i, players[i].x, players[i].y, players[i].animationTile, players[i].animationFrame, players[i].facingX);
+                        moveAndSetAnimationFrame(i, players[i].x, players[i].y, players[i].animationTile,
+                            players[i].animationFrame, players[i].facingX, players[i].wasHit > PLAYER_HIT_ANIM_FRAMES_STOP);
+                        
+                        if (players[i].wasHit) {
+                            players[i].wasHit -= 1;
+                        }
                     } else {
                         moveSpriteId(i, players[i].x, players[i].y);
                     }
@@ -225,7 +230,7 @@ void main() {
                     healthTicks = 0;
                     for (i=0; i<NUM_PLAYERS; i++) {
                         if (players[i].active && !players[i].exit) {
-                            meleeAttackGuy(i, 0, 1);
+                            meleeAttackGuy(i, 0, 1, 0);
                         }
                     }
                 }

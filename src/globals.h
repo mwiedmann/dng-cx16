@@ -34,6 +34,9 @@
 #define BOOST_ID_MAGIC 3
 #define BOOST_ID_ARMOR 4
 
+#define PLAYER_HIT_ANIM_FRAMES 12
+#define PLAYER_HIT_ANIM_FRAMES_STOP 8
+
 enum Character {
   BARBARIAN,
   MAGE,
@@ -133,6 +136,7 @@ typedef struct Guy {
     unsigned char exit;
     unsigned char *canBoost;
     unsigned char hasBoosts[5]; // speed, melee, ranged, magic, armor
+    unsigned char wasHit;
 } Guy;
 
 typedef struct Weapon {

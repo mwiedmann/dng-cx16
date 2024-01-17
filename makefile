@@ -29,8 +29,8 @@ img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/D1TILES.BIN 16 16 32 8 4
 	node tools/gimp-img-convert.js gfx/tiles.data build/D2TILES.BIN 16 16 64 8 4
 	node tools/gimp-img-convert.js gfx/tiles.data build/D3TILES.BIN 16 16 96 8 4
-	node tools/gimp-img-convert.js gfx/tiles.data build/GMTILES.BIN 16 16 128 8 13
-	node tools/gimp-img-convert.js gfx/tiles.data build/OVTILES.BIN 8 8 928 16 16
+	node tools/gimp-img-convert.js gfx/tiles.data build/GMTILES.BIN 16 16 128 8 14
+	node tools/gimp-img-convert.js gfx/tiles.data build/OVTILES.BIN 8 8 960 16 16
 
 pal:
 	node tools/gimp-pal-convert.js

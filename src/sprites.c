@@ -7,7 +7,8 @@
 #include "tiles.h"
 #include "globals.h"
 
-void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned short y, unsigned char tileId, unsigned char frame, unsigned char dir) {
+void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned short y,
+    unsigned char tileId, unsigned char frame, unsigned char dir, unsigned char palOffset) {
     unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
     // VRAM address for sprite 1 (this is fixed)
     unsigned long spriteGraphicAddress = L0_TILEBASE_ADDR + ((tileId+frame)*L0_TILE_SIZE);
@@ -29,6 +30,7 @@ void moveAndSetAnimationFrame(unsigned char spriteId, unsigned short x, unsigned
     VERA.data0 = (y-scrollY)>>8;
 
     VERA.data0 = 0b00001000 | dir; // Z-Depth=2 (or 0 to hide)
+    VERA.data0 = 0b01010000 | palOffset;
 }
 
 void toggleSprite(unsigned long spriteAddr, unsigned short show) {

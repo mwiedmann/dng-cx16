@@ -477,7 +477,7 @@ void moveWeapon(unsigned char playerId) {
             return;
         }
 
-        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, players[playerId].weaponTile, 0, weaponRotation[weapons[playerId].animationFrame]);
+        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, players[playerId].weaponTile, 0, weaponRotation[weapons[playerId].animationFrame], 0);
 
         // Check if hit something after the move
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
@@ -549,6 +549,7 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].scrolls = 0;
     players[playerId].exit = 0;
     players[playerId].animationChange = 1; // Trigger immediate animation
+    players[playerId].wasHit = 0;
 
     for (i=0; i<5; i++) {
         players[playerId].hasBoosts[i] = 0;
