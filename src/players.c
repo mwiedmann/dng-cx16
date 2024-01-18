@@ -379,7 +379,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = GUY_CLAIM+playerId;
 
     if (players[playerId].pressedShoot && !weapons[playerId].visible && players[playerId].ticksUntilNextShot == 0) {
-        soundPlaySFX(SOUND_SFX_BARBATK, SOUND_PRIORITY_ATTACK);
+        soundPlaySFX(players[playerId].weaponSound, playerId);
         players[playerId].ticksUntilNextShot = players[playerId].stats->ticksToRanged;
         weapons[playerId].x = players[playerId].x;
         weapons[playerId].y = players[playerId].y;
@@ -550,6 +550,8 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].exit = 0;
     players[playerId].animationChange = 1; // Trigger immediate animation
     players[playerId].wasHit = 0;
+    players[playerId].weaponSound = characterType == BARBARIAN || characterType == RANGER
+        ? SOUND_SFX_WEAPON_SWOOSH : SOUND_SFX_WEAPON_BLAST;
 
     for (i=0; i<5; i++) {
         players[playerId].hasBoosts[i] = 0;

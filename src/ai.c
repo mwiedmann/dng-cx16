@@ -11,6 +11,7 @@
 #include "players.h"
 #include "config.h"
 #include "utils.h"
+#include "sound.h"
 
 void toggleEntity(unsigned char spriteId, unsigned char show) {
     unsigned long spriteAddr = SPRITE_ADDR_START + (spriteId * 8);
@@ -574,6 +575,7 @@ void useScrollOnEntities(unsigned char playerId) {
 
     entity = entityActiveList;
 
+    soundPlaySFX(SOUND_SFX_SCROLL, playerId);
     BANK_NUM = CODE_BANK;
     flashLayer1();
     BANK_NUM = MAP_BANK;

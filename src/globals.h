@@ -137,6 +137,7 @@ typedef struct Guy {
     unsigned char *canBoost;
     unsigned char hasBoosts[5]; // speed, melee, ranged, magic, armor
     unsigned char wasHit;
+    unsigned char weaponSound;
 } Guy;
 
 typedef struct Weapon {

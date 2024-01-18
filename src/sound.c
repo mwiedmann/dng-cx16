@@ -40,7 +40,9 @@ void soundInit() {
 
 	BANK_NUM = SFX_BANK_1;
 
-	loadSound("barbatk.zsm", 0);
+	loadSound("wpnswsh.zsm", SOUND_SFX_WEAPON_SWOOSH);
+	loadSound("wpnblast.zsm", SOUND_SFX_WEAPON_BLAST);
+	loadSound("scroll.zsm", SOUND_SFX_SCROLL);
 }
 
 void soundPlaySFX(unsigned char effect, unsigned char priority) {
