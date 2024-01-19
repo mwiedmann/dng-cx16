@@ -576,9 +576,9 @@ void useScrollOnEntities(unsigned char playerId) {
     entity = entityActiveList;
 
     soundPlaySFX(SOUND_SFX_SCROLL, playerId);
-    BANK_NUM = CODE_BANK;
+    RAM_BANK = CODE_BANK;
     flashLayer1();
-    BANK_NUM = MAP_BANK;
+    RAM_BANK = MAP_BANK;
     
     while(entity) {
         nextEntity = entity->next;

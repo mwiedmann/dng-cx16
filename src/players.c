@@ -64,9 +64,9 @@ void stopMove(unsigned char playerId) {
 }
 
 void cannotAfford(unsigned char playerId) {
-    BANK_NUM = CODE_BANK;
+    RAM_BANK = CODE_BANK;
     gameMessage("YOU CANNOT AFFORD", "THIS ITEM");
-    BANK_NUM = MAP_BANK;
+    RAM_BANK = MAP_BANK;
     stopMove(playerId);
 }
 
@@ -89,9 +89,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
         if (!hints.keys) {
             hints.keys = 1;
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             gameMessage("COLLECT KEYS", "TO OPEN DOORS");
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
         }
         
         if (isShopLevel) {
@@ -100,12 +100,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                 return 1;
             }
 
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             if (!shopQuestion(KEY_PRICE, "KEY")) {
-                BANK_NUM = MAP_BANK;
+                RAM_BANK = MAP_BANK;
                 return 1;
             }
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
 
             players[playerId].gold -= KEY_PRICE;
         } else {
@@ -117,9 +117,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile == TILE_TREASURE_CHEST || tile == TILE_TREASURE_GOLD || tile == TILE_TREASURE_SILVER) {
         if (!hints.treasure) {
             hints.treasure = 1;
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             gameMessage("COLLECT TREASURE TO", "SPEND ON UPGRADES LATER");
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
         }
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_GOLD : tile == TILE_TREASURE_GOLD ? GOLD_PILE_GOLD : SILVER_PILE_GOLD;
         players[playerId].score += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_SCORE : tile == TILE_TREASURE_GOLD ? GOLD_PILE_SCORE : SILVER_PILE_SCORE;
@@ -127,9 +127,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile == TILE_SCROLL && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
         if (!hints.scrolls) {
             hints.scrolls = 1;
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             gameMessage("USE SCROLLS TO DAMAGE", "ALL VISIBLE ENEMIES");
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
         }
 
         if (isShopLevel) {
@@ -138,12 +138,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                 return 1;
             }
 
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             if (!shopQuestion(SCROLL_PRICE, "SCROLL")) {
-                BANK_NUM = MAP_BANK;
+                RAM_BANK = MAP_BANK;
                 return 1;
             }
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
 
             players[playerId].gold -= SCROLL_PRICE;
         } else {
@@ -157,18 +157,18 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
         if (!hints.boosts[id]) {
             hints.boosts[id] = 1;
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             gameMessage(boostHints[id][1], boostHints[id][2]);
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
         }
 
         // If a player's character type already has this power, then don't let them pick it up.
         // If they alreay have this boost, then they can get it again but it has no effect (other than scoring points)
         // Might do this in a 2 player game to grief the other player!
         if (!players[playerId].canBoost[id]) {
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             gameMessage("YOUR CHARACTER IS ALREADY", "GIFTED IN THIS AREA");
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
             stopMove(playerId);
             return 1;
         }
@@ -179,12 +179,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                 return 1;
             }
 
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             if (!shopQuestion(BOOST_PRICE, boostHints[id][0])) {
-                BANK_NUM = MAP_BANK;
+                RAM_BANK = MAP_BANK;
                 return 1;
             }
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
 
             players[playerId].gold -= BOOST_PRICE;
         } else {
@@ -197,9 +197,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
         if (!hints.food) {
             hints.food = 1;
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             gameMessage("EAT FOOD TO", "GAIN HEALTH");
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
         }
 
         if (isShopLevel) {
@@ -208,12 +208,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                     cannotAfford(playerId);
                     return 1;
                 } else {
-                    BANK_NUM = CODE_BANK;
+                    RAM_BANK = CODE_BANK;
                     if (!shopQuestion(BIG_FOOD_PRICE, "LARGE MEAL")) {
-                        BANK_NUM = MAP_BANK;
+                        RAM_BANK = MAP_BANK;
                         return 1;
                     }
-                    BANK_NUM = MAP_BANK;
+                    RAM_BANK = MAP_BANK;
 
                     players[playerId].gold -= BIG_FOOD_PRICE;
                 }
@@ -224,12 +224,12 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                     cannotAfford(playerId);
                     return 1;
                 } else {
-                    BANK_NUM = CODE_BANK;
+                    RAM_BANK = CODE_BANK;
                     if (!shopQuestion(SMALL_FOOD_PRICE, "SMALL MEAL")) {
-                        BANK_NUM = MAP_BANK;
+                        RAM_BANK = MAP_BANK;
                         return 1;
                     }
-                    BANK_NUM = MAP_BANK;
+                    RAM_BANK = MAP_BANK;
 
                     players[playerId].gold -= SMALL_FOOD_PRICE;
                 }

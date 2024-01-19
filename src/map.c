@@ -65,7 +65,7 @@ void createMapStatus(unsigned char level) {
     sprintf(buf, "l%umap.bin", level);
     loadFileToBankedRAM(buf, MAP_BANK, 0);
 
-    BANK_NUM = MAP_BANK;
+    RAM_BANK = MAP_BANK;
 
     entitySleepList = 0;
     

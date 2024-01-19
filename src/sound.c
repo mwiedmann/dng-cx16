@@ -38,7 +38,7 @@ void soundInit() {
 	asm volatile ("jsr zsm_init_engine");
 	asm volatile ("jsr zsmkit_setisr");
 
-	BANK_NUM = SFX_BANK_1;
+	RAM_BANK = SFX_BANK_1;
 
 	loadSound("wpnswsh.zsm", SOUND_SFX_WEAPON_SWOOSH);
 	loadSound("wpnblast.zsm", SOUND_SFX_WEAPON_BLAST);
@@ -46,13 +46,13 @@ void soundInit() {
 }
 
 void soundPlaySFX(unsigned char effect, unsigned char priority) {
-	unsigned char prevBank = BANK_NUM;
+	unsigned char prevBank = RAM_BANK;
 
 	if (!sfxOn) {
 		return;
 	}
 
-	BANK_NUM = SFX_BANK_1;
+	RAM_BANK = SFX_BANK_1;
 
 	param1 = sfxAddressHigh[effect];
 	param2 = priority;
@@ -68,7 +68,7 @@ void soundPlaySFX(unsigned char effect, unsigned char priority) {
 	asm volatile ("ldx %v", param2);
 	asm volatile ("jsr zsm_play");
 
-	BANK_NUM = prevBank;
+	RAM_BANK = prevBank;
 }
 
 void soundStopChannel(unsigned char priority) {
@@ -84,7 +84,7 @@ void soundLoadMusic(unsigned char music) {
 	asm volatile ("ldx %v", param2);
 	asm volatile ("jsr zsm_stop");
 
-	BANK_NUM = MUSIC_BANK_START;
+	RAM_BANK = MUSIC_BANK_START;
 
 	cbm_k_setlfs(0, 8, 2);
 	cbm_k_setnam(musicNames[music]);
@@ -93,7 +93,7 @@ void soundLoadMusic(unsigned char music) {
 }
 
 void soundPlayMusic(unsigned char music) {
-	unsigned char prevBank = BANK_NUM;
+	unsigned char prevBank = RAM_BANK;
 
 	if (!musicOn || music == currentMusic) {
 		return;
@@ -115,7 +115,7 @@ void soundPlayMusic(unsigned char music) {
 		soundLoadMusic(music);
 	}
 
-	BANK_NUM = MUSIC_BANK_START;
+	RAM_BANK = MUSIC_BANK_START;
 
 	asm volatile ("lda #$00");
 	asm volatile ("ldx %v", param2);
@@ -130,5 +130,5 @@ void soundPlayMusic(unsigned char music) {
 	asm volatile ("sec");
 	asm volatile ("jsr zsm_setloop");
 
-	BANK_NUM = prevBank;
+	RAM_BANK = prevBank;
 }

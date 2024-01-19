@@ -64,7 +64,7 @@ void main() {
 
     loadBankedCode();
 
-    BANK_NUM = CODE_BANK;
+    RAM_BANK = CODE_BANK;
     init();
     initTiles();
 
@@ -73,7 +73,7 @@ void main() {
 
     while(1) {
         soundPlayMusic(SOUND_MUSIC_TITLE);
-        BANK_NUM = CODE_BANK;
+        RAM_BANK = CODE_BANK;
 
         gameOver=0;
         deadCount=0;
@@ -110,16 +110,16 @@ void main() {
             // Items need to be purchased on these levels
             isShopLevel = level != 0 && level % 5 == 0;
 
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             loadDungeonTiles();
             showLevelIntro();
             
             clearBank(MAP_BANK);
             createMapStatus(level);
 
-            BANK_NUM = CODE_BANK;
+            RAM_BANK = CODE_BANK;
             drawMap(level);
-            BANK_NUM = MAP_BANK;
+            RAM_BANK = MAP_BANK;
 
             if (level == 0) {
                 soundPlayMusic(SOUND_MUSIC_WELCOME);
@@ -217,9 +217,9 @@ void main() {
                     };
 
                     if (overlayChanged) {
-                        BANK_NUM = CODE_BANK;
+                        RAM_BANK = CODE_BANK;
                         updateOverlay();
-                        BANK_NUM = MAP_BANK;
+                        RAM_BANK = MAP_BANK;
                         overlayChanged = 0;
                     }
                 }

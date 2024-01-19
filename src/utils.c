@@ -38,7 +38,7 @@ void loadFileToVRAM(char *filename, unsigned long addr) {
 
 void loadFileToBankedRAM(char *filename, unsigned char bank, unsigned short addr) {
     // Set the RAM Bank we are loading into
-    BANK_NUM = bank;
+    RAM_BANK = bank;
 
     // See the chapter on Files for info on these cbm file functions
     cbm_k_setnam(filename);
@@ -56,7 +56,7 @@ void clearBank(unsigned char bank) {
     unsigned short i;
     unsigned char *ptr;
 
-    BANK_NUM = bank;
+    RAM_BANK = bank;
 
     for (i=0; i<8192; i++) {
         ptr = (BANK_RAM + i);
