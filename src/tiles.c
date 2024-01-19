@@ -216,24 +216,6 @@ void flashLayer1() {
     }
 }
 
-// unsigned char gameQuestion(char *msg1, char *msg2) {
-//     char * msg[4] = {0,0,"BUTTON TO ACCEPT","START TO CANCEL"};
-//     unsigned char pressed;
-
-//     msg[0] = msg1;
-//     msg[1] = msg2;
-
-//     messageCenter(msg);
-
-//     BANK_NUM = CODE_BANK;
-//     pressed = waitForButtonPress();
-//     BANK_NUM = MAP_BANK;
-
-//     clearL1PlayArea();
-
-//     return !JOY_START(pressed);
-// }
-
 void clearL1PlayArea() {
     unsigned char y, x, i;
     unsigned long addr;
@@ -253,6 +235,30 @@ void clearL1PlayArea() {
             }
         }
     }
+}
+
+unsigned char shopQuestion(unsigned short cost, char *item) {
+    char buf[30];
+    char * msg[4] = {0,0,"PRESS BUTTON TO ACCEPT","START TO CANCEL"};
+    unsigned char pressed;
+
+    msg[0] = item;
+
+    sprintf(buf, "PRICE: %u GOLD", cost);
+    msg[1] = buf;
+
+    messageCenter(msg);
+
+    pressed = waitForButtonPress();
+
+    clearL1PlayArea();
+
+    // We don't check controls every frame so we need to cancel the move
+    // or the player repeated touches the item
+    stopMove(0);
+    stopMove(1);
+
+    return !JOY_START(pressed);
 }
 
 void gameMessage(char *msg1, char *msg2) {
@@ -285,18 +291,18 @@ void updateOverlay() {
         }
 
         for (i=0; i<players[p].keys; i++) {
-            buf[i]=60;
+            buf[i]=160;
         }
 
         for (i=0; i<players[p].scrolls; i++) {
-            buf[(INVENTORY_LIMIT-1)-i]=61;
+            buf[(INVENTORY_LIMIT-1)-i]=161;
         }
 
         buf[10] = 0;
         message(30, 11+(p*10), buf);
 
         for (i=0; i<5; i++) {
-            buf[i] = players[p].hasBoosts[i] ? 62+i : ' ';
+            buf[i] = players[p].hasBoosts[i] ? 162+i : ' ';
         }
 
         buf[5] = 0;
@@ -353,8 +359,8 @@ void messageCenter(char *msg[4]) {
         tile = 41;
     } else if (letter == 42) {
         tile = 42;
-    } else if (letter >= 60 && letter <= 66) { // Key through upgrades
-        tile = letter - 14;
+    } else if (letter >= 160 && letter <= 166) { // Key through upgrades
+        tile = (letter - 100) - 14; // <-- Had to adjust tile location a few times...just adjust here now
     } else {
         return 44;
     }

@@ -102,7 +102,7 @@ void showStatSheet(unsigned char startY) {
     message(0, startY+1, "SPEED  *    **   **    ****");
     message(0, startY+2, "MELEE  **** *    **    ***");
     message(0, startY+3, "RANGED");
-    message(0, startY+4, "   DMG **** ***  **    **");
+    message(0, startY+4, "   DMG **** ***  *      *");
     message(0, startY+5, "  RATE *    **   ***   ****");
     message(0, startY+6, "MAGIC  *    **** ****  **");
     message(0, startY+7, "HEALTH **** *    ***   **");
@@ -273,6 +273,7 @@ void showLevelIntro() {
 
     sprintf(buf, "LEVEL %u", level);
     msg[0] = buf;
+    msg[2] = isShopLevel ? "PURCHASE UPGRADES" : "CAN YOU SURVIVE?";
 
     messageCenter(msg);
 

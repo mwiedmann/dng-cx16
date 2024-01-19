@@ -11,12 +11,12 @@
 #include "config.h"
 #include "sound.h"
 
-char *boostHints[5][2] = {
-    {"MUSHROOM INCREASES", "PLAYER SPEED"},
-    {"WEAPON IMPROVES", "PLAYER MELEE ATTACKS"},
-    {"WEAPON IMPROVES", "PLAYER RANGED ATTACKS"},
-    {"RING IMPROVES", "PLAYER SCROLL POWER"},
-    {"MITHRIL IMPROVES", "PLAYER ARMOR"}
+char *boostHints[5][3] = {
+    {"IMPROVED SPEED", "MUSHROOM INCREASES", "PLAYER SPEED"},
+    {"IMPROVED MELEE ATTACKS", "WEAPON IMPROVES", "PLAYER MELEE ATTACKS"},
+    {"IMPROVED RANGED ATTACKS", "WEAPON IMPROVES", "PLAYER RANGED ATTACKS"},
+    {"IMPROVED SCROLL POWER", "RING IMPROVES", "PLAYER SCROLL POWER"},
+    {"IMPROVED ARMOR", "MITHRIL IMPROVES", "PLAYER ARMOR"}
 };
 
 void setGuyDirection(unsigned char playerId) {
@@ -58,12 +58,17 @@ void setGuyDirection(unsigned char playerId) {
     }
 }
 
-#define KEY_PRICE 250
-#define SCROLL_PRICE 500
-#define BIG_FOOD_PRICE 500
-#define SMALL_FOOD_PRICE 250
+void stopMove(unsigned char playerId) {
+    players[playerId].pressedX = 0;
+    players[playerId].pressedY = 0;
+}
 
-#define BOOST_PRICE 1000
+void cannotAfford(unsigned char playerId) {
+    BANK_NUM = CODE_BANK;
+    gameMessage("YOU CANNOT AFFORD", "THIS ITEM");
+    BANK_NUM = MAP_BANK;
+    stopMove(playerId);
+}
 
 unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char fromY, unsigned short toX, unsigned short toY) {
     unsigned char toTileX = toX>>4;
@@ -82,21 +87,29 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
     // There is an inventory limit on keys+scrolls
     if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
+        if (!hints.keys) {
+            hints.keys = 1;
+            BANK_NUM = CODE_BANK;
+            gameMessage("COLLECT KEYS", "TO OPEN DOORS");
+            BANK_NUM = MAP_BANK;
+        }
+        
         if (isShopLevel) {
             if (players[playerId].gold < KEY_PRICE) {
+                cannotAfford(playerId);
                 return 1;
             }
 
+            BANK_NUM = CODE_BANK;
+            if (!shopQuestion(KEY_PRICE, "KEY")) {
+                BANK_NUM = MAP_BANK;
+                return 1;
+            }
+            BANK_NUM = MAP_BANK;
+
             players[playerId].gold -= KEY_PRICE;
         } else {
-            if (!hints.keys) {
-                hints.keys = 1;
-                BANK_NUM = CODE_BANK;
-                gameMessage("COLLECT KEYS", "TO OPEN DOORS");
-                BANK_NUM = MAP_BANK;
-            }
-
-            players[playerId].score += 100;
+            players[playerId].score += KEY_SCORE;
         }
 
         players[playerId].keys += 1;
@@ -105,27 +118,36 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.treasure) {
             hints.treasure = 1;
             BANK_NUM = CODE_BANK;
-            gameMessage("COLLECT GOLD AND", "SPEND ON UPGRADES LATER");
+            gameMessage("COLLECT TREASURE TO", "SPEND ON UPGRADES LATER");
             BANK_NUM = MAP_BANK;
         }
-        players[playerId].gold += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
-        players[playerId].score += tile == TILE_TREASURE_CHEST ? 500 : tile == TILE_TREASURE_GOLD ? 250 : 100;
+        players[playerId].gold += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_GOLD : tile == TILE_TREASURE_GOLD ? GOLD_PILE_GOLD : SILVER_PILE_GOLD;
+        players[playerId].score += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_SCORE : tile == TILE_TREASURE_GOLD ? GOLD_PILE_SCORE : SILVER_PILE_SCORE;
         clearTile = 1;
     } else if (tile == TILE_SCROLL && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
+        if (!hints.scrolls) {
+            hints.scrolls = 1;
+            BANK_NUM = CODE_BANK;
+            gameMessage("USE SCROLLS TO DAMAGE", "ALL VISIBLE ENEMIES");
+            BANK_NUM = MAP_BANK;
+        }
+
         if (isShopLevel) {
             if (players[playerId].gold < SCROLL_PRICE) {
+                cannotAfford(playerId);
                 return 1;
             }
 
+            BANK_NUM = CODE_BANK;
+            if (!shopQuestion(SCROLL_PRICE, "SCROLL")) {
+                BANK_NUM = MAP_BANK;
+                return 1;
+            }
+            BANK_NUM = MAP_BANK;
+
             players[playerId].gold -= SCROLL_PRICE;
         } else {
-            if (!hints.scrolls) {
-                hints.scrolls = 1;
-                BANK_NUM = CODE_BANK;
-                gameMessage("USE SCROLLS TO", "DAMAGE ALL ENEMIES");
-                BANK_NUM = MAP_BANK;
-            }
-            players[playerId].score += 250;
+            players[playerId].score += SCROLL_SCORE;
         }
 
         players[playerId].scrolls += 1;
@@ -133,53 +155,86 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile >= TILE_BOOST_START && tile <= TILE_BOOST_END) {
         id = tile-TILE_BOOST_START;
 
-        if (!players[playerId].canBoost[id]) {
-            return 1;
-        }
-
-        if (isShopLevel) {
-            if (players[playerId].gold < BOOST_PRICE) {
-                return 1;
-            }
-
-            players[playerId].gold -= BOOST_PRICE;
-        } else {
-            players[playerId].score += 250;
-        }
-
         if (!hints.boosts[id]) {
             hints.boosts[id] = 1;
             BANK_NUM = CODE_BANK;
-            gameMessage(boostHints[id][0], boostHints[id][1]);
+            gameMessage(boostHints[id][1], boostHints[id][2]);
             BANK_NUM = MAP_BANK;
         }
+
+        // If a player's character type already has this power, then don't let them pick it up.
+        // If they alreay have this boost, then they can get it again but it has no effect (other than scoring points)
+        // Might do this in a 2 player game to grief the other player!
+        if (!players[playerId].canBoost[id]) {
+            BANK_NUM = CODE_BANK;
+            gameMessage("YOUR CHARACTER IS ALREADY", "GIFTED IN THIS AREA");
+            BANK_NUM = MAP_BANK;
+            stopMove(playerId);
+            return 1;
+        }
+        
+        if (isShopLevel) {
+            if (players[playerId].gold < BOOST_PRICE) {
+                cannotAfford(playerId);
+                return 1;
+            }
+
+            BANK_NUM = CODE_BANK;
+            if (!shopQuestion(BOOST_PRICE, boostHints[id][0])) {
+                BANK_NUM = MAP_BANK;
+                return 1;
+            }
+            BANK_NUM = MAP_BANK;
+
+            players[playerId].gold -= BOOST_PRICE;
+        } else {
+            players[playerId].score += BOOST_SCORE;
+        }
+
 
         players[playerId].hasBoosts[id] = 1;
         clearTile = 1;
     } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
+        if (!hints.food) {
+            hints.food = 1;
+            BANK_NUM = CODE_BANK;
+            gameMessage("EAT FOOD TO", "GAIN HEALTH");
+            BANK_NUM = MAP_BANK;
+        }
+
         if (isShopLevel) {
             if (tile == TILE_FOOD_BIG) {
                 if (players[playerId].gold < BIG_FOOD_PRICE) {
+                    cannotAfford(playerId);
                     return 1;
                 } else {
+                    BANK_NUM = CODE_BANK;
+                    if (!shopQuestion(BIG_FOOD_PRICE, "LARGE MEAL")) {
+                        BANK_NUM = MAP_BANK;
+                        return 1;
+                    }
+                    BANK_NUM = MAP_BANK;
+
                     players[playerId].gold -= BIG_FOOD_PRICE;
                 }
             }
 
             if (tile == TILE_FOOD_SMALL) {
                 if (players[playerId].gold < SMALL_FOOD_PRICE) {
+                    cannotAfford(playerId);
                     return 1;
                 } else {
+                    BANK_NUM = CODE_BANK;
+                    if (!shopQuestion(SMALL_FOOD_PRICE, "SMALL MEAL")) {
+                        BANK_NUM = MAP_BANK;
+                        return 1;
+                    }
+                    BANK_NUM = MAP_BANK;
+
                     players[playerId].gold -= SMALL_FOOD_PRICE;
                 }
             }
         } else {
-            if (!hints.food) {
-                hints.food = 1;
-                BANK_NUM = CODE_BANK;
-                gameMessage("EAT FOOD TO", "GAIN HEALTH");
-                BANK_NUM = MAP_BANK;
-            }
             players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         }
 
@@ -544,7 +599,7 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].aimY = 0;
     players[playerId].facingX = 0;
     players[playerId].score = 0;
-    players[playerId].gold = 0;
+    players[playerId].gold = PLAYER_STARTING_GOLD;
     players[playerId].keys = 0;
     players[playerId].scrolls = 0;
     players[playerId].exit = 0;

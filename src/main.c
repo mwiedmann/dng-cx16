@@ -106,6 +106,10 @@ void main() {
         soundLoadMusic(SOUND_MUSIC_WELCOME);
         
         while(!gameOver) {
+            // Shop levels are every 5 levels
+            // Items need to be purchased on these levels
+            isShopLevel = level != 0 && level % 5 == 0;
+
             BANK_NUM = CODE_BANK;
             loadDungeonTiles();
             showLevelIntro();
@@ -123,10 +127,6 @@ void main() {
 
             exitLevel = 0;
             healthTicks = 0;
-
-            // Shop levels are every 5 levels
-            // Items need to be purchased on these levels
-            isShopLevel = level != 0 && level % 5 == 0;
 
             // Show the active players
             for (i=0; i<NUM_PLAYERS; i++) {
@@ -224,13 +224,15 @@ void main() {
                     }
                 }
 
-                // Player slowly loses health
-                healthTicks++;
-                if (healthTicks == 60) {
-                    healthTicks = 0;
-                    for (i=0; i<NUM_PLAYERS; i++) {
-                        if (players[i].active && !players[i].exit) {
-                            meleeAttackGuy(i, 0, 1, 0);
+                // Player slowly loses health unless in a shop
+                if (!isShopLevel) {
+                    healthTicks++;
+                    if (healthTicks == 60) {
+                        healthTicks = 0;
+                        for (i=0; i<NUM_PLAYERS; i++) {
+                            if (players[i].active && !players[i].exit) {
+                                meleeAttackGuy(i, 0, 1, 0);
+                            }
                         }
                     }
                 }

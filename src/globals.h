@@ -3,13 +3,38 @@
 
 #include "map.h"
 
-#define STARTING_LEVEL 0  // Should be 0 except for testing
+// Should be 0 except for testing
+#define STARTING_LEVEL 0  
+#define PLAYER_STARTING_GOLD 0
 
 #define ENTITY_COUNT 75
 #define GUY_SPEED_1 1
 #define GUY_SPEED_2 2
 #define WEAPON_SPEED 4
 #define WEAPON_ROTATION_SPEED 4
+
+// Gold/Score values
+#define TREASURE_CHEST_GOLD 100
+#define GOLD_PILE_GOLD 25
+#define SILVER_PILE_GOLD 10
+#define TREASURE_CHEST_SCORE 1000
+#define GOLD_PILE_SCORE 250
+#define SILVER_PILE_SCORE 100
+
+// Shop Prices
+#define BOOST_PRICE 1000
+#define BOOST_SCORE 5000
+
+#define KEY_PRICE 250
+#define SCROLL_PRICE 500
+#define BIG_FOOD_PRICE 500
+#define SMALL_FOOD_PRICE 250
+
+#define KEY_SCORE 100
+#define SCROLL_SCORE 100
+#define BIG_FOOD_SCORE 100
+#define SMALL_FOOD_SCORE 50
+
 
 #define NUM_PLAYERS 2
 
