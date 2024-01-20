@@ -15,6 +15,7 @@
 #include "players.h"
 #include "intro.h"
 #include "sound.h"
+#include "strtbl.h"
 
 void setScroll() {
     unsigned short x, y;
@@ -62,6 +63,7 @@ void main() {
     unsigned char inputTicks = 0;
     Entity *entity;
 
+    loadStrings();
     loadBankedCode();
 
     RAM_BANK = CODE_BANK;

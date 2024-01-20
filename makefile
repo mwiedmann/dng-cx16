@@ -4,8 +4,14 @@ EMU=../x16emur46/x16emu
 make:
 	$(CC) --cpu 65C02 -Or -Cl -C cx16-zsm-bank.cfg -o ./build/DNG.PRG -t cx16 \
 	src/main.c src/globals.c src/ai.c src/config.c src/intro.c src/joy.c src/list.c src/map.c src/players.c \
-	src/sprites.c src/tiles.c src/utils.c src/wait.c \
+	src/sprites.c src/strtbl.c src/tiles.c src/utils.c src/wait.c \
 	src/sound.c src/zsmkit.lib
+
+strings:
+	$(CC) --cpu 65C02 -Or -Cl -o ./tools/STRBLD.PRG -t cx16 src/strbld.c src/strtbl.c
+	cd tools && \
+	$(EMU) -prg STRBLD.PRG -run && \
+	mv STRINGS.BIN ../build/STRINGS.BIN
 
 run:
 	cd build && \
