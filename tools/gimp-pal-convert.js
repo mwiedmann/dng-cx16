@@ -1,7 +1,7 @@
 const fs = require("fs");
 
-const palName = `gfx/tiles.data.pal`
-const palOutputFilename = `build/TILES.PAL`
+const palName = process.argv[2];
+const palOutputFilename = process.argv[3];
 
 console.log(
   `Reading Gimp palette file ${palName}`

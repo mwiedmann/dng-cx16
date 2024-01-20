@@ -37,9 +37,11 @@ img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/D3TILES.BIN 16 16 96 8 4
 	node tools/gimp-img-convert.js gfx/tiles.data build/GMTILES.BIN 16 16 128 8 14
 	node tools/gimp-img-convert.js gfx/tiles.data build/OVTILES.BIN 8 8 960 16 16
+	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 0 1 1
 
 pal:
-	node tools/gimp-pal-convert.js
+	node tools/gimp-pal-convert.js gfx/tiles.data.pal build/TILES.PAL
+	node tools/gimp-pal-convert.js gfx/title.data.pal build/TITLE.PAL
 
 zip:
 	cd build && \

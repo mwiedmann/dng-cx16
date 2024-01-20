@@ -67,11 +67,20 @@ void main() {
     loadBankedCode();
 
     RAM_BANK = CODE_BANK;
-    init();
-    initTiles();
-
+    showTitle();
     soundInit();
     waitCount(30);
+    soundPlayMusic(SOUND_MUSIC_TITLE);
+
+    // Sound switches the bank...switch back
+    RAM_BANK = CODE_BANK;
+    waitForButtonPress();
+    
+    //clearLayer0();
+    //clearLayer1();
+
+    init();
+    initTiles();
 
     while(1) {
         soundPlayMusic(SOUND_MUSIC_TITLE);

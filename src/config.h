@@ -42,7 +42,7 @@
 #define SFX_BANK_1 11
 #define MUSIC_BANK_START 12
 
-
+void showTitle();
 void loadBankedCode();
 void init();
 void initTiles();

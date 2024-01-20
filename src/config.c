@@ -18,13 +18,31 @@ void loadBankedCode() {
 
 #pragma code-name (push, "BANKRAM02")
 
-void init() {
+void showTitle() {
     // Configure the joysticks
     joy_install(cx16_std_joy);
 
-    // Enable both layers
+    // Enable layer 1
     VERA.display.video = 0b11110001;
 
+    // Bitmap mode
+    // Color Depth 3 - 8 bpp
+    VERA.layer1.config = 0b00000111;
+
+    // Get bytes 16-11 of the new TileBase address
+    // Set bit 0 to 0 (for 320 mode), its already 0 in this address
+    VERA.layer1.tilebase = 0;
+
+    // Need these to get true 320x240
+    // otherwise VERA will duplicate the screen and show extra (random) bytes from VRAM
+    VERA.display.hscale = 64;
+    VERA.display.vscale = 64;
+
+    loadFileToVRAM("title.pal", PALETTE_ADDR);
+    loadFileToVRAM("title.bin", 0);
+}
+
+void init() {
     // With 16 pixel tiles, we don't need as many tiles (might need more later for scrolling)
     // Only 640/16 = 40, 480/16=30 (40x30 tile resolution now)
     // Set the Map Height=00 (32), Width=00 (32)
@@ -48,9 +66,9 @@ void init() {
 }
 
 void initTiles() {
+    loadFileToVRAM("tiles.pal", PALETTE_ADDR);
     loadFileToVRAM("gmtiles.bin", L0_TILEBASE_GAME_ADDR);
     loadFileToVRAM("ovtiles.bin", L1_TILEBASE_ADDR);
-    loadFileToVRAM("tiles.pal", PALETTE_ADDR);
 }
 
 void spritesConfig() {

@@ -53,6 +53,7 @@
 void loadDungeonTiles();
 unsigned char letterToTile(char letter);
 void clearLayer0();
+void clearLayer1();
 void clearLayer0VisibleArea();
 void clearLayer1VisibleArea();
 void clearVisibleLayers();
