@@ -268,13 +268,10 @@ void gameMessage(char *msg1, char *msg2, unsigned char sound) {
     msg[1] = msg2;
 
     if (sound) {
-        soundLoadMusic(sound);
-        messageCenter(msg);
         soundPlayMusic(sound);
-    } else {
-        messageCenter(msg);
     }
 
+    messageCenter(msg);
     waitCount(150);
 
     clearL1PlayArea();

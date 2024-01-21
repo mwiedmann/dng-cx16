@@ -40,7 +40,16 @@
 
 #define ZSM_BANK 10
 #define SFX_BANK_1 11
-#define MUSIC_BANK_START 12
+
+#define MUSIC_BANK_TITLE 12 
+
+#define MUSIC_BANK_WELCOME 13
+#define MUSIC_WELCOME_SIZE 3
+
+#define MUSIC_BANK_KEYS MUSIC_BANK_WELCOME + MUSIC_WELCOME_SIZE
+#define MUSIC_KEYS_SIZE 15
+
+#define MUSIC_BANK_START MUSIC_BANK_KEYS + MUSIC_KEYS_SIZE
 
 void toggleLayers(unsigned char show);
 void showTitle();

@@ -113,7 +113,6 @@ void main() {
         }
 
         soundStopChannel(SOUND_PRIORITY_MUSIC);
-        soundLoadMusic(SOUND_MUSIC_WELCOME);
         
         while(!gameOver) {
             // Shop levels are every 5 levels

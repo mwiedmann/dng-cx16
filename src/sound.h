@@ -18,7 +18,6 @@
 void soundInit();
 void soundPlaySFX(unsigned char effect, unsigned char priority) ;
 void soundStopChannel(unsigned char priority);
-
 void soundLoadMusic(unsigned char music);
 void soundPlayMusic(unsigned char music);
 
