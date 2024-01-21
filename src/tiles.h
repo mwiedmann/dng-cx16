@@ -63,7 +63,7 @@ void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsig
 void flashLayer1();
 void l0TileShow(unsigned char x, unsigned char y, unsigned char tile);
 unsigned char shopQuestion(unsigned short cost, char *item);
-void gameMessage(char *msg1, char *msg2);
+void gameMessage(char *msg1, char *msg2, unsigned char sound);
 void message(unsigned char x, unsigned char y, char *msg);
 void messageCenter(char *msg[4]);
 // unsigned char gameQuestion(char *msg1, char *msg2);

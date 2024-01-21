@@ -65,7 +65,7 @@ void stopMove(unsigned char playerId) {
 
 void cannotAfford(unsigned char playerId) {
     RAM_BANK = CODE_BANK;
-    gameMessage("YOU CANNOT AFFORD", "THIS ITEM");
+    gameMessage("YOU CANNOT AFFORD", "THIS ITEM", 0);
     RAM_BANK = MAP_BANK;
     stopMove(playerId);
 }
@@ -90,7 +90,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.keys) {
             hints.keys = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("COLLECT KEYS", "TO OPEN DOORS");
+            gameMessage("COLLECT KEYS", "TO OPEN DOORS", SOUND_MUSIC_KEYS);
             RAM_BANK = MAP_BANK;
         }
         
@@ -118,7 +118,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.treasure) {
             hints.treasure = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("COLLECT TREASURE TO", "SPEND ON UPGRADES LATER");
+            gameMessage("COLLECT TREASURE TO", "SPEND ON UPGRADES LATER", 0);
             RAM_BANK = MAP_BANK;
         }
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_GOLD : tile == TILE_TREASURE_GOLD ? GOLD_PILE_GOLD : SILVER_PILE_GOLD;
@@ -128,7 +128,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.scrolls) {
             hints.scrolls = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("USE SCROLLS TO DAMAGE", "ALL VISIBLE ENEMIES");
+            gameMessage("USE SCROLLS TO DAMAGE", "ALL VISIBLE ENEMIES", 0);
             RAM_BANK = MAP_BANK;
         }
 
@@ -158,7 +158,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.boosts[id]) {
             hints.boosts[id] = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(boostHints[id][1], boostHints[id][2]);
+            gameMessage(boostHints[id][1], boostHints[id][2], 0);
             RAM_BANK = MAP_BANK;
         }
 
@@ -167,7 +167,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         // Might do this in a 2 player game to grief the other player!
         if (!players[playerId].canBoost[id]) {
             RAM_BANK = CODE_BANK;
-            gameMessage("YOUR CHARACTER IS ALREADY", "GIFTED IN THIS AREA");
+            gameMessage("YOUR CHARACTER IS ALREADY", "GIFTED IN THIS AREA", 0);
             RAM_BANK = MAP_BANK;
             stopMove(playerId);
             return 1;
@@ -198,7 +198,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.food) {
             hints.food = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("EAT FOOD TO", "GAIN HEALTH");
+            gameMessage("EAT FOOD TO", "GAIN HEALTH", 0);
             RAM_BANK = MAP_BANK;
         }
 

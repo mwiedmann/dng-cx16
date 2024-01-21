@@ -10,6 +10,7 @@
 #include "wait.h"
 #include "joy.h"
 #include "players.h"
+#include "sound.h"
 
 #pragma code-name (push, "BANKRAM02")
 
@@ -260,14 +261,20 @@ unsigned char shopQuestion(unsigned short cost, char *item) {
     return !JOY_START(pressed);
 }
 
-void gameMessage(char *msg1, char *msg2) {
+void gameMessage(char *msg1, char *msg2, unsigned char sound) {
     char * msg[4] = {0,0,0,0};
 
     msg[0] = msg1;
     msg[1] = msg2;
 
-    messageCenter(msg);
-    
+    if (sound) {
+        soundLoadMusic(sound);
+        messageCenter(msg);
+        soundPlayMusic(sound);
+    } else {
+        messageCenter(msg);
+    }
+
     waitCount(150);
 
     clearL1PlayArea();

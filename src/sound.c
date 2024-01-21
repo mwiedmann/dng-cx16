@@ -9,6 +9,7 @@
 #include "utils.h"
 
 #include <cbm.h>
+#include <cx16.h>
 
 unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8};
 
@@ -23,7 +24,8 @@ unsigned char sound_tmp, param1, param2;
 char * musicNames[] = {
 	"",
 	"title.zsm",
-	"welcome.zsm"
+	"welcome.zsm",
+	"keys.zsm"
 };
 
 void loadSound(char* name, unsigned char index) {
@@ -79,6 +81,7 @@ void soundStopChannel(unsigned char priority) {
 }
 
 void soundLoadMusic(unsigned char music) {
+	unsigned char prevBank = RAM_BANK;
 	param2 = SOUND_PRIORITY_MUSIC;
 
 	asm volatile ("ldx %v", param2);
@@ -90,6 +93,7 @@ void soundLoadMusic(unsigned char music) {
 	cbm_k_setnam(musicNames[music]);
 	cbm_k_load(0, 0xa000);
 	loadedMusic = music;
+	RAM_BANK = prevBank;
 }
 
 void soundPlayMusic(unsigned char music) {
