@@ -16,14 +16,15 @@ void loadBankedCode() {
     cbm_k_load(0, (unsigned short)BANK_RAM);
 }
 
+void toggleLayers(unsigned char show) {
+    VERA.display.video = show ? 0b11110001 : 0b11000001;
+}
+
 #pragma code-name (push, "BANKRAM02")
 
 void showTitle() {
     // Configure the joysticks
     joy_install(cx16_std_joy);
-
-    // Enable layer 1
-    VERA.display.video = 0b11110001;
 
     // Bitmap mode
     // Color Depth 3 - 8 bpp
@@ -40,6 +41,9 @@ void showTitle() {
 
     loadFileToVRAM("title.pal", PALETTE_ADDR);
     loadFileToVRAM("title.bin", 0);
+
+    // Enable layer 1
+    VERA.display.video = 0b11110001;
 }
 
 void init() {

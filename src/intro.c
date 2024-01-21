@@ -9,6 +9,7 @@
 #include "wait.h"
 #include "intro.h"
 #include "strtbl.h"
+#include "config.h"
 
 /*
         BARBARIAN    MAGE    DRUID    RANGER
@@ -208,7 +209,8 @@ void instructions() {
     clearVisibleLayers();
     drawOverlayBackground();
     updateOverlay();
-    
+    toggleLayers(1);
+
     while(1)
     {
         count=0;

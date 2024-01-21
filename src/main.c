@@ -63,22 +63,21 @@ void main() {
     unsigned char inputTicks = 0;
     Entity *entity;
 
+    toggleLayers(0);
     loadStrings();
     loadBankedCode();
 
     RAM_BANK = CODE_BANK;
     showTitle();
     soundInit();
-    waitCount(30);
+    waitCount(60);
     soundPlayMusic(SOUND_MUSIC_TITLE);
 
     // Sound switches the bank...switch back
     RAM_BANK = CODE_BANK;
     waitForButtonPress();
-    
-    //clearLayer0();
-    //clearLayer1();
 
+    toggleLayers(0);
     init();
     initTiles();
 
