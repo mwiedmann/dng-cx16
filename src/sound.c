@@ -25,14 +25,16 @@ char * musicNames[] = {
 	"",
 	"title.zsm",
 	"welcome.zsm",
-	"keys.zsm"
+	"keys.zsm",
+	"treasure.zsm"
 };
 
 unsigned char musicBanks[] = {
 	MUSIC_BANK_START,
 	MUSIC_BANK_TITLE,
 	MUSIC_BANK_WELCOME,
-	MUSIC_BANK_KEYS
+	MUSIC_BANK_KEYS,
+	MUSIC_BANK_TREASURE
 };
 
 void loadSound(char* name, unsigned char index) {
@@ -72,9 +74,9 @@ void soundInit() {
 	loadSound("wpnblast.zsm", SOUND_SFX_WEAPON_BLAST);
 	loadSound("scroll.zsm", SOUND_SFX_SCROLL);
 
-	soundLoadMusic(1);
-	soundLoadMusic(2);
-	soundLoadMusic(3);
+	for (i=1; i<=4; i++) {
+		soundLoadMusic(i);
+	}
 }
 
 void soundPlaySFX(unsigned char effect, unsigned char priority) {

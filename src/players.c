@@ -118,7 +118,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.treasure) {
             hints.treasure = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("COLLECT TREASURE TO", "SPEND ON UPGRADES LATER", 0);
+            gameMessage("COLLECT TREASURE TO", "SPEND ON UPGRADES", SOUND_MUSIC_TREASURE);
             RAM_BANK = MAP_BANK;
         }
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_GOLD : tile == TILE_TREASURE_GOLD ? GOLD_PILE_GOLD : SILVER_PILE_GOLD;
