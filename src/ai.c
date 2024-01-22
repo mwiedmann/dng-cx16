@@ -23,6 +23,10 @@ void activateEntities() {
     Entity *entity;
     Entity *nextEntity;
 
+    // Start the active list at 0
+    activeEntityCount = 0;
+    totalEntityCount = 0;
+
     entity = entitySleepList;
     entityTempActiveList = 0;
     
@@ -32,6 +36,7 @@ void activateEntities() {
     }
 
     do {
+        totalEntityCount += 1;
         nextEntity = entity->next;
 
         // Activate this entity if it is on the screen
@@ -60,6 +65,7 @@ void deactivateEntities() {
     }
 
     do {
+        totalEntityCount+= 1;
         nextEntity = entity->next;
 
         // Deactivate this entity if it is out of range
@@ -69,6 +75,8 @@ void deactivateEntities() {
             entity->visible = 0;
             // printf("Moving entity to sleep from active: %i\n", entity->spriteId);
             moveEntityToList(entity, &entitySleepList, &entityActiveList);
+        } else {
+            activeEntityCount += 1;
         }
 
         entity = nextEntity;
@@ -94,6 +102,8 @@ void tempActiveToActiveEntities() {
         
         // printf("Moving entity to active from tempActive: %i\n", entity->spriteId);
         moveEntityToList(entity, &entityActiveList, &entityTempActiveList);
+
+        activeEntityCount += 1;
 
         entity = nextEntity;
     } while (entity);
@@ -333,7 +343,7 @@ void moveEntity(Entity *entity) {
     if (entity->isGenerator) {
         if (entity->nextSpawn > 0) {
             entity->nextSpawn -= 1;
-        } else {
+        } else if (activeEntityCount < ENTITY_COUNT_LIMIT && totalEntityCount < ENTITY_COUNT) {
             entity->nextSpawn = entity->spawnRate;
             // Create an entity
             // Find an empty tile

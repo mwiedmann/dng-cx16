@@ -11,6 +11,9 @@ Entity *entitySleepList = 0;
 Entity *entityActiveList = 0;
 Entity *entityTempActiveList = 0;
 
+unsigned char activeEntityCount = 0;
+unsigned char totalEntityCount = 0;
+
 Guy players[NUM_PLAYERS];
 Weapon weapons[NUM_PLAYERS];
 
@@ -22,8 +25,8 @@ unsigned char entityNormalMelee[4] = { 1, 1, 1, 1 };
 unsigned char entityStrongMelee[4] = { 2, 1, 1, 1 };
 
 unsigned char entityNoMove[4] = { 0, 0, 0, 0 };
-unsigned char entitySlowMove[4] = { 2, 1, 1, 1 };
-unsigned char entityMediumMove[4] = { 2, 1, 2, 1 };
+unsigned char entitySlowMove[4] = { 2, 2, 1, 1 };
+unsigned char entityMediumMove[4] = { 2, 2, 2, 1 };
 unsigned char entityFastMove[4] = { 2, 2, 2, 2 };
 
 // Melee Only Monsters

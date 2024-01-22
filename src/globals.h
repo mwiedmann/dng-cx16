@@ -8,6 +8,10 @@
 #define PLAYER_STARTING_GOLD 0
 
 #define ENTITY_COUNT 75
+
+// Don't spawn more entities if there are already this many on screen
+#define ENTITY_COUNT_LIMIT 25
+
 #define GUY_SPEED_1 1
 #define GUY_SPEED_2 2
 #define WEAPON_SPEED 4
@@ -189,6 +193,9 @@ extern Entity *entityList;
 extern Entity *entitySleepList;
 extern Entity *entityActiveList;
 extern Entity *entityTempActiveList;
+
+extern unsigned char activeEntityCount;
+extern unsigned char totalEntityCount;
 
 extern Guy players[NUM_PLAYERS];
 extern Weapon weapons[NUM_PLAYERS];
