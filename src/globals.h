@@ -4,7 +4,7 @@
 #include "map.h"
 
 // Should be 0 except for testing
-#define STARTING_LEVEL 0  
+#define STARTING_LEVEL 0
 #define PLAYER_STARTING_GOLD 0
 
 #define ENTITY_COUNT 75
@@ -103,6 +103,10 @@ typedef struct Entity {
     unsigned char visible;
     unsigned char health;
     unsigned char spriteId;
+    unsigned short spriteAddrLo;
+    unsigned char spriteAddrHi;
+    unsigned char spriteGraphicLo;
+    unsigned char spriteGraphicHi;
     struct Entity *next;
     struct Entity *prev;
     unsigned char animationCount;
@@ -167,6 +171,10 @@ typedef struct Guy {
     unsigned char hasBoosts[5]; // speed, melee, ranged, magic, armor
     unsigned char wasHit;
     unsigned char weaponSound;
+    unsigned short spriteAddrLo;
+    unsigned char spriteAddrHi;
+    unsigned char spriteGraphicLo;
+    unsigned char spriteGraphicHi;
 } Guy;
 
 typedef struct Weapon {
@@ -177,6 +185,10 @@ typedef struct Weapon {
     short dirY;
     unsigned char animationCount;
     unsigned char animationFrame;
+    unsigned short spriteAddrLo;
+    unsigned char spriteAddrHi;
+    unsigned char spriteGraphicLo;
+    unsigned char spriteGraphicHi;
 } Weapon;
 
 typedef struct Hints {

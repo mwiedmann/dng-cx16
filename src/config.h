@@ -59,5 +59,6 @@ void showTitle();
 void loadBankedCode();
 void init();
 void initTiles();
+void spritesConfig();
 
 #endif

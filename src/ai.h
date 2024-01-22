@@ -15,7 +15,6 @@
 
 #define RANGED_SPEED 4
 
-void toggleEntity(unsigned char spriteId, unsigned char show);
 void activateEntities();
 void deactivateEntities();
 void tempActiveToActiveEntities();

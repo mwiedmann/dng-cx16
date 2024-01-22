@@ -9,6 +9,8 @@
 #include "sprites.h"
 
 void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y) {
+    unsigned long addr;
+
     if (tile >= TILE_GENERATOR_START && tile <= TILE_GENERATOR_END) {
         entityList[entityId].isGenerator = 1;
         entityList[entityId].entityTypeId = tile-TILE_GENERATOR_START;
@@ -34,6 +36,21 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
 
     entityList[entityId].statsId = 0;
     entityList[entityId].spriteId = entityId+4; // First 4 sprites are guy and weapon
+
+    addr = SPRITE_ADDR_START + (entityList[entityId].spriteId * 8);
+    
+    // The sprite address is fixed...save it to avoid recalcing every time
+    entityList[entityId].spriteAddrLo = addr;
+    entityList[entityId].spriteAddrHi = addr>>16;
+
+    // Calculate the tile graphic address
+    // Animations will change the frame (and the address) a tad and we can add that part later (still faster)
+    // NOTE: Its possible that a frame increment could push this address beyond 64k and the "Hi" part would then be wrong
+    // Let's deal with that by avoiding having animation frame cross that boundary!
+    addr = L0_TILEBASE_ADDR + (entityList[entityId].tileId*L0_TILE_SIZE);
+    entityList[entityId].spriteGraphicLo = addr>>5;
+    entityList[entityId].spriteGraphicHi = addr>>13;
+    
     entityList[entityId].x = x * 16;
     entityList[entityId].y = y * 16;
     entityList[entityId].visible = 0;

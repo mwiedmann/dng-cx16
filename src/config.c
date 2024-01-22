@@ -78,73 +78,15 @@ void initTiles() {
 void spritesConfig() {
     unsigned char i;
 
-    // VRAM address for sprite 1 (this is fixed)
-    unsigned long spriteGraphicAddress = L0_TILEBASE_ADDR + (GUY_TILE_START*L0_TILE_SIZE); // This will change
-
-    // Point to Sprite
     VERA.address = GUY_1_SPRITE_ADDR;
     VERA.address_hi = GUY_1_SPRITE_ADDR>>16;
     // Set the Increment Mode, turn on bit 4
     VERA.address_hi |= 0b10000;
 
-    // Configure Guy 1
-
+    for (i=0; i<ENTITY_COUNT+4; i++) {
     // Graphic address bits 12:5
-    VERA.data0 = spriteGraphicAddress>>5;
-    // 256 color mode, and graphic address bits 16:13
-    VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
-    VERA.data0 = 0b01010000; // 16x16 pixel image
-
-    // Guy 2
-    spriteGraphicAddress = L0_TILEBASE_ADDR + ((GUY_TILE_START+32)*L0_TILE_SIZE);
-    // Graphic address bits 12:5
-    VERA.data0 = spriteGraphicAddress>>5;
-    // 256 color mode, and graphic address bits 16:13
-    VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
-    VERA.data0 = 0b01010000; // 16x16 pixel image
-
-    // Configure Weapon 1
-    spriteGraphicAddress = L0_TILEBASE_ADDR + (GUY_TILE_START*L0_TILE_SIZE); // This will change
-
-    // Graphic address bits 12:5
-    VERA.data0 = spriteGraphicAddress>>5;
-    // 256 color mode, and graphic address bits 16:13
-    VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
-    VERA.data0 = 0b01010000; // 16x16 pixel image
-
-
-    // Weapon 2
-    VERA.data0 = spriteGraphicAddress>>5;
-    // 256 color mode, and graphic address bits 16:13
-    VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0;
-    VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
-    VERA.data0 = 0b01010000; // 16x16 pixel image
-    
-    spriteGraphicAddress = L0_TILEBASE_ADDR + (MONSTER_TILE*L0_TILE_SIZE);
-
-    for (i=0; i<ENTITY_COUNT; i++) {
-        VERA.data0 = spriteGraphicAddress>>5;
-        // 256 color mode, and graphic address bits 16:13
-        VERA.data0 = 0b10000000 | spriteGraphicAddress>>13;
+        VERA.data0 = 0;
+        VERA.data0 = 0b10000000;
         VERA.data0 = 0;
         VERA.data0 = 0;
         VERA.data0 = 0;
@@ -152,6 +94,16 @@ void spritesConfig() {
         VERA.data0 = 0b00000000; // Z-Depth=2 (or 0 to hide)
         VERA.data0 = 0b01010000; // 16x16 pixel image
     }
+    
+    // Configure Player 1 and 2
+    players[0].spriteAddrLo = GUY_1_SPRITE_ADDR;
+    players[0].spriteAddrHi = GUY_1_SPRITE_ADDR>>16;
+    players[1].spriteAddrLo = GUY_2_SPRITE_ADDR;
+    players[1].spriteAddrHi = GUY_2_SPRITE_ADDR>>16;
+    weapons[0].spriteAddrLo = WEAPON_1_SPRITE_ADDR;
+    weapons[0].spriteAddrHi = WEAPON_1_SPRITE_ADDR>>16;
+    weapons[1].spriteAddrLo = WEAPON_2_SPRITE_ADDR;
+    weapons[1].spriteAddrHi = WEAPON_2_SPRITE_ADDR>>16;
 }
 
 #pragma code-name (pop)

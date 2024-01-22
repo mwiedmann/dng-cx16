@@ -147,7 +147,7 @@ void main() {
                 }
 
                 if (players[i].active) {
-                    toggleEntity(i, 1);
+                    toggleSprite(players[i].spriteAddrLo, players[i].spriteAddrHi, 1);
                 }
             }
 
@@ -183,14 +183,14 @@ void main() {
 
                     if (players[i].wasHit || players[i].animationChange) {
                         players[i].animationChange = 0;
-                        moveAndSetAnimationFrame(i, players[i].x, players[i].y, players[i].animationTile,
-                            players[i].animationFrame, players[i].facingX, players[i].wasHit > PLAYER_HIT_ANIM_FRAMES_STOP);
+                        moveAndSetAnimationFrame(players[i].spriteAddrLo, players[i].spriteAddrHi, players[i].spriteGraphicLo, players[i].spriteGraphicHi,
+                            players[i].x, players[i].y, players[i].animationFrame, players[i].facingX, players[i].wasHit > PLAYER_HIT_ANIM_FRAMES_STOP);
                         
                         if (players[i].wasHit) {
                             players[i].wasHit -= 1;
                         }
                     } else {
-                        moveSpriteId(i, players[i].x, players[i].y);
+                        moveSprite(players[i].spriteAddrLo, players[i].spriteAddrHi, players[i].x, players[i].y);
                     }
 
                     moveWeapon(i);
@@ -288,7 +288,7 @@ void main() {
             // Cleanup all entities
             for (i=0; i < ENTITY_COUNT; i++) {
                 if (entityList[i].spriteId) {
-                    toggleEntity(entityList[i].spriteId, 0);
+                    toggleSprite(entityList[i].spriteAddrLo, entityList[i].spriteAddrHi, 0);
                 }
                 entityList[i].health = 0;
                 entityList[i].prev = 0;

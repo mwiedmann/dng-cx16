@@ -10,14 +10,7 @@
 #include "utils.h"
 #include "config.h"
 #include "sound.h"
-
-char *boostHints[5][3] = {
-    {"IMPROVED SPEED", "MUSHROOM INCREASES", "PLAYER SPEED"},
-    {"IMPROVED MELEE ATTACKS", "WEAPON IMPROVES", "PLAYER MELEE ATTACKS"},
-    {"IMPROVED RANGED ATTACKS", "WEAPON IMPROVES", "PLAYER RANGED ATTACKS"},
-    {"IMPROVED SCROLL POWER", "RING IMPROVES", "PLAYER SCROLL POWER"},
-    {"IMPROVED ARMOR", "MITHRIL IMPROVES", "PLAYER ARMOR"}
-};
+#include "strtbl.h"
 
 void setGuyDirection(unsigned char playerId) {
     unsigned char joy;
@@ -65,7 +58,7 @@ void stopMove(unsigned char playerId) {
 
 void cannotAfford(unsigned char playerId) {
     RAM_BANK = CODE_BANK;
-    gameMessage("YOU CANNOT AFFORD", "THIS ITEM", 0);
+    gameMessage(STRING_GAME_MSG_CANNOT_AFFORD, 0);
     RAM_BANK = MAP_BANK;
     stopMove(playerId);
 }
@@ -90,7 +83,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.keys) {
             hints.keys = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("COLLECT KEYS", "TO OPEN DOORS", SOUND_MUSIC_KEYS);
+            gameMessage(STRING_GAME_MSG_COLLECT_KEYS, SOUND_MUSIC_KEYS);
             RAM_BANK = MAP_BANK;
         }
         
@@ -101,7 +94,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             }
 
             RAM_BANK = CODE_BANK;
-            if (!shopQuestion(KEY_PRICE, "KEY")) {
+            if (!shopQuestion(KEY_PRICE, STRING_GAME_MSG_KEY)) {
                 RAM_BANK = MAP_BANK;
                 return 1;
             }
@@ -118,7 +111,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.treasure) {
             hints.treasure = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("COLLECT TREASURE TO", "SPEND ON UPGRADES", SOUND_MUSIC_TREASURE);
+            gameMessage(STRING_GAME_MSG_COLLECT_TREASURE, SOUND_MUSIC_TREASURE);
             RAM_BANK = MAP_BANK;
         }
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_GOLD : tile == TILE_TREASURE_GOLD ? GOLD_PILE_GOLD : SILVER_PILE_GOLD;
@@ -128,7 +121,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.scrolls) {
             hints.scrolls = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("USE SCROLLS TO DAMAGE", "ALL VISIBLE ENEMIES", 0);
+            gameMessage(STRING_GAME_MSG_USE_SCROLLS, 0);
             RAM_BANK = MAP_BANK;
         }
 
@@ -139,7 +132,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             }
 
             RAM_BANK = CODE_BANK;
-            if (!shopQuestion(SCROLL_PRICE, "SCROLL")) {
+            if (!shopQuestion(SCROLL_PRICE, STRING_GAME_MSG_SCROLL)) {
                 RAM_BANK = MAP_BANK;
                 return 1;
             }
@@ -158,7 +151,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.boosts[id]) {
             hints.boosts[id] = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(boostHints[id][1], boostHints[id][2], 0);
+            gameMessage(STRING_BOOSTS_START+(id*3)+1, 0);
             RAM_BANK = MAP_BANK;
         }
 
@@ -167,7 +160,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         // Might do this in a 2 player game to grief the other player!
         if (!players[playerId].canBoost[id]) {
             RAM_BANK = CODE_BANK;
-            gameMessage("YOUR CHARACTER IS ALREADY", "GIFTED IN THIS AREA", 0);
+            gameMessage(STRING_GAME_MSG_ALREADY_GIFTED, 0);
             RAM_BANK = MAP_BANK;
             stopMove(playerId);
             return 1;
@@ -180,7 +173,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             }
 
             RAM_BANK = CODE_BANK;
-            if (!shopQuestion(BOOST_PRICE, boostHints[id][0])) {
+            if (!shopQuestion(BOOST_PRICE, STRING_BOOSTS_START+(id*3))) {
                 RAM_BANK = MAP_BANK;
                 return 1;
             }
@@ -198,7 +191,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.food) {
             hints.food = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage("EAT FOOD TO", "GAIN HEALTH", 0);
+            gameMessage(STRING_GAME_MSG_EAT_FOOD, 0);
             RAM_BANK = MAP_BANK;
         }
 
@@ -209,7 +202,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                     return 1;
                 } else {
                     RAM_BANK = CODE_BANK;
-                    if (!shopQuestion(BIG_FOOD_PRICE, "LARGE MEAL")) {
+                    if (!shopQuestion(BIG_FOOD_PRICE, STRING_GAME_MSG_LARGE_MEAL)) {
                         RAM_BANK = MAP_BANK;
                         return 1;
                     }
@@ -225,7 +218,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
                     return 1;
                 } else {
                     RAM_BANK = CODE_BANK;
-                    if (!shopQuestion(SMALL_FOOD_PRICE, "SMALL MEAL")) {
+                    if (!shopQuestion(SMALL_FOOD_PRICE, STRING_GAME_MSG_SMALL_MEAL)) {
                         RAM_BANK = MAP_BANK;
                         return 1;
                     }
@@ -274,7 +267,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile == TILE_EXIT_1 || tile == TILE_EXIT_5 || tile == TILE_EXIT_10) {
         players[playerId].exit = tile;
         mapStatus[toTileY][toTileX+i] = TILE_FLOOR;
-        toggleEntity(playerId, 0);
+        toggleSprite(players[playerId].spriteAddrLo, players[playerId].spriteAddrHi, 0);
     } else if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
         return 1;
     } else if (tile >= GUY_CLAIM && tile != GUY_CLAIM+playerId) {
@@ -450,7 +443,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
         weapons[playerId].animationCount = WEAPON_ROTATION_SPEED;
         weapons[playerId].animationFrame = 0;
 
-        toggleWeapon(playerId, 1);
+        toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 1);
 
         shot = 1;
     } else {
@@ -508,7 +501,7 @@ void moveWeapon(unsigned char playerId) {
         if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
-            toggleWeapon(playerId, 0);
+            toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
 
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
@@ -528,18 +521,19 @@ void moveWeapon(unsigned char playerId) {
         if (weapons[playerId].x >= scrollX + SCROLL_PIXEL_SIZE || weapons[playerId].x+16 <= scrollX || weapons[playerId].y >= scrollY + SCROLL_PIXEL_SIZE || weapons[playerId].y+16 <= scrollY) {
             // Hide it for now
             weapons[playerId].visible = 0;
-            toggleWeapon(playerId, 0);
+            toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
             return;
         }
 
-        moveAndSetAnimationFrame(WEAPON_SPRITE_ID_START+playerId, weapons[playerId].x, weapons[playerId].y, players[playerId].weaponTile, 0, weaponRotation[weapons[playerId].animationFrame], 0);
+        moveAndSetAnimationFrame(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, weapons[playerId].spriteGraphicLo, weapons[playerId].spriteGraphicHi,
+            weapons[playerId].x, weapons[playerId].y, 0, weaponRotation[weapons[playerId].animationFrame], 0);
 
         // Check if hit something after the move
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
         if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && tile != ENTITY_CLAIM) {
             // Hide it for now
             weapons[playerId].visible = 0;
-            toggleWeapon(playerId, 0);
+            toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
 
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
                 entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
@@ -559,7 +553,7 @@ unsigned char destroyPlayer(unsigned char playerId) {
     players[playerId].health = 0;
     players[playerId].active = 0;
     activePlayers -= 1;
-    toggleEntity(playerId, 0);
+    toggleSprite(players[playerId].spriteAddrLo, players[playerId].spriteAddrHi, 0);
 
     for (i=0; i < ENTITY_COUNT; i++) {
         if (entityList[i].health == 0) {
@@ -582,6 +576,7 @@ unsigned char destroyPlayer(unsigned char playerId) {
 
 void setupPlayer(unsigned char playerId, enum Character characterType) {
     unsigned char i;
+    unsigned long spriteGraphicAddress;
 
     players[playerId].active = 1;
     players[playerId].characterType = characterType;
@@ -613,6 +608,17 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     }
 
     players[playerId].canBoost = playerCanBoostByType[characterType];
+
+    spriteGraphicAddress = L0_TILEBASE_ADDR + (players[playerId].animationTile*L0_TILE_SIZE);
+
+    players[playerId].spriteGraphicLo = spriteGraphicAddress>>5;
+    players[playerId].spriteGraphicHi = spriteGraphicAddress>>13;
+
+    // Weapon graphic
+    spriteGraphicAddress = L0_TILEBASE_ADDR + (players[playerId].weaponTile*L0_TILE_SIZE);
+
+    weapons[playerId].spriteGraphicLo = spriteGraphicAddress>>5;
+    weapons[playerId].spriteGraphicHi = spriteGraphicAddress>>13;
 
     overlayChanged = 1;
 }

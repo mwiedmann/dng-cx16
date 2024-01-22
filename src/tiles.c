@@ -11,6 +11,7 @@
 #include "joy.h"
 #include "players.h"
 #include "sound.h"
+#include "strtbl.h"
 
 #pragma code-name (push, "BANKRAM02")
 
@@ -237,12 +238,12 @@ void clearL1PlayArea() {
     }
 }
 
-unsigned char shopQuestion(unsigned short cost, char *item) {
+unsigned char shopQuestion(unsigned short cost, unsigned char stringId) {
     char buf[30];
     char * msg[4] = {0,0,"PRESS BUTTON TO ACCEPT","START TO CANCEL"};
     unsigned char pressed;
 
-    msg[0] = item;
+    msg[0] = getString(stringId);
 
     sprintf(buf, "PRICE: %u GOLD", cost);
     msg[1] = buf;
@@ -261,11 +262,14 @@ unsigned char shopQuestion(unsigned short cost, char *item) {
     return !JOY_START(pressed);
 }
 
-void gameMessage(char *msg1, char *msg2, unsigned char sound) {
+void gameMessage(unsigned char stringId, unsigned char sound) {
     char * msg[4] = {0,0,0,0};
+    char buf[40];
 
-    msg[0] = msg1;
-    msg[1] = msg2;
+    strcpy(buf, getString(stringId));
+    
+    msg[0] = buf; 
+    msg[1] = getString(stringId+1);
 
     if (sound) {
         soundPlayMusic(sound);

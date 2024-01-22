@@ -10,10 +10,8 @@ void addNewEntityToList(Entity *entity, Entity **to) {
     // If empty list, point to NULL
     // Else point to the 1st Entity in the list
     if (!(*to)) {    
-        // printf("List is empty, new HEAD: %i\n", entity->spriteId);
         entity->next = 0;
     } else {
-        // printf("List has entities, new HEAD: %i points to: %i\n", entity->spriteId, (*to)->spriteId);
         entity->next = *to;
         (*to)->prev = entity;
     }
@@ -43,10 +41,8 @@ void moveEntityToList(Entity *entity, Entity **to, Entity **from) {
     // If empty list, point to NULL
     // Else point to the 1st Entity in the list
     if (!(*to)) {    
-        // printf("List is empty, new HEAD: %i\n", entity->spriteId);
         entity->next = 0;
     } else {
-        // printf("List has entities, new HEAD: %i points to: %i\n", entity->spriteId, (*to)->spriteId);
         entity->next = *to;
         (*to)->prev = entity;
     }
