@@ -280,9 +280,7 @@ void moveEntity(Entity *entity) {
                 if (xTemp > 0 && yTemp > 0 && distX<=LOB_PIXEL_MAX && distY<=LOB_PIXEL_MAX) {
                     for (i=0; i < ENTITY_COUNT; i++) {
                         if (entityList[i].health == 0) {
-                            createEntity(TILE_ENTITY_START+entity->entityTypeId, i, entity->currentTileX, entity->currentTileY);
-                            entityList[i].tileId = MONSTER_PROJECTILE_TILE + (entity->entityTypeId>>1); // Move to the shot tile for this entity
-                            entityList[i].isShot = 1; 
+                            createEntity(TILE_ENTITY_START+entity->entityTypeId, i, entity->currentTileX, entity->currentTileY, 1);
                             entityList[i].isLob = 1;
                             entityList[i].animationCount = 2;
                             entityList[i].xDir = ((signed short)xTemp - ((signed short)entityList[i].x + 8)) / LOB_MOVE_TICKS;
@@ -313,9 +311,7 @@ void moveEntity(Entity *entity) {
                             newTileX = distX == 0 ? entity->currentTileX : entity->currentTileX > guyTileX ? entity->currentTileX-1 : entity->currentTileX+1;
                             newTileY = distY == 0 ? entity->currentTileY : entity->currentTileY > guyTileY ? entity->currentTileY-1 : entity->currentTileY+1;
 
-                            createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
-                            entityList[i].tileId = MONSTER_PROJECTILE_TILE + (entity->entityTypeId>>1);
-                            entityList[i].isShot = 1;
+                            createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY, 1);
                             entityList[i].animationCount = 2;
                             entityList[i].xDir = distX == 0 ? 0 : entity->currentTileX > guyTileX ? -RANGED_SPEED : RANGED_SPEED;
                             entityList[i].yDir = distY == 0 ? 0 : entity->currentTileY > guyTileY ? -RANGED_SPEED : RANGED_SPEED;
@@ -378,7 +374,7 @@ void moveEntity(Entity *entity) {
             if (foundEmptyTile) {
                 for (i=0; i < ENTITY_COUNT; i++) {
                     if (entityList[i].health == 0) {
-                        createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY);
+                        createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY, 0);
                         addNewEntityToList(&entityList[i], &entitySleepList);
                         mapStatus[newTileY][newTileX] = ENTITY_TILE_START + entityList[i].spriteId;
                         break;

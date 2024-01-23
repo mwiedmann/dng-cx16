@@ -8,7 +8,7 @@
 #include "utils.h"
 #include "sprites.h"
 
-void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y) {
+void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y, unsigned char isShot) {
     unsigned long addr;
 
     if (tile >= TILE_GENERATOR_START && tile <= TILE_GENERATOR_END) {
@@ -26,7 +26,9 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
         entityList[entityId].entityTypeId = tile-TILE_ENTITY_START;
         entityList[entityId].stats = entityStatsByType[entityList[entityId].entityTypeId];
         entityList[entityId].health =  entityList[entityId].stats->startingHealth;
-        entityList[entityId].tileId = MONSTER_TILE+(4*entityList[entityId].entityTypeId);
+        entityList[entityId].tileId = isShot
+            ? MONSTER_PROJECTILE_TILE + (entityList[entityId].entityTypeId>>1)
+            : MONSTER_TILE+(4*entityList[entityId].entityTypeId);
         entityList[entityId].hasTarget = 0;
         entityList[entityId].animationCount = ANIMATION_FRAME_SPEED;
         entityList[entityId].animationFrame = 0;
@@ -59,7 +61,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     entityList[entityId].animationChange = 1;
     entityList[entityId].movedPrevTick = 0;
     entityList[entityId].rangedTicks = entityList[entityId].stats->rangedRate;
-    entityList[entityId].isShot = 0;
+    entityList[entityId].isShot = isShot;
     entityList[entityId].isLob = 0;
 }
 
@@ -101,7 +103,7 @@ void createMapStatus(unsigned char level) {
                 }
             }
             if (mapStatus[y][x] >= TILE_GENERATOR_START && mapStatus[y][x] <= TILE_ENTITY_END) {
-                createEntity(mapStatus[y][x], i, x, y);
+                createEntity(mapStatus[y][x], i, x, y, 0);
 
                 entityList[i].prev = lastEntity; // For the LL, prev entity
                 entityList[i].next = 0;

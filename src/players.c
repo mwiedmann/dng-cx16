@@ -557,7 +557,7 @@ unsigned char destroyPlayer(unsigned char playerId) {
 
     for (i=0; i < ENTITY_COUNT; i++) {
         if (entityList[i].health == 0) {
-            createEntity(TILE_GENERATOR_START, i, players[playerId].currentTileX, players[playerId].currentTileY);
+            createEntity(TILE_GENERATOR_START, i, players[playerId].currentTileX, players[playerId].currentTileY, 0);
             addNewEntityToList(&entityList[i], &entitySleepList);
             entityId = i;
             break;
