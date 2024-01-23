@@ -9,16 +9,20 @@
 
 void moveAndSetAnimationFrame(unsigned short spriteAddrLo, unsigned char spriteAddrHi, unsigned char spriteGraphicLo, unsigned char spriteGraphicHi,
     unsigned short x, unsigned short y, unsigned char frame, unsigned char dir, unsigned char palOffset) {
+    unsigned short addr;
+
     // Point to Sprite
     VERA.address = spriteAddrLo;
     VERA.address_hi = spriteAddrHi;
     // Set the Increment Mode, turn on bit 4
     VERA.address_hi |= 0b10000;
 
+    addr = (spriteGraphicLo+(frame*8));
+
     // Graphic address bits 12:5
-    VERA.data0 = (spriteGraphicLo+(frame*8));
+    VERA.data0 = addr;
     // 256 color mode, and graphic address bits 16:13
-    VERA.data0 = 0b10000000 | spriteGraphicHi;
+    VERA.data0 = 0b10000000 | (spriteGraphicHi + (addr > 255 ? 1 : 0));
     // Set the X and Y values
     VERA.data0 = x-scrollX;
     VERA.data0 = (x-scrollX)>>8;
