@@ -121,7 +121,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.scrolls) {
             hints.scrolls = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(STRING_GAME_MSG_USE_SCROLLS, 0);
+            gameMessage(STRING_GAME_MSG_USE_SCROLLS, SOUND_MUSIC_SCROLLS);
             RAM_BANK = MAP_BANK;
         }
 
@@ -191,7 +191,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.food) {
             hints.food = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(STRING_GAME_MSG_EAT_FOOD, 0);
+            gameMessage(STRING_GAME_MSG_EAT_FOOD, SOUND_MUSIC_FOOD);
             RAM_BANK = MAP_BANK;
         }
 

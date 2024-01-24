@@ -26,7 +26,10 @@ char * musicNames[] = {
 	"title.zsm",
 	"welcome.zsm",
 	"keys.zsm",
-	"treasure.zsm"
+	"treasure.zsm",
+	"scrolls.zsm",
+	"food.zsm",
+	"nigh.zsm"
 };
 
 unsigned char musicBanks[] = {
@@ -34,7 +37,10 @@ unsigned char musicBanks[] = {
 	MUSIC_BANK_TITLE,
 	MUSIC_BANK_WELCOME,
 	MUSIC_BANK_KEYS,
-	MUSIC_BANK_TREASURE
+	MUSIC_BANK_TREASURE,
+	MUSIC_BANK_SCROLLS,
+	MUSIC_BANK_FOOD,
+	MUSIC_BANK_NIGH
 };
 
 void loadSound(char* name, unsigned char index) {
@@ -74,7 +80,7 @@ void soundInit() {
 	loadSound("wpnblast.zsm", SOUND_SFX_WEAPON_BLAST);
 	loadSound("scroll.zsm", SOUND_SFX_SCROLL);
 
-	for (i=1; i<=4; i++) {
+	for (i=1; i<=7; i++) {
 		soundLoadMusic(i);
 	}
 }
@@ -137,7 +143,7 @@ void soundPlayMusic(unsigned char music) {
 	// Music in this bank needs to be loaded
 	if (bank == MUSIC_BANK_START) {
 		if (loadedMusic != music) {
-			soundLoadMusic(music);
+			 soundLoadMusic(music);
 		}
 		RAM_BANK = MUSIC_BANK_START;
 	} else {

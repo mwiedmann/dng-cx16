@@ -134,6 +134,7 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
 void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char dmg, unsigned char showDmg) {
     unsigned char genEntityId;
     signed char adjustedDmg = dmg - players[playerId].stats->armor[statsId];
+    unsigned short newHealth;
 
     // Make sure the player is still active
     if (!players[playerId].active) {
@@ -153,7 +154,13 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     }
 
     if (players[playerId].health > adjustedDmg) {
-        players[playerId].health -= adjustedDmg;
+        newHealth = players[playerId].health - adjustedDmg;
+
+        if (players[playerId].health >= NIGH_HEALTH && newHealth < NIGH_HEALTH) {
+            soundPlayMusic(SOUND_MUSIC_NIGH);
+        }
+
+        players[playerId].health = newHealth;
     } else {
         genEntityId = destroyPlayer(playerId);
         // Update the map here because we switched banks
