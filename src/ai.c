@@ -16,6 +16,10 @@
 void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) {
     if (entity->health > damage) {
         entity->health -= damage;
+        if (!entity->wasHit) {
+            entity->wasHit = ENTITY_HIT_ANIM_FRAMES;
+            entity->animationChange = 1;
+        }
     } else {
         overlayChanged = 1;
         players[playerId].score += entity->points;
@@ -299,14 +303,18 @@ void moveEntity(Entity *entity) {
             }
         }
 
-        if (entity->animationChange) {
+        if (entity->animationChange || entity->wasHit) {
             entity->animationChange = 0;
             moveAndSetAnimationFrame(entity->spriteAddrLo, entity->spriteAddrHi, entity->spriteGraphicLo, entity->spriteGraphicHi,
-                entity->x, entity->y, 0, 0, 0);
+                entity->x, entity->y, 0, 0, entity->wasHit > ENTITY_HIT_ANIM_FRAMES_STOP ? ENTITY_HIT_PAL_JUMP : 0);
+
+            if (entity->wasHit) {
+                entity->wasHit-= 1;
+            }
         } else {
             moveSprite(entity->spriteAddrLo, entity->spriteAddrHi, entity->x, entity->y);
         }
-
+        
         return;
     }
 
@@ -469,7 +477,7 @@ void moveEntity(Entity *entity) {
             }
             entity->animationCount -= 1;
             moveAndSetAnimationFrame(entity->spriteAddrLo, entity->spriteAddrHi, entity->spriteGraphicLo, entity->spriteGraphicHi,
-                entity->x, entity->y, entity->animationFrame, entity->facingX, 0);
+                entity->x, entity->y, entity->animationFrame, entity->facingX, entity->wasHit > ENTITY_HIT_ANIM_FRAMES_STOP ? ENTITY_HIT_PAL_JUMP : 0);
             needsMove = 0;
         } else if (entity->animationCount == 0) {
             entity->animationCount = ANIMATION_FRAME_SPEED;
@@ -480,10 +488,14 @@ void moveEntity(Entity *entity) {
             }
 
             moveAndSetAnimationFrame(entity->spriteAddrLo, entity->spriteAddrHi, entity->spriteGraphicLo, entity->spriteGraphicHi,
-                entity->x, entity->y, entity->animationFrame, entity->facingX, 0);
+                entity->x, entity->y, entity->animationFrame, entity->facingX, entity->wasHit > ENTITY_HIT_ANIM_FRAMES_STOP ? ENTITY_HIT_PAL_JUMP : 0);
             needsMove = 0;
         } else {
             entity->animationCount -= 1;
+        }
+
+        if (entity->wasHit) {
+            entity->wasHit-= 1;
         }
     }
 

@@ -66,6 +66,10 @@
 #define PLAYER_HIT_ANIM_FRAMES 12
 #define PLAYER_HIT_ANIM_FRAMES_STOP 8
 
+#define ENTITY_HIT_ANIM_FRAMES 4
+#define ENTITY_HIT_ANIM_FRAMES_STOP 2
+#define ENTITY_HIT_PAL_JUMP 5
+
 enum Character {
   BARBARIAN,
   MAGE,
@@ -122,6 +126,7 @@ typedef struct Entity {
     signed short yDir;
     signed short xLobTarget;
     signed short yLobTarget;
+    unsigned char wasHit;
 } Entity;
 
 typedef struct PlayerStats {

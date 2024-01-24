@@ -63,6 +63,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, 
     entityList[entityId].rangedTicks = entityList[entityId].stats->rangedRate;
     entityList[entityId].isShot = isShot;
     entityList[entityId].isLob = 0;
+    entityList[entityId].wasHit = 0;
 }
 
 #pragma code-name (push, "BANKRAM02")
