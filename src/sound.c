@@ -19,7 +19,7 @@ unsigned char loadedMusic = SOUND_MUSIC_NONE;
 unsigned char musicOn = 1;
 unsigned char sfxOn = 1;
 
-unsigned char sound_tmp, param1, param2;
+unsigned char param1, param2;
 
 char * musicNames[] = {
 	"",
@@ -79,8 +79,9 @@ void soundInit() {
 	loadSound("wpnswsh.zsm", SOUND_SFX_WEAPON_SWOOSH);
 	loadSound("wpnblast.zsm", SOUND_SFX_WEAPON_BLAST);
 	loadSound("scroll.zsm", SOUND_SFX_SCROLL);
+	loadSound("keyget.zsm", SOUND_SFX_KEY_GET);
 
-	for (i=1; i<=7; i++) {
+	for (i=0; i<=7; i++) {
 		soundLoadMusic(i);
 	}
 }
@@ -140,16 +141,8 @@ void soundPlayMusic(unsigned char music) {
 		return;
 	}
 
-	// Music in this bank needs to be loaded
-	if (bank == MUSIC_BANK_START) {
-		if (loadedMusic != music) {
-			 soundLoadMusic(music);
-		}
-		RAM_BANK = MUSIC_BANK_START;
-	} else {
-		loadedMusic = music;
-		RAM_BANK = bank;
-	}
+	loadedMusic = music;
+	RAM_BANK = bank;
 
 	asm volatile ("lda #$00");
 	asm volatile ("ldx %v", param2);

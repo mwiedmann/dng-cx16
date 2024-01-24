@@ -1,9 +1,8 @@
 # Tasks
-
+- We are low on memory again. Any more code will bust it. Need to remove/move more stuff.
 
 # Fixes
 
-- Because we only check player input every 4 ticks, inputs are repeated when rejecting a purchase
 
 # Questions
 

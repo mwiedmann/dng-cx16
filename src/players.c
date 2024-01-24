@@ -105,6 +105,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += KEY_SCORE;
         }
 
+        soundPlaySFX(SOUND_SFX_KEY_GET, playerId);
         players[playerId].keys += 1;
         clearTile = 1;
     } else if (tile == TILE_TREASURE_CHEST || tile == TILE_TREASURE_GOLD || tile == TILE_TREASURE_SILVER) {
