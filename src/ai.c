@@ -12,6 +12,12 @@
 #include "config.h"
 #include "utils.h"
 #include "sound.h"
+#include "wait.h"
+
+// These functions are put at the beginning of BANK 1 along with mapStatus/entityList
+// Be sure to monitor the size of this code so it doesn't smash into those data structures
+// I've allowed 2k of room
+#pragma code-name (push, "BANKRAM01")
 
 void activateEntities() {
     Entity *entity;
@@ -103,6 +109,8 @@ void tempActiveToActiveEntities() {
 
     entityTempActiveList = 0;
 }
+
+#pragma code-name (pop)
 
 void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) {
     if (entity->health > damage) {

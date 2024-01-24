@@ -123,7 +123,7 @@ void main() {
             loadDungeonTiles();
             showLevelIntro();
             
-            clearBank(MAP_BANK);
+            clearBank(MAP_BANK, MAP_BANK_CODE_SIZE);
             createMapStatus(level);
 
             RAM_BANK = CODE_BANK;

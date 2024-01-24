@@ -52,13 +52,13 @@ void loadFileToBankedRAM(char *filename, unsigned char bank, unsigned short addr
     cbm_k_load(0, (unsigned short)BANK_RAM + addr);
 }
 
-void clearBank(unsigned char bank) {
+void clearBank(unsigned char bank, unsigned short startingByte) {
     unsigned short i;
     unsigned char *ptr;
 
     RAM_BANK = bank;
 
-    for (i=0; i<8192; i++) {
+    for (i=startingByte; i<8192; i++) {
         ptr = (BANK_RAM + i);
         *ptr = 0;
     }

@@ -82,7 +82,9 @@ void createMapStatus(unsigned char level) {
     Entity *lastEntity = 0;
 
     sprintf(buf, "l%umap.bin", level);
-    loadFileToBankedRAM(buf, MAP_BANK, 0);
+    // mapStatus starts in Banked RAM AFTER some code
+    // Use MAP_BANK_CODE_SIZE to skip that part of ram
+    loadFileToBankedRAM(buf, MAP_BANK, MAP_BANK_CODE_SIZE);
 
     RAM_BANK = MAP_BANK;
 

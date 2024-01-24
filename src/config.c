@@ -10,6 +10,13 @@
 
 void loadBankedCode() {
     // Load some hi-ram code
+
+    // We load a little code into BANK 1 that deals with the entityLists
+    RAM_BANK = MAP_BANK;
+    cbm_k_setnam("dng.prg.01");
+    cbm_k_setlfs(0, 8, 0); // Skip the first 2 bytes of the file. They just hold the size in bytes.
+    cbm_k_load(0, (unsigned short)BANK_RAM);
+
     RAM_BANK = CODE_BANK;
     cbm_k_setnam("dng.prg.02");
     cbm_k_setlfs(0, 8, 0); // Skip the first 2 bytes of the file. They just hold the size in bytes.

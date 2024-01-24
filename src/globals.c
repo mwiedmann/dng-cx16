@@ -2,10 +2,11 @@
 
 #include "map.h"
 #include "globals.h"
+#include "config.h"
 
 // Point these arrays to hi-ram
-unsigned char (*mapStatus)[MAP_MAX] = (unsigned char (*)[MAP_MAX])BANK_RAM;
-Entity *entityList = (Entity (*))(BANK_RAM+1024);
+unsigned char (*mapStatus)[MAP_MAX] = (unsigned char (*)[MAP_MAX])MAP_STATUS_ADDR;
+Entity *entityList = (Entity (*))ENTITY_LIST_ADDR;
 
 Entity *entitySleepList = 0;
 Entity *entityActiveList = 0;

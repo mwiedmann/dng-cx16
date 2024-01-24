@@ -49,7 +49,7 @@ zip:
 	zip dng.zip *
 
 clean:
-	find build/ -name "DNG.PRG.0[A-F|1|3-9]" -delete
+	find build/ -name "DNG.PRG.0[A-F|3-9]" -delete
 
 all:
 	make ldtk
