@@ -34,7 +34,7 @@
 
 #define PALETTE_ADDR 0x1FA00L
 
-#define MAP_BANK_CODE_SIZE 2048 // Leave room for code in Bank 1
+#define MAP_BANK_CODE_SIZE 2560 // Leave room for code in Bank 1
 #define MAP_STATUS_ADDR (0xA000 + MAP_BANK_CODE_SIZE) // There is some code at beginning of the bank
 #define MAP_STATUS_SIZE 1024
 

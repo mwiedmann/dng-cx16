@@ -180,6 +180,8 @@ typedef struct Guy {
     unsigned char spriteAddrHi;
     unsigned char spriteGraphicLo;
     unsigned char spriteGraphicHi;
+    unsigned char teleportTileX;
+    unsigned char teleportTileY;
 } Guy;
 
 typedef struct Weapon {

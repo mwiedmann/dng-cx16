@@ -78,6 +78,11 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         }
     }
 
+    // Most common case...nothing else to check
+    if (tile == TILE_FLOOR) {
+        return 0;
+    }
+
     // There is an inventory limit on keys+scrolls
     if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
         if (!hints.keys) {
@@ -269,6 +274,10 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         players[playerId].exit = tile;
         mapStatus[toTileY][toTileX+i] = TILE_FLOOR;
         toggleSprite(players[playerId].spriteAddrLo, players[playerId].spriteAddrHi, 0);
+    } else if (tile == TILE_TELEPORTER) { 
+        players[playerId].teleportTileX = toTileX;
+        players[playerId].teleportTileY = toTileY;
+        return 1;
     } else if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
         return 1;
     } else if (tile >= GUY_CLAIM && tile != GUY_CLAIM+playerId) {
@@ -284,6 +293,75 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
     return 0;
 }
+
+#pragma code-name (push, "BANKRAM01")
+
+void teleportPlayer(unsigned char playerId) {
+    unsigned char t=0, tx, ty, toTileX, toTileY, foundSpot;
+    Entity *entity;
+
+    while(t < 16) {
+        t+= 1;
+        for (ty=players[playerId].teleportTileY-t; ty<=players[playerId].teleportTileY+t && t<16; ty++) {
+            for (tx=players[playerId].teleportTileX-t; tx<=players[playerId].teleportTileX+t && t<16; tx++) {
+                // Only look at the "oustides" of this loop
+                if (ty==players[playerId].teleportTileY-t || ty==players[playerId].teleportTileY+t ||
+                    tx==players[playerId].teleportTileX-t || tx==players[playerId].teleportTileX+t) {
+                    
+                    // See if this tile is a teleporter
+                    // Take the player there if so
+                    if (mapStatus[ty][tx] == TILE_TELEPORTER) {
+                        t = 16; // exit condition
+
+                        toTileX = tx;
+                        toTileY = ty;
+                    }
+                }
+            }    
+        }
+    }
+
+    // First try to land on a tile near the destination in the direction the player was moving
+    t = mapStatus[toTileY+players[playerId].aimY][toTileX+players[playerId].aimX];
+
+    if (t == TILE_FLOOR || (t >= ENTITY_TILE_START && t <= ENTITY_TILE_END)) {
+        if (t >= ENTITY_TILE_START && t <= ENTITY_TILE_END ) {
+            // If there is an entity there...stomp on it!
+            entity = getEntityById(t-ENTITY_TILE_START, entityActiveList);
+            if (entity) {
+                attackEntity(playerId, entity, 255);
+            }
+        }
+        // Move the player
+        players[playerId].x = (toTileX+players[playerId].aimX)*16;
+        players[playerId].y = (toTileY+players[playerId].aimY)*16;
+    } else {
+        foundSpot = 0;
+        // Need to find an empty tile around the destination
+        // First look for empty tiles
+        for (ty=toTileY-1; ty<=toTileY+1; ty++) {
+            for (tx=toTileX-1; tx<=toTileX+1; tx++) {
+                t = mapStatus[ty][tx];
+                if (t == TILE_FLOOR) {
+                    // Move the player
+                    players[playerId].x = tx*16;
+                    players[playerId].y = ty*16;
+                    foundSpot = 1;
+                }
+            }
+        }
+
+        // TODO: Allow to stomp on entities at this point?
+        if (!foundSpot) {
+            // No teleport for now
+        }
+    }
+
+    players[playerId].teleportTileX = 0;
+    players[playerId].teleportTileY = 0;
+}
+
+#pragma code-name (pop)
 
 void moveGuy(unsigned char playerId, unsigned char speed) {
     unsigned short prevX, prevY, shot = 0;
@@ -414,6 +492,11 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     
     if (players[playerId].ticksUntilNextMelee > 0) {
         players[playerId].ticksUntilNextMelee -= 1;
+    }
+
+    // See if player is teleporting
+    if (players[playerId].teleportTileX) {
+        teleportPlayer(playerId);
     }
 
     tempTileX = (players[playerId].x+8)>>4;
