@@ -381,6 +381,11 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
         players[playerId].aimY = players[playerId].pressedY;
     } // Other cases just leave the facing as it is
 
+    // Reset the pressed directions if blocked
+    // Some monsters use these to aim
+    players[playerId].pressedX = dirX;
+    players[playerId].pressedY = dirY;
+
     // Check if melee attacking
     if (!players[playerId].pressedShoot) {
         tile = mapStatus[((players[playerId].y+8)+(dirY*8))>>4][((players[playerId].x+8)+(dirX*8))>>4];

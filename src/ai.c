@@ -464,8 +464,8 @@ void moveEntity(Entity *entity) {
         }
     }
 
-    if (entity->animationChange || entity->x != prevX || entity->y != prevY) {
-        if (entity->animationChange) {
+    if (entity->wasHit || entity->animationChange || entity->x != prevX || entity->y != prevY) {
+        if (entity->wasHit || entity->animationChange) {
             entity->animationChange = 0;
 
             if (entity->animationCount == 0) {
