@@ -53,7 +53,9 @@ const createLevelCode = (levelNum, level) => {
       return 21;
     } else if (tileId == 46) { // Armor Boost
       return 22;
-    } else {
+    } else if (tileId == 47) { // Teleporter
+      return 23;
+    }else {
       return 2; // Floor
     }
   }
@@ -89,10 +91,12 @@ const createLevelCode = (levelNum, level) => {
       currentMapData[(y * tileWidth) + x] = 
         g.t >= 96 && g.t <= 132 // Entities
           ? 33 + ((g.t-96)/4) // 33 Entity map tile start
-          : g.t >= 47 && g.t <= 55  // Generator
-            ? 23 + g.t-47 // 23 Generator map tile start
+          : g.t >= 48 && g.t <= 55  // Generator
+            ? 24 + g.t-48 // 23 Generator map tile start
             : g.t == 30 || g.t == 31
               ? 7 // Door
+              : g.t == 47 // Teleporter
+              ? 23
               : 5; // Guy
     });
   }
