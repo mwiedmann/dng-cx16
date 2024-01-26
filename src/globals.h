@@ -3,9 +3,9 @@
 
 #include "map.h"
 
-// Should be 0 except for testing
-#define STARTING_LEVEL 0
-#define PLAYER_STARTING_GOLD 0
+
+#define STARTING_LEVEL 1 // Should be 1 except for testing
+#define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 #define ENTITY_COUNT 75
 
@@ -19,11 +19,11 @@
 
 // Gold/Score values
 #define TREASURE_CHEST_GOLD 100
-#define GOLD_PILE_GOLD 25
-#define SILVER_PILE_GOLD 10
+#define GOLD_PILE_GOLD 50
+#define SILVER_PILE_GOLD 25
 #define TREASURE_CHEST_SCORE 1000
-#define GOLD_PILE_SCORE 250
-#define SILVER_PILE_SCORE 100
+#define GOLD_PILE_SCORE 500
+#define SILVER_PILE_SCORE 250
 
 // Shop Prices
 #define BOOST_PRICE 1000

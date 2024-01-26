@@ -116,8 +116,8 @@ void main() {
         
         while(!gameOver) {
             // Shop levels are every 5 levels
-            // Items need to be purchased on these levels
-            isShopLevel = level != 0 && level % 5 == 0;
+            // Items must be purchased on these levels
+            isShopLevel = level % 5 == 0;
 
             RAM_BANK = CODE_BANK;
             loadDungeonTiles();
@@ -130,7 +130,7 @@ void main() {
             drawMap(level);
             RAM_BANK = MAP_BANK;
 
-            if (level == 0) {
+            if (level == STARTING_LEVEL) {
                 soundPlayMusic(SOUND_MUSIC_WELCOME);
             }
 
