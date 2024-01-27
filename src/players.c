@@ -297,7 +297,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 #pragma code-name (push, "BANKRAM01")
 
 void teleportPlayer(unsigned char playerId) {
-    unsigned char t=0, tx, ty, toTileX, toTileY, foundSpot;
+    unsigned char t=0, tx, ty, toTileX, toTileY, foundSpot, entityTileX=0, entityTileY=0;
     Entity *entity;
 
     while(t < 16) {
@@ -325,7 +325,7 @@ void teleportPlayer(unsigned char playerId) {
     t = mapStatus[toTileY+players[playerId].aimY][toTileX+players[playerId].aimX];
 
     if (t == TILE_FLOOR || (t >= ENTITY_TILE_START && t <= ENTITY_TILE_END)) {
-        if (t >= ENTITY_TILE_START && t <= ENTITY_TILE_END ) {
+        if (t >= ENTITY_TILE_START && t <= ENTITY_TILE_END) {
             // If there is an entity there...stomp on it!
             entity = getEntityById(t-ENTITY_TILE_START, entityActiveList);
             if (entity) {
@@ -339,21 +339,33 @@ void teleportPlayer(unsigned char playerId) {
         foundSpot = 0;
         // Need to find an empty tile around the destination
         // First look for empty tiles
-        for (ty=toTileY-1; ty<=toTileY+1; ty++) {
-            for (tx=toTileX-1; tx<=toTileX+1; tx++) {
+        for (ty=toTileY-1; ty<=toTileY+1 && !foundSpot; ty++) {
+            for (tx=toTileX-1; tx<=toTileX+1 && !foundSpot; tx++) {
                 t = mapStatus[ty][tx];
                 if (t == TILE_FLOOR) {
                     // Move the player
                     players[playerId].x = tx*16;
                     players[playerId].y = ty*16;
                     foundSpot = 1;
+                } else if (!entityTileX && t >= ENTITY_TILE_START && t <= ENTITY_TILE_END) {
+                    // If this spot is an entity, hold onto it as a backup if we can't find any empty tiles
+                    entityTileX = tx;
+                    entityTileY = ty;
                 }
             }
         }
 
-        // TODO: Allow to stomp on entities at this point?
-        if (!foundSpot) {
-            // No teleport for now
+        // No empty tiles, stomp on an entity!
+        if (!foundSpot && entityTileX) {
+            t = mapStatus[entityTileY][entityTileX];
+            entity = getEntityById(t-ENTITY_TILE_START, entityActiveList);
+            if (entity) {
+                attackEntity(playerId, entity, 255);
+            }
+
+            // Move the player
+            players[playerId].x = entityTileX*16;
+            players[playerId].y = entityTileY*16;
         }
     }
 

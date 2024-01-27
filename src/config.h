@@ -34,7 +34,13 @@
 
 #define PALETTE_ADDR 0x1FA00L
 
-#define MAP_BANK_CODE_SIZE 2560 // Leave room for code in Bank 1
+// sizeof(Entity) = 53 - check this after changes
+// entityList size = 75 Entities * 53 = 3975
+// mapStatus = 32*32 = 1024
+// mapbank code = 2582 (we allow for 3072)
+// total = 7581 (still less than 8192 so we are good!)
+
+#define MAP_BANK_CODE_SIZE 3072 // Leave room for code in Bank 1
 #define MAP_STATUS_ADDR (0xA000 + MAP_BANK_CODE_SIZE) // There is some code at beginning of the bank
 #define MAP_STATUS_SIZE 1024
 
