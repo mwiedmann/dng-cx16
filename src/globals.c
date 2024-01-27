@@ -192,7 +192,7 @@ unsigned char playerCanBoostByType[4][5] = {
 Hints hints = { 0, 0, 0, 0, {0,0,0,0,0} };
 
 unsigned char weaponRotation[4] = {0, 1, 3, 2};
-signed short scrollX, scrollY;
+signed short scrollX, scrollY, currentScrollX, currentScrollY;
 unsigned char overlayChanged = 0;
 unsigned char activePlayers=0;
 unsigned char level;

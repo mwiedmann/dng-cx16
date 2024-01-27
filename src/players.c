@@ -120,6 +120,8 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             gameMessage(STRING_GAME_MSG_COLLECT_TREASURE, SOUND_MUSIC_TREASURE);
             RAM_BANK = MAP_BANK;
         }
+
+        soundPlaySFX(SOUND_SFX_KEY_GET, playerId);
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_GOLD : tile == TILE_TREASURE_GOLD ? GOLD_PILE_GOLD : SILVER_PILE_GOLD;
         players[playerId].score += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_SCORE : tile == TILE_TREASURE_GOLD ? GOLD_PILE_SCORE : SILVER_PILE_SCORE;
         clearTile = 1;
@@ -149,6 +151,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += SCROLL_SCORE;
         }
 
+        soundPlaySFX(SOUND_SFX_WEAPON_SWOOSH, playerId);
         players[playerId].scrolls += 1;
         clearTile = 1;
     } else if (tile >= TILE_BOOST_START && tile <= TILE_BOOST_END) {
@@ -190,7 +193,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += BOOST_SCORE;
         }
 
-
+        soundPlaySFX(SOUND_SFX_KEY_GET, playerId);
         players[playerId].hasBoosts[id] = 1;
         clearTile = 1;
     } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
@@ -237,6 +240,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         }
 
+        soundPlaySFX(SOUND_SFX_EATING, playerId);
         players[playerId].health += tile == TILE_FOOD_BIG ? players[playerId].stats->foodHealthBig : players[playerId].stats->foodHealthSmall;
         clearTile = 1;
     } else if (tile == TILE_DOOR && players[playerId].keys > 0) {

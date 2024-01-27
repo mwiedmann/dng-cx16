@@ -11,7 +11,7 @@
 #include <cbm.h>
 #include <cx16.h>
 
-unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8};
+unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8, 0xaa};
 
 unsigned char currentMusic = SOUND_MUSIC_NONE;
 unsigned char loadedMusic = SOUND_MUSIC_NONE;
@@ -80,6 +80,7 @@ void soundInit() {
 	loadSound("wpnblast.zsm", SOUND_SFX_WEAPON_BLAST);
 	loadSound("scroll.zsm", SOUND_SFX_SCROLL);
 	loadSound("keyget.zsm", SOUND_SFX_KEY_GET);
+	loadSound("eating.zsm", SOUND_SFX_EATING);
 
 	for (i=0; i<=7; i++) {
 		soundLoadMusic(i);
