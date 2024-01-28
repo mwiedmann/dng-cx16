@@ -86,7 +86,8 @@ void instructions1() {
         { 4, 11 },
         { 8, 15 },
         { 5, 20 },
-        { 6, 21 },
+        { 4, 21 },
+        { 4, 22 },
         { 1, 27 },
         { 3, 28 }
     };
@@ -107,8 +108,6 @@ void instructions1() {
 
     l0TileShow(5, 8, 45);
     l0TileShow(9, 8, 46);
-
-    l0TileShow(7, 11, 39);
 }
 
 void showStatSheet(unsigned char startY) {
@@ -136,6 +135,27 @@ void instructions2() {
 
     l0TileShow(6, 12, 40);
     l0TileShow(8, 12, 41);
+}
+
+void instructions3() {
+    MessageList list[INSTR3_LENGTH] = {
+        { 7, 1 },
+        { 8, 5 },
+        { 5, 6 },
+        { 5, 12 },
+        { 6, 13 },
+        { 2, 14 },
+        { 2, 19 },
+        { 5, 20 },
+        { 1, 27 },
+        { 3, 28 }
+    };
+
+    showMessageList(list, INSTR3_LENGTH, STRING_INSTR3_START);
+
+    l0TileShow(7, 4, 128); // Devil
+    l0TileShow(7, 8, 39); // Scroll
+    l0TileShow(7, 11, 47); // Teleporter
 }
 
 void instructionsSelect() {
@@ -219,6 +239,7 @@ void instructions() {
             case 0: instructions0(); break;
             case 1: instructions1(); break;
             case 2: instructions2(); break;
+            case 3: instructions3(); break;
         }
 
         do {
@@ -236,7 +257,7 @@ void instructions() {
         waitForRelease();
 
         screen += 1;
-        if (screen == 3) {
+        if (screen == 4) {
             screen = 0;
         }
     }

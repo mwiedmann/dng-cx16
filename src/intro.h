@@ -2,7 +2,7 @@
 #define INTRO_H
 
 // How many ticks before changing to next instructions screen
-#define SCREEN_CHANGE_COUNT 720
+#define SCREEN_CHANGE_COUNT 900
 
 typedef struct MessageList {
     unsigned char x;

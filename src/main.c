@@ -303,7 +303,9 @@ void main() {
 
             // Players can go to next level or jump 5 or 10 levels
             level += exitLevel == TILE_EXIT_1 ? 1 : exitLevel == TILE_EXIT_5 ? 5 : 10;
-
+            if (level > LEVEL_COUNT) {
+                level = 1; // warp back to level 1 after last level (for now)
+            }
             
             for (i=0; i<NUM_PLAYERS; i++) {
                 players[i].exit = 0;

@@ -9,6 +9,9 @@
 #define STARTING_LEVEL 1 // Should be 1 except for testing
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
+// Once the game passes this level, go back to 1
+#define LEVEL_COUNT 5
+
 #define ENTITY_COUNT 75
 
 // Don't spawn more entities if there are already this many on screen
