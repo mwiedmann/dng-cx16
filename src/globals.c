@@ -75,7 +75,7 @@ EntityStats demonStats = {
     entityStrongMelee,
     entityMediumMove,
     0,
-    STRONG_HEALTH,
+    INDESTRUCTABLE_HEALTH,
     0, 0
 };
 
@@ -197,3 +197,5 @@ unsigned char overlayChanged = 0;
 unsigned char activePlayers=0;
 unsigned char level;
 unsigned char isShopLevel;
+unsigned char demonHitting = 0;
+unsigned char demonSoundOn = 0;

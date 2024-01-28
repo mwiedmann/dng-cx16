@@ -33,6 +33,8 @@ void showTitle() {
     // Configure the joysticks
     joy_install(cx16_std_joy);
 
+#ifndef TEST_MODE
+
     // Bitmap mode
     // Color Depth 3 - 8 bpp
     VERA.layer1.config = 0b00000111;
@@ -51,6 +53,7 @@ void showTitle() {
 
     // Enable layer 1
     VERA.display.video = 0b11110001;
+#endif
 }
 
 void init() {

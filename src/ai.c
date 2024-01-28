@@ -383,6 +383,10 @@ void moveEntity(Entity *entity) {
             tileXChange = 0;
             tileYChange = 0;
 
+            if (entity->entityTypeId == 8) {
+                demonHitting = 30;
+            }
+            
             meleeAttackGuy(attack-GUY_CLAIM, entity->statsId, entity->stats->melee[entity->statsId], 1);
             entity->animationChange = 1;
         }
@@ -449,6 +453,9 @@ void moveEntity(Entity *entity) {
                 entity->x = prevX;
                 entity->y = prevY;
 
+                if (entity->entityTypeId == 8) {
+                    demonHitting = 30;
+                }
                 meleeAttackGuy(mapStatus[newTileY][newTileX]-GUY_CLAIM, entity->statsId, entity->stats->melee[entity->statsId], 1);
                 entity->animationChange = 1;
             } else {
@@ -506,6 +513,7 @@ void moveEntity(Entity *entity) {
 
 void useScrollOnEntities(unsigned char playerId) {
     Entity *entity, *nextEntity;
+    unsigned char damage;
 
     entity = entityActiveList;
 
@@ -516,9 +524,15 @@ void useScrollOnEntities(unsigned char playerId) {
     
     while(entity) {
         nextEntity = entity->next;
-        attackEntity(playerId, entity, players[playerId].hasBoosts[BOOST_ID_MAGIC]
-            ? players[playerId].boostedStats->scrollDamage
-            : players[playerId].stats->scrollDamage);
+
+        // Indestructable entites take more damage from scrolls
+        damage = entity->stats->startingHealth == INDESTRUCTABLE_HEALTH
+            ? INDESTRUCTABLE_HEALTH
+            : players[playerId].hasBoosts[BOOST_ID_MAGIC]
+                ? players[playerId].boostedStats->scrollDamage
+                : players[playerId].stats->scrollDamage;
+
+        attackEntity(playerId, entity, damage);
         entity = nextEntity;
     }
 }

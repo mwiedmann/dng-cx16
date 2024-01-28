@@ -4,6 +4,8 @@
 #define SOUND_PRIORITY_MUSIC 0
 #define SOUND_PRIORITY_PL1 0
 #define SOUND_PRIORITY_PL2 1
+#define SOUND_PRIORITY_COMMON 2
+#define SOUND_PRIORITY_DEMON 3
 
 #define SOUND_MUSIC_NONE 0
 #define SOUND_MUSIC_TITLE 1
@@ -13,6 +15,7 @@
 #define SOUND_MUSIC_SCROLLS 5
 #define SOUND_MUSIC_FOOD 6
 #define SOUND_MUSIC_NIGH 7
+#define SOUND_MUSIC_HIT 8
 
 #define SOUND_SFX_WEAPON_SWOOSH 0
 #define SOUND_SFX_WEAPON_BLAST 1
@@ -20,6 +23,7 @@
 #define SOUND_SFX_KEY_GET 3
 #define SOUND_SFX_EATING 4
 #define SOUND_SFX_DAMAGE 5
+#define SOUND_SFX_DEMON 6
 
 #define NIGH_HEALTH 100
 
@@ -28,5 +32,7 @@ void soundPlaySFX(unsigned char effect, unsigned char priority) ;
 void soundStopChannel(unsigned char priority);
 void soundLoadMusic(unsigned char music);
 void soundPlayMusic(unsigned char music);
+
+extern unsigned char currentMusic;
 
 #endif

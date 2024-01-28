@@ -70,19 +70,26 @@ void main() {
     RAM_BANK = CODE_BANK;
     showTitle();
     soundInit();
+
+#ifndef TEST_MODE    
     waitCount(60);
     soundPlayMusic(SOUND_MUSIC_TITLE);
 
     // Sound switches the bank...switch back
     RAM_BANK = CODE_BANK;
     waitForButtonPress();
+#else
+    RAM_BANK = CODE_BANK;
+#endif
 
     toggleLayers(0);
     init();
     initTiles();
 
     while(1) {
+#ifndef TEST_MODE        
         soundPlayMusic(SOUND_MUSIC_TITLE);
+#endif
         RAM_BANK = CODE_BANK;
 
         gameOver=0;
@@ -121,8 +128,10 @@ void main() {
 
             RAM_BANK = CODE_BANK;
             loadDungeonTiles();
+
+#ifndef TEST_MODE
             showLevelIntro();
-            
+#endif
             clearBank(MAP_BANK, MAP_BANK_CODE_SIZE);
             createMapStatus(level);
 
@@ -130,10 +139,11 @@ void main() {
             drawMap(level);
             RAM_BANK = MAP_BANK;
 
+#ifndef TEST_MODE
             if (level == STARTING_LEVEL) {
                 soundPlayMusic(SOUND_MUSIC_WELCOME);
             }
-
+#endif
             exitLevel = 0;
             healthTicks = 0;
 
@@ -187,6 +197,9 @@ void main() {
                             players[i].x, players[i].y, players[i].animationFrame, players[i].facingX, players[i].wasHit > PLAYER_HIT_ANIM_FRAMES_STOP);
                         
                         if (players[i].wasHit) {
+                            if (!demonSoundOn && healthTicks % 30 == 0) {
+                                soundPlaySFX(SOUND_SFX_DAMAGE, SOUND_PRIORITY_COMMON);
+                            }
                             players[i].wasHit -= 1;
                         }
                     } else {
@@ -194,6 +207,17 @@ void main() {
                     }
 
                     moveWeapon(i);
+                }
+
+                if (demonHitting) {
+                    demonHitting -= 1;
+                    if (!demonSoundOn) {
+                        demonSoundOn = 1;
+                        soundPlaySFX(SOUND_SFX_DEMON, SOUND_PRIORITY_DEMON);
+                    }
+                } else if (!demonHitting && demonSoundOn) {
+                    demonSoundOn = 0;
+                    soundStopChannel(SOUND_PRIORITY_DEMON);
                 }
 
                 if (count == 0 || count == 2 || count == 4) {

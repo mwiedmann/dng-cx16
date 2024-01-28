@@ -211,6 +211,7 @@ void instructions() {
     updateOverlay();
     toggleLayers(1);
 
+#ifndef TEST_MODE
     while(1)
     {
         count=0;
@@ -239,6 +240,7 @@ void instructions() {
             screen = 0;
         }
     }
+#endif
 
     clearVisibleLayers();
     instructionsSelect();

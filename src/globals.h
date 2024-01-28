@@ -3,6 +3,8 @@
 
 #include "map.h"
 
+// Uncomment this to skip a few things during testing (title screen, welcome sound, etc)
+// #define TEST_MODE
 
 #define STARTING_LEVEL 1 // Should be 1 except for testing
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
@@ -54,6 +56,7 @@
 #define WEAK_HEALTH 4
 #define NORMAL_HEALTH 8
 #define STRONG_HEALTH 12
+#define INDESTRUCTABLE_HEALTH 255
 
 #define INVENTORY_LIMIT 10
 
@@ -240,5 +243,8 @@ extern unsigned char activePlayers;
 
 extern unsigned char level;
 extern unsigned char isShopLevel;
+
+extern unsigned char demonHitting;
+extern unsigned char demonSoundOn;
 
 #endif
