@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <cx16.h>
 #include <joystick.h>
 
@@ -302,14 +303,18 @@ void instructions() {
 
 void showLevelIntro() {
     char *msg[4] = {0,0,0,0};
-    char buf[40];
+    char buf1[40], buf2[40], buf3[40];
 
     clearVisibleLayers();
 
-    sprintf(buf, "LEVEL %u", level);
-    msg[0] = buf;
-    msg[2] = isShopLevel ? "PURCHASE UPGRADES" : "CAN YOU SURVIVE?";
-    msg[3] = isShopLevel ? "AND REST FOR A MOMENT" : "I DOUBT IT!";
+    sprintf(buf1, "LEVEL %u", level);
+    msg[0] = buf1;
+
+    strcpy(buf2, getLevelString((level-1)*2));
+    msg[2] = buf2;
+
+    strcpy(buf3, getLevelString(((level-1)*2)+1));
+    msg[3] = buf3;
 
     messageCenter(msg);
 

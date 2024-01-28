@@ -42,6 +42,7 @@
 #define STRING_GAME_MSG_SMALL_MEAL STRING_GAME_MSG_LARGE_MEAL+1
 
 char * getString(unsigned char i);
+char * getLevelString(unsigned char i);
 void loadStrings();
 
 #endif

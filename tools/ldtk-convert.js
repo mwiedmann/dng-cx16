@@ -9,6 +9,10 @@ const d = JSON.parse(rawText);
 
 const tileWidth = 32
 
+const levelStrings = []
+const levelStringLengths = []
+const levelStringAddr = []
+
 const createLevelCode = (levelNum, level) => {
   const createLayer = (val) => {
     return new Array(tileWidth*tileWidth*2).fill(val);
@@ -101,6 +105,15 @@ const createLevelCode = (levelNum, level) => {
     });
   }
 
+  const convertToPETSCII = (c) => c.charCodeAt(0) + (c >= 'A' && c <= 'Z' ? 128 : 0)
+
+  // Add the two level strings
+  levelStrings.push(...[...level.fieldInstances[0].__value.split('').map(convertToPETSCII), 0])
+  levelStrings.push(...[...level.fieldInstances[1].__value.split('').map(convertToPETSCII), 0])
+
+  levelStringLengths.push(level.fieldInstances[0].__value.length + 1)
+  levelStringLengths.push(level.fieldInstances[1].__value.length + 1)
+
   let data = undefined
   level.layerInstances.forEach((li) => {
     switch (li.__identifier) {
@@ -127,3 +140,19 @@ d.levels.forEach((l) => {
   const levelNum = l.identifier.split("_")[1];
   createLevelCode(levelNum, l);
 });
+
+
+// 2 byte address for each string
+const stringArrayOffset = levelStringLengths.length * 2
+
+// Start the level strings 4k into the bank
+// This means we are limited to 4k size (check this)
+let addr = 0xa000 + 4096 + stringArrayOffset
+
+levelStringLengths.map(l => {
+  levelStringAddr.push(addr & 0b0000000011111111)
+  levelStringAddr.push(addr >>8)
+  addr += l
+})
+
+fs.writeFileSync(`build/LVLSTR.BIN`, new Uint8Array([...levelStringAddr, ...levelStrings]), "binary");

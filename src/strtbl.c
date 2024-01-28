@@ -22,6 +22,21 @@ char * getString(unsigned char i) {
     return (char *)sbuf;
 }
 
+char * getLevelString(unsigned char i) {
+    unsigned char prevBank = RAM_BANK;
+    unsigned short * locationPtr = (unsigned short *)(BANK_RAM + 4096);
+    
+    RAM_BANK = STRING_BANK;
+
+    // Copy the string from Banked RAM into a lo-RAM buffer
+    // so it can be returned and we can safely switch banks
+    strcpy((char *)sbuf, (char *)locationPtr[i]);
+
+    RAM_BANK = prevBank;
+
+    return (char *)sbuf;
+}
+
 void loadStrings() {
     RAM_BANK = STRING_BANK;
 
@@ -30,4 +45,10 @@ void loadStrings() {
 
     // // Reminder, first param of cbm_k_load of "0" means load into system memory.
     cbm_k_load(0, (unsigned short)BANK_RAM);
+
+    cbm_k_setnam("lvlstr.bin");
+    cbm_k_setlfs(0, 8, 2);
+
+    // // Reminder, first param of cbm_k_load of "0" means load into system memory.
+    cbm_k_load(0, (unsigned short)(BANK_RAM + 4096));
 }

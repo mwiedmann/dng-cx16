@@ -149,8 +149,6 @@ void createStringTable() {
     cbm_k_save((unsigned short)BANK_RAM, (unsigned short)stringPtr);
 }
 
-
-
 void main() {
     unsigned char i;
 
