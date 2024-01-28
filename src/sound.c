@@ -29,7 +29,8 @@ char * musicNames[] = {
 	"treasure.zsm",
 	"scrolls.zsm",
 	"food.zsm",
-	"nigh.zsm"
+	"nigh.zsm",
+	"laugh.zsm"
 };
 
 unsigned char musicBanks[] = {
@@ -40,7 +41,8 @@ unsigned char musicBanks[] = {
 	MUSIC_BANK_TREASURE,
 	MUSIC_BANK_SCROLLS,
 	MUSIC_BANK_FOOD,
-	MUSIC_BANK_NIGH
+	MUSIC_BANK_NIGH,
+	MUSIC_BANK_LAUGH
 };
 
 void loadSound(char* name, unsigned char index) {
@@ -83,8 +85,9 @@ void soundInit() {
 	loadSound("eating.zsm", SOUND_SFX_EATING);
 	loadSound("hit.zsm", SOUND_SFX_DAMAGE);
 	loadSound("demon.zsm", SOUND_SFX_DEMON);
+	loadSound("teleport.zsm", SOUND_SFX_TELEPORT);
 
-	for (i=0; i<=7; i++) {
+	for (i=1; i<=8; i++) {
 		soundLoadMusic(i);
 	}
 }

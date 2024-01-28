@@ -375,6 +375,8 @@ void teleportPlayer(unsigned char playerId) {
 
     players[playerId].teleportTileX = 0;
     players[playerId].teleportTileY = 0;
+
+    soundPlaySFX(SOUND_SFX_TELEPORT, playerId);
 }
 
 #pragma code-name (pop)
@@ -673,6 +675,8 @@ unsigned char destroyPlayer(unsigned char playerId) {
         entityList[i].hasTarget = 0;        
     }
 
+    soundPlayMusic(SOUND_MUSIC_LAUGH);
+    
     return entityId;
 }
 
