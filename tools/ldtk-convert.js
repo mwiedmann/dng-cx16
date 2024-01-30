@@ -149,6 +149,7 @@ const stringArrayOffset = levelStringLengths.length * 2
 // This means we are limited to 4k size (check this)
 let addr = 0xa000 + 4096 + stringArrayOffset
 
+// Little endian 16 bit value
 levelStringLengths.map(l => {
   levelStringAddr.push(addr & 0b0000000011111111)
   levelStringAddr.push(addr >>8)

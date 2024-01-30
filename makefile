@@ -48,14 +48,9 @@ zip:
 	rm -f dng.zip && \
 	zip dng.zip *
 
-clean:
-	find build/ -name "DNG.PRG.0[A-F|3-9]" -delete
-
 all:
 	make ldtk
 	make pal
 	make img
 	make
-	make clean
 	make zip
-

@@ -8,7 +8,7 @@
 #include "utils.h"
 #include "sprites.h"
 
-void createEntity(unsigned char tile, unsigned char entityId, unsigned short x, unsigned short y, unsigned char isShot) {
+void createEntity(unsigned char tile, unsigned char entityId, unsigned char x, unsigned char y, unsigned char isShot) {
     unsigned long addr;
 
     if (tile >= TILE_GENERATOR_START && tile <= TILE_GENERATOR_END) {

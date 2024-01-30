@@ -184,8 +184,8 @@ void moveEntity(Entity *entity) {
     }
 
     // Does the entity make ranged attacks?
-    if (entity->stats->ranged > 0) {
-        if (entity->rangedTicks == 0) {
+    if (entity->stats->ranged) {
+        if (!entity->rangedTicks) {
             if (entity->stats->lob) {
                 entity->rangedTicks = entity->stats->rangedRate;
 
