@@ -418,6 +418,12 @@ void moveEntity(Entity *entity) {
         } else if (entity->currentTileY > entity->targetTileY) {
             tileYChange = -1;
         }
+
+        // There a bug where the target is reached but not detected
+        // This will fix for now.
+        if (!tileXChange && !tileYChange) {
+            entity->hasTarget = 0;
+        }
     }
 
     if (tileXChange != 0) {

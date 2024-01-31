@@ -4,13 +4,13 @@
 #include "map.h"
 
 // Uncomment this to skip a few things during testing (title screen, welcome sound, etc)
-// #define TEST_MODE
+#define TEST_MODE
 
 #define STARTING_LEVEL 1 // Should be 1 except for testing
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 // Once the game passes this level, go back to 1
-#define LEVEL_COUNT 11
+#define LEVEL_COUNT 13
 
 #define ENTITY_COUNT 75
 

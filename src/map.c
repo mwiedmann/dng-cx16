@@ -34,6 +34,10 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned char x, u
         entityList[entityId].animationFrame = 0;
         entityList[entityId].facingX = 0;
         entityList[entityId].points = 50; // TODO: Vary by entity type
+        entityList[entityId].startTileX = 0;
+        entityList[entityId].startTileY = 0;
+        entityList[entityId].targetTileX = 0;
+        entityList[entityId].targetTileY = 0;
     }
 
     entityList[entityId].statsId = 0;
@@ -58,6 +62,7 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned char x, u
     entityList[entityId].visible = 0;
     entityList[entityId].currentTileX = x;
     entityList[entityId].currentTileY = y;
+
     entityList[entityId].animationChange = 1;
     entityList[entityId].movedPrevTick = 0;
     entityList[entityId].rangedTicks = entityList[entityId].stats->rangedRate;
