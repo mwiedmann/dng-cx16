@@ -301,7 +301,8 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 #pragma code-name (push, "BANKRAM01")
 
 void teleportPlayer(unsigned char playerId) {
-    unsigned char t=0, tx, ty, toTileX, toTileY, foundSpot, entityTileX=0, entityTileY=0;
+    unsigned char t=0, toTileX, toTileY, foundSpot, entityTileX=0, entityTileY=0;
+    signed char ty, tx;
     Entity *entity;
 
     while(t < 16) {
@@ -309,8 +310,9 @@ void teleportPlayer(unsigned char playerId) {
         for (ty=players[playerId].teleportTileY-t; ty<=players[playerId].teleportTileY+t && t<16; ty++) {
             for (tx=players[playerId].teleportTileX-t; tx<=players[playerId].teleportTileX+t && t<16; tx++) {
                 // Only look at the "oustides" of this loop
-                if (ty==players[playerId].teleportTileY-t || ty==players[playerId].teleportTileY+t ||
-                    tx==players[playerId].teleportTileX-t || tx==players[playerId].teleportTileX+t) {
+                if (tx > 0 && tx < 31 && ty > 0 && ty < 31 &&
+                    (ty==players[playerId].teleportTileY-t || ty==players[playerId].teleportTileY+t ||
+                    tx==players[playerId].teleportTileX-t || tx==players[playerId].teleportTileX+t)) {
                     
                     // See if this tile is a teleporter
                     // Take the player there if so
@@ -676,7 +678,7 @@ unsigned char destroyPlayer(unsigned char playerId) {
     }
 
     soundPlayMusic(SOUND_MUSIC_LAUGH);
-    
+
     return entityId;
 }
 

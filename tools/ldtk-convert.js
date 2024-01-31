@@ -9,6 +9,7 @@ const d = JSON.parse(rawText);
 
 const tileWidth = 32
 
+let levelStringData = []
 const levelStrings = []
 const levelStringLengths = []
 const levelStringAddr = []
@@ -107,12 +108,16 @@ const createLevelCode = (levelNum, level) => {
 
   const convertToPETSCII = (c) => c.charCodeAt(0) + (c >= 'A' && c <= 'Z' ? 128 : 0)
 
-  // Add the two level strings
-  levelStrings.push(...[...level.fieldInstances[0].__value.split('').map(convertToPETSCII), 0])
-  levelStrings.push(...[...level.fieldInstances[1].__value.split('').map(convertToPETSCII), 0])
-
-  levelStringLengths.push(level.fieldInstances[0].__value.length + 1)
-  levelStringLengths.push(level.fieldInstances[1].__value.length + 1)
+  // Store the strings for BIN creation at the end
+  levelStringData.push({
+    levelNum,
+    data: {
+      s0: level.fieldInstances[0].__value.split('').map(convertToPETSCII),
+      s1: level.fieldInstances[1].__value.split('').map(convertToPETSCII),
+      length0: level.fieldInstances[0].__value.length,
+      length1: level.fieldInstances[1].__value.length
+    }
+  })
 
   let data = undefined
   level.layerInstances.forEach((li) => {
@@ -137,10 +142,19 @@ const createLevelCode = (levelNum, level) => {
 };
 
 d.levels.forEach((l) => {
-  const levelNum = l.identifier.split("_")[1];
+  const levelNum = parseInt(l.identifier.split("_")[1]);
   createLevelCode(levelNum, l);
 });
 
+// The levels could be in any order in the JSON...sort it
+levelStringData = levelStringData.sort((a,b) => a.levelNum - b.levelNum);
+
+levelStringData.forEach(lsd => {
+  const { data } = lsd
+  levelStrings.push(...data.s0, 0, ...data.s1, 0)
+
+  levelStringLengths.push(data.length0+1, data.length1+1)
+})
 
 // 2 byte address for each string
 const stringArrayOffset = levelStringLengths.length * 2
