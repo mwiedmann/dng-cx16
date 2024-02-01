@@ -469,12 +469,14 @@ void moveEntity(Entity *entity) {
                 mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR; // Remove target blocker (can be diff) from actual new tile
                 mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_TILE_START + entity->spriteId; // Block new tile
                 entity->hasTarget = 0; // Will need new target
-                
-                // Update the current tile
-                entity->currentTileX = newTileX;
-                entity->currentTileY = newTileY;
             }
         }
+
+        // Update the current tile
+        // Do this after every move
+        // There are edge cases where the entity can overshoot its target
+        entity->currentTileX = newTileX;
+        entity->currentTileY = newTileY;
     }
 
     if (entity->wasHit || entity->animationChange || entity->x != prevX || entity->y != prevY) {
