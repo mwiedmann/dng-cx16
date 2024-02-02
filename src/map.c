@@ -8,7 +8,7 @@
 #include "utils.h"
 #include "sprites.h"
 
-void createEntity(unsigned char tile, unsigned char entityId, unsigned char x, unsigned char y, unsigned char isShot) {
+void createEntity(unsigned char tile, unsigned char entityId, unsigned char xTile, unsigned char yTile, unsigned char isShot) {
     unsigned long addr;
 
     if (tile >= TILE_GENERATOR_START && tile <= TILE_GENERATOR_END) {
@@ -34,10 +34,6 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned char x, u
         entityList[entityId].animationFrame = 0;
         entityList[entityId].facingX = 0;
         entityList[entityId].points = 50; // TODO: Vary by entity type
-        entityList[entityId].startTileX = 0;
-        entityList[entityId].startTileY = 0;
-        entityList[entityId].targetTileX = 0;
-        entityList[entityId].targetTileY = 0;
     }
 
     entityList[entityId].statsId = 0;
@@ -57,11 +53,11 @@ void createEntity(unsigned char tile, unsigned char entityId, unsigned char x, u
     entityList[entityId].spriteGraphicLo = addr>>5;
     entityList[entityId].spriteGraphicHi = addr>>13;
     
-    entityList[entityId].x = x * 16;
-    entityList[entityId].y = y * 16;
+    entityList[entityId].x = xTile * 16;
+    entityList[entityId].y = yTile * 16;
     entityList[entityId].visible = 0;
-    entityList[entityId].currentTileX = x;
-    entityList[entityId].currentTileY = y;
+    entityList[entityId].currentTileX = xTile;
+    entityList[entityId].currentTileY = yTile;
 
     entityList[entityId].animationChange = 1;
     entityList[entityId].movedPrevTick = 0;

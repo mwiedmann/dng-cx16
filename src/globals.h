@@ -10,7 +10,7 @@
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 // Once the game passes this level, go back to 1
-#define LEVEL_COUNT 15
+#define LEVEL_COUNT 16
 
 #define ENTITY_COUNT 75
 
@@ -107,6 +107,8 @@ typedef struct Entity {
     unsigned char startTileY;
     unsigned char targetTileX;
     unsigned char targetTileY;
+    unsigned short targetTilePixelX;
+    unsigned short targetTilePixelY;
     unsigned char currentTileX;
     unsigned char currentTileY;
     unsigned char hasTarget;

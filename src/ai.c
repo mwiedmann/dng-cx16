@@ -25,20 +25,19 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
         players[playerId].score += entity->points;
         entity->health = 0;
         
-        // Took this out because the gold left behind would block player shots.
-        // This was a punishment if there were other generators/entities behind it.
-        // Cool idea but think more about this.
-        // // Generators leave treasure behind
-        // if (entity->isGenerator) {
-        //     mapStatus[entity->currentTileY][entity->currentTileX] = TILE_TREASURE_SILVER;
-        //     l0TileShow(entity->currentTileX, entity->currentTileY, 46);
-        // } else {
-        
-        mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
-
+        // If the entity has a target...clear the start/target tiles
         if (entity->hasTarget) {
-            mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
+            mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR;
+
+            // Players can stomp on ENTITY_CLAIM tiles...so make sure it is still claimed before clearing it
+            if (mapStatus[entity->targetTileY][entity->targetTileX] == ENTITY_CLAIM) {
+                mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
+            }
+        } else {
+            // Entity had no target so just clear it's current tile
+            mapStatus[entity->currentTileY][entity->currentTileX] = TILE_FLOOR;
         }
+
         toggleSprite(entity->spriteAddrLo, entity->spriteAddrHi, 0);
         deleteEntityFromList(entity, &entityActiveList);
     }
@@ -397,25 +396,27 @@ void moveEntity(Entity *entity) {
             entity->startTileY = entity->currentTileY;
             entity->targetTileX = entity->currentTileX+tileXChange;
             entity->targetTileY = entity->currentTileY+tileYChange;
-    
+            entity->targetTilePixelX = entity->targetTileX * 16;
+            entity->targetTilePixelY = entity->targetTileY * 16;
+
             // Claim the tile and now entity has a target
             mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_CLAIM;
             entity->hasTarget = 1;
         }
     } else {
         // Try to move X towards the target
-        if (entity->currentTileX < entity->targetTileX) {
+        if (entity->x < entity->targetTilePixelX) {
             tileXChange = 1;
             entity->facingX = 0;
-        } else if (entity->currentTileX > entity->targetTileX) {
+        } else if (entity->x > entity->targetTilePixelX) {
             tileXChange = -1;
             entity->facingX = 1;
         }
 
         // Try to move Y towards target
-        if (entity->currentTileY < entity->targetTileY) {
+        if (entity->y < entity->targetTilePixelY) {
             tileYChange = 1;
-        } else if (entity->currentTileY > entity->targetTileY) {
+        } else if (entity->y > entity->targetTilePixelY) {
             tileYChange = -1;
         }
 
@@ -453,7 +454,7 @@ void moveEntity(Entity *entity) {
         newTileY = (entity->y + 8) >> 4;
 
         // See if the entity has moved to its target tile
-        if (entity->targetTileX == newTileX && entity->targetTileY == newTileY) {
+        if (entity->hasTarget && entity->targetTileX == newTileX && entity->targetTileY == newTileY) {
             // See if guy is in this tile...if so, stay still, but attack!
             if (mapStatus[newTileY][newTileX] >= GUY_CLAIM) {
                 entity->x = prevX;
@@ -469,14 +470,14 @@ void moveEntity(Entity *entity) {
                 mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR; // Remove target blocker (can be diff) from actual new tile
                 mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_TILE_START + entity->spriteId; // Block new tile
                 entity->hasTarget = 0; // Will need new target
+
+                // Update the current tile
+                // Be careful to not update currentTile anywhere else, it causes issues related to mapStatus stamping
+                // and you end up with dead spaces on the map that entities won't move through. Its a whole thing!
+                entity->currentTileX = newTileX;
+                entity->currentTileY = newTileY;
             }
         }
-
-        // Update the current tile
-        // Do this after every move
-        // There are edge cases where the entity can overshoot its target
-        entity->currentTileX = newTileX;
-        entity->currentTileY = newTileY;
     }
 
     if (entity->wasHit || entity->animationChange || entity->x != prevX || entity->y != prevY) {

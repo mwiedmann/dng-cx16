@@ -81,10 +81,11 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     // Most common case...nothing else to check
     if (tile == TILE_FLOOR) {
         return 0;
-    }
-
-    // There is an inventory limit on keys+scrolls
-    if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
+    } else if (tile == TILE_WALL) {
+        // Walls, most common after floor
+        return 1;
+    } else if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
+        // There is an inventory limit on keys+scrolls
         if (!hints.keys) {
             hints.keys = 1;
             RAM_BANK = CODE_BANK;
@@ -282,10 +283,10 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         players[playerId].teleportTileX = toTileX;
         players[playerId].teleportTileY = toTileY;
         return 1;
-    } else if (tile > TILE_FLOOR && tile < ENTITY_TILE_START) {
-        return 1;
-    } else if (tile >= GUY_CLAIM && tile != GUY_CLAIM+playerId) {
-        // Don't collide with other player
+    } else if (
+        (tile > TILE_WALL && tile < ENTITY_TILE_START) || // Sort of a catch-all for other tile types not accounted for
+        (tile >= GUY_CLAIM && tile != GUY_CLAIM+playerId) // Don't collide with other player 
+        ) { 
         return 1;
     }
 
