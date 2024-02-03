@@ -210,6 +210,8 @@ void moveEntity(Entity *entity) {
                             addNewEntityToList(&entityList[i], &entitySleepList);
                             moveAndSetAnimationFrame(entityList[i].spriteAddrLo, entityList[i].spriteAddrHi, entityList[i].spriteGraphicLo, entityList[i].spriteGraphicHi,
                                 entityList[i].x, entityList[i].y, 0, 0, 0);
+                            entity->animationChange = 1;
+                            entity->animationCount = 0;
                             break;
                         }
                     }
@@ -237,6 +239,8 @@ void moveEntity(Entity *entity) {
                             addNewEntityToList(&entityList[i], &entitySleepList);
                             moveAndSetAnimationFrame(entityList[i].spriteAddrLo, entityList[i].spriteAddrHi, entityList[i].spriteGraphicLo, entityList[i].spriteGraphicHi,
                                 entityList[i].x, entityList[i].y, 0, 0, 0);
+                            entity->animationChange = 1;
+                            entity->animationCount = 0;
                             break;
                         }
                     }

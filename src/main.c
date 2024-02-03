@@ -293,7 +293,7 @@ void main() {
                 // Let the game continue for a few seconds after the players are dead
                 if (gameOver) {
                     deadCount+= 1;
-                    if (deadCount < 180) {
+                    if (deadCount < 250) {
                         gameOver = 0;
                         exitLevel = 0;
                     }

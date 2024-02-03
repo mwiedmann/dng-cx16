@@ -276,7 +276,7 @@ void gameMessage(unsigned char stringId, unsigned char sound) {
     }
 
     messageCenter(msg);
-    waitCount(150);
+    waitCount(180);
 
     clearL1PlayArea();
 }

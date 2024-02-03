@@ -10,12 +10,12 @@
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 // Once the game passes this level, go back to 1
-#define LEVEL_COUNT 16
+#define LEVEL_COUNT 20
 
 #define ENTITY_COUNT 75
 
 // Don't spawn more entities if there are already this many on screen
-#define ENTITY_COUNT_LIMIT 25
+#define ENTITY_COUNT_LIMIT 17
 
 #define GUY_SPEED_1 1
 #define GUY_SPEED_2 2
