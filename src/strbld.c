@@ -54,8 +54,8 @@ char *stringTable[STRING_COUNT] = {
     "SPEED  *    **   **    ****",
     "MELEE  **** *    **    ***",
     "RANGED",
-    "   DMG **** ***  *      *",
-    "  RATE *    **   ***   ****",
+    "   DMG **** **** **    **",
+    "  RATE *    ***  ***   ****",
     "MAGIC  *    **** ****  **",
     "HEALTH **** *    ***   **",
     "ARMOR  **   *    ****  **",
@@ -121,6 +121,7 @@ char *stringTable[STRING_COUNT] = {
     "GAIN HEALTH",
     "LARGE MEAL",
     "SMALL MEAL",
+    "PAUSED"
 };
 
 void createStringTable() {

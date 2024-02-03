@@ -23,10 +23,10 @@
 #define WEAPON_ROTATION_SPEED 4
 
 // Gold/Score values
-#define TREASURE_CHEST_GOLD 100
+#define TREASURE_CHEST_GOLD 150
 #define GOLD_PILE_GOLD 50
 #define SILVER_PILE_GOLD 25
-#define TREASURE_CHEST_SCORE 1000
+#define TREASURE_CHEST_SCORE 1500
 #define GOLD_PILE_SCORE 500
 #define SILVER_PILE_SCORE 250
 
@@ -44,7 +44,9 @@
 #define BIG_FOOD_SCORE 100
 #define SMALL_FOOD_SCORE 50
 
-
+// Player 2 coming soon!
+// It works but hasn't been tested much
+// Character selection code has a hard coded 1
 #define NUM_PLAYERS 2
 
 #define SCROLL_TILE_SIZE 15

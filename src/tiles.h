@@ -64,6 +64,7 @@ void updateOverlay();
 void copyTile(unsigned char fromX, unsigned char fromY, unsigned char toX, unsigned char toY);
 void flashLayer1();
 void l0TileShow(unsigned char x, unsigned char y, unsigned char tile);
+void paused();
 unsigned char shopQuestion(unsigned short cost, unsigned char stringId);
 void gameMessage(unsigned char stringId, unsigned char sound);
 void message(unsigned char x, unsigned char y, char *msg);

@@ -137,7 +137,8 @@ void drawOverlayBackground() {
 
     for (i=0; i<NUM_PLAYERS; i++) {
         if (!players[i].active) {
-            message(30, 6+(i*10), "JOIN GAME!");
+            // TODO: Remove the VERY SOON when player 2 code is ready
+            message(30, 6+(i*10), i == 0 ? "JOIN GAME!" : "VERY SOON!");
         } else {
             message(30, 6+(i*10), "          "); // Clear out any previous text
             updateCharacterTypeInOverlay(i);
@@ -236,6 +237,21 @@ void clearL1PlayArea() {
             }
         }
     }
+}
+
+void paused() {
+    char * msg[4] = {0,0,0,0};
+    char buf[40];
+
+    strcpy(buf, getString(STRING_GAME_MSG_PAUSED));
+    
+    msg[0] = buf; 
+
+    messageCenter(msg);
+    waitForRelease();
+    waitForButtonPress();
+
+    clearL1PlayArea();
 }
 
 unsigned char shopQuestion(unsigned short cost, unsigned char stringId) {

@@ -15,15 +15,21 @@
 void setGuyDirection(unsigned char playerId) {
     unsigned char joy;
 
-    joy = joy_read(0);
+    joy = joy_read(0) | joy_read(1);
 
     players[playerId].pressedX = 0;
     players[playerId].pressedY = 0;
     players[playerId].pressedShoot = 0;
 
     // Button 3 controls which player is moving. A hack for now since I don't have a joypad (that works!)
-    if (playerId == 0 && JOY_BTN_3(joy) || (playerId == 1 && !JOY_BTN_3(joy))) {
-        return;
+    // if (playerId == 0 && JOY_BTN_3(joy) || (playerId == 1 && !JOY_BTN_3(joy))) {
+    //     return;
+    // }
+
+    if (JOY_SELECT(joy)) {
+        RAM_BANK = CODE_BANK;
+        paused();
+        RAM_BANK = MAP_BANK;
     }
 
     if (JOY_LEFT(joy)) {

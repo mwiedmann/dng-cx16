@@ -12,18 +12,6 @@
 #include "strtbl.h"
 #include "config.h"
 
-/*
-        BARBARIAN    MAGE    DRUID    RANGER
-Speed      **        **      **       ****
-Melee      ****      *       **       ***
-Ranged
- Damage    ****      ***     **       **
- Rate      *         ****    **       ****
-Magic      *         ****    ****     **
-Health     ****      *       ***      **
-Armor      **        *       ****     **
-*/
-
 #pragma code-name (push, "BANKRAM02")
 
 void showMessageList(MessageList *list, unsigned char length, unsigned char stringStart) {
@@ -244,7 +232,7 @@ void instructions() {
         }
 
         do {
-            joy = joy_read(0);
+            joy = joy_read(0) | joy_read(1);
             count+= 1;
             wait();
         } while(joy == 0 && count < SCREEN_CHANGE_COUNT); // go to next screen on button press or after some time
@@ -268,8 +256,9 @@ void instructions() {
     instructionsSelect();
 
     while (1) {
-        for (i=0; i<NUM_PLAYERS; i++){
-            joy = joy_read(0);
+        // TODO: Remove when player 2 code is ready
+        for (i=0; i<1 /*NUM_PLAYERS*/; i++){
+            joy = joy_read(0) | joy_read(1);
 
             // Hold button 3 for player 2
             if ((i==0 && !JOY_BTN_3(joy)) || (i == 1 && JOY_BTN_3(joy))) {

@@ -9,7 +9,7 @@ void waitForRelease() {
     unsigned char joy;
 
     while (1) {
-        joy = joy_read(0);
+        joy = joy_read(0) | joy_read(1);
         if (joy == 0) {
             break;
         }
@@ -21,14 +21,14 @@ unsigned char waitForButtonPress() {
     unsigned char joy, pressed;
 
     while(1) {
-        joy = joy_read(0);
+        joy = joy_read(0) | joy_read(1);
 
         if (JOY_BTN_1(joy) || JOY_BTN_2(joy) || JOY_BTN_3(joy) || JOY_START(joy) || JOY_SELECT(joy)) {
             pressed = joy;
 
             while(JOY_BTN_1(joy) || JOY_BTN_2(joy) || JOY_BTN_3(joy) || JOY_START(joy) || JOY_SELECT(joy)) {
                 wait();
-                joy = joy_read(0);
+                joy = joy_read(0) | joy_read(1);
             }
             return pressed;
         }

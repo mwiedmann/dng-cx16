@@ -154,6 +154,7 @@ void main() {
                     for (j=0; j<5; j++) {
                         players[i].hasBoosts[j] = 0;
                     }
+                    overlayChanged = 1;
                 }
 
                 if (players[i].active) {
@@ -213,11 +214,11 @@ void main() {
                     demonHitting -= 1;
                     if (!demonSoundOn) {
                         demonSoundOn = 1;
-                        soundPlaySFX(SOUND_SFX_DEMON, SOUND_PRIORITY_DEMON);
+                        soundPlaySFX(SOUND_SFX_DEMON, SOUND_PRIORITY_COMMON);
                     }
                 } else if (!demonHitting && demonSoundOn) {
                     demonSoundOn = 0;
-                    soundStopChannel(SOUND_PRIORITY_DEMON);
+                    soundStopChannel(SOUND_PRIORITY_COMMON);
                 }
 
                 if (count == 0 || count == 2 || count == 4) {
