@@ -4,4 +4,6 @@
 void wait();
 void waitCount(unsigned short count);
 
+extern unsigned char waitStatus;
+
 #endif

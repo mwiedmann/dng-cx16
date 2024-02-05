@@ -1,6 +1,7 @@
 #include <cx16.h>
 #include <joystick.h>
 #include <stdio.h>
+#include <6502.h>
 
 #include "config.h"
 #include "tiles.h"
@@ -17,8 +18,18 @@
 #include "sound.h"
 #include "strtbl.h"
 
-void setScroll() {
+#define IRQ_HANDLER_STACK_SIZE 8
+unsigned char irqHandlerStack[IRQ_HANDLER_STACK_SIZE];
+
+unsigned char scrollMode = 0;
+
+unsigned char irqHandler() {
     unsigned short x, y;
+
+    if (!scrollMode) {
+        waitStatus = 1;
+        return IRQ_HANDLED;
+    }
 
     if (activePlayers == 1) {
         // If only 1 player active, use it
@@ -36,7 +47,8 @@ void setScroll() {
     } else {
         // Nobody active...just keep the scroll where it is
         // Game is probably over
-        return;
+        waitStatus = 1;
+        return IRQ_HANDLED;
     }
 
     // Just follow P0 for now
@@ -56,12 +68,42 @@ void setScroll() {
     
     VERA.layer0.vscroll = scrollY;
     VERA.layer0.hscroll = scrollX;
+
+    waitStatus = 1;
+    return IRQ_HANDLED;
 }
 
+#pragma code-name (push, "BANKRAM02")
+
+void prepPlayersForLevel() {
+    unsigned char i,j;
+
+    // Show the active players
+    for (i=0; i<NUM_PLAYERS; i++) {
+        // All boosted stats are reset when reaching a shop level
+        if (isShopLevel) {
+            for (j=0; j<5; j++) {
+                players[i].hasBoosts[j] = 0;
+            }
+            overlayChanged = 1;
+        }
+
+        if (players[i].active) {
+            toggleSprite(players[i].spriteAddrLo, players[i].spriteAddrHi, 1);
+        }
+    }
+}
+
+#pragma code-name (pop)
+
 void main() {
-    unsigned char count = 0, load, exitLevel, gameOver, i, j, healthTicks, deadCount;
+    unsigned char count = 0, load, exitLevel, gameOver, i, healthTicks, deadCount;
     unsigned char inputTicks = 0;
     Entity *entity;
+
+    // Setup the IRQ handler vsync
+    set_irq(&irqHandler, irqHandlerStack, IRQ_HANDLER_STACK_SIZE);
+    VERA.irq_enable = 1;
 
     toggleLayers(0);
     loadStrings();
@@ -144,23 +186,15 @@ void main() {
                 soundPlayMusic(SOUND_MUSIC_WELCOME);
             }
 #endif
+            
             exitLevel = 0;
             healthTicks = 0;
 
-            // Show the active players
-            for (i=0; i<NUM_PLAYERS; i++) {
-                // All boosted stats are reset when reaching a shop level
-                if (isShopLevel) {
-                    for (j=0; j<5; j++) {
-                        players[i].hasBoosts[j] = 0;
-                    }
-                    overlayChanged = 1;
-                }
+            RAM_BANK = CODE_BANK;
+            prepPlayersForLevel();
+            RAM_BANK = MAP_BANK;
 
-                if (players[i].active) {
-                    toggleSprite(players[i].spriteAddrLo, players[i].spriteAddrHi, 1);
-                }
-            }
+            scrollMode = 1;
 
             while(!exitLevel && !gameOver) {
                 // Get joystick input only periodically
@@ -182,8 +216,6 @@ void main() {
                     }
                     moveGuy(i, players[i].stats->speeds[count]);
                 }
-
-                setScroll();
 
                 // Only set his animation frame if needed (this is more expensive)
                 // Otherwise just move him
@@ -299,6 +331,7 @@ void main() {
                         exitLevel = 0;
                     }
                 }
+                
                 wait();
             }
 
@@ -329,6 +362,7 @@ void main() {
             // Reset scrolling
             scrollX=0;
             scrollY=0;
+            scrollMode = 0;
             VERA.layer0.vscroll = scrollY;
             VERA.layer0.hscroll = scrollX;
         }
