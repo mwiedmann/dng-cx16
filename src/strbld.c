@@ -56,7 +56,7 @@ char *stringTable[STRING_COUNT] = {
     "RANGED",
     "   DMG **** **** **    **",
     "  RATE *    ***  ***   ****",
-    "MAGIC  *    **** ****  **",
+    "MAGIC  *    **** ***   ***",
     "HEALTH **** *    ***   **",
     "ARMOR  **   *    ****  **",
 
