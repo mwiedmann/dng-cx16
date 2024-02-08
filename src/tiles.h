@@ -48,8 +48,10 @@
 #define CHARACTER_NAME_TILES 144
 
 #define ENTITY_TILE_START 100
-#define ENTITY_TILE_END 228
-#define ENTITY_CLAIM 253
+#define ENTITY_TILE_END 174
+#define ENTITY_CLAIM_START 175
+#define ENTITY_CLAIM_END 249
+
 #define GUY_CLAIM 254
 
 void loadDungeonTiles();

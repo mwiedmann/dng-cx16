@@ -340,7 +340,7 @@ void teleportPlayer(unsigned char playerId) {
     if (t == TILE_FLOOR || (t >= ENTITY_TILE_START && t <= ENTITY_TILE_END)) {
         if (t >= ENTITY_TILE_START && t <= ENTITY_TILE_END) {
             // If there is an entity there...stomp on it!
-            entity = getEntityById(t-ENTITY_TILE_START, entityActiveList);
+            entity = getEntityById(t, entityActiveList);
             if (entity) {
                 attackEntity(playerId, entity, 255);
             }
@@ -371,7 +371,7 @@ void teleportPlayer(unsigned char playerId) {
         // No empty tiles, stomp on an entity!
         if (!foundSpot && entityTileX) {
             t = mapStatus[entityTileY][entityTileX];
-            entity = getEntityById(t-ENTITY_TILE_START, entityActiveList);
+            entity = getEntityById(t, entityActiveList);
             if (entity) {
                 attackEntity(playerId, entity, 255);
             }
@@ -496,7 +496,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
         tile = mapStatus[((players[playerId].y+8)+(dirY*8))>>4][((players[playerId].x+8)+(dirX*8))>>4];
         if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
             if (players[playerId].ticksUntilNextMelee == 0) {
-                entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
+                entity = getEntityById(tile, entityActiveList);
                 if (entity) {
                     shot = 1; // Just used to trigger attack animation
                     players[playerId].ticksUntilNextMelee = players[playerId].stats->ticksToMelee + 1;
@@ -536,6 +536,15 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
 
         players[playerId].currentTileX = tempTileX;
         players[playerId].currentTileY = tempTileY;
+    }
+
+    // See if the player is stomping on a tile claimed by an entity (entity is trying to move to that tile)
+    tile = mapStatus[players[playerId].currentTileY][players[playerId].currentTileX];
+    if (tile >= ENTITY_CLAIM_START && tile <= ENTITY_CLAIM_END) {
+        entity = getEntityById(tile+75, entityActiveList);
+        if (entity) {
+            entity->hasTarget = 0;
+        }
     }
 
     // Stamp the current tile with the guy
@@ -613,13 +622,13 @@ void moveWeapon(unsigned char playerId) {
         // We check before and after the move because of tile boundary edge cases
         // Probably a better way but tile checking is really fast...so, maybe this is ok
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
-        if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && tile != ENTITY_CLAIM) {
+        if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && (tile < ENTITY_CLAIM_START || tile > ENTITY_CLAIM_END)) {
             // Hide it for now
             weapons[playerId].visible = 0;
             toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
 
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
-                entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
+                entity = getEntityById(tile, entityActiveList);
                 if (entity) {
                     attackEntity(playerId, entity, players[playerId].hasBoosts[BOOST_ID_RANGED]
                         ? players[playerId].boostedStats->rangedDamage
@@ -645,13 +654,13 @@ void moveWeapon(unsigned char playerId) {
 
         // Check if hit something after the move
         tile = mapStatus[(weapons[playerId].y+8)>>4][(weapons[playerId].x+8)>>4];
-        if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && tile != ENTITY_CLAIM) {
+        if (tile != TILE_FLOOR && tile != GUY_CLAIM+playerId && (tile < ENTITY_CLAIM_START || tile > ENTITY_CLAIM_END)) {
             // Hide it for now
             weapons[playerId].visible = 0;
             toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
 
             if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
-                entity = getEntityById(tile-ENTITY_TILE_START, entityActiveList);
+                entity = getEntityById(tile, entityActiveList);
                 if (entity) {
                     attackEntity(playerId, entity, players[playerId].hasBoosts[BOOST_ID_RANGED]
                         ? players[playerId].boostedStats->rangedDamage

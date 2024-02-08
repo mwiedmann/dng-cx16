@@ -1,5 +1,6 @@
 #include <cx16.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "config.h"
 #include "tiles.h"
@@ -8,63 +9,78 @@
 #include "utils.h"
 #include "sprites.h"
 
-void createEntity(unsigned char tile, unsigned char entityId, unsigned char xTile, unsigned char yTile, unsigned char isShot) {
+#pragma code-name (push, "BANKRAM02")
+
+void createEntityFill(Entity *entity, unsigned char tile, unsigned char entityId, unsigned char xTile, unsigned char yTile, unsigned char isShot) {
     unsigned long addr;
 
     if (tile >= TILE_GENERATOR_START && tile <= TILE_GENERATOR_END) {
-        entityList[entityId].isGenerator = 1;
-        entityList[entityId].entityTypeId = tile-TILE_GENERATOR_START;
-        entityList[entityId].tileId = GENERATOR_TILE+entityList[entityId].entityTypeId;
-        entityList[entityId].health =  12;
-        entityList[entityId].animationCount = 0;
-        entityList[entityId].animationFrame = 0;
-        entityList[entityId].spawnRate = level < 5 ? 60 : level < 10 ? 55 : level < 15 ? 50 : level < 20 ? 45 : level < 25 ? 40 : level < 30 ? 35 : 30;
-        entityList[entityId].nextSpawn = entityList[entityId].spawnRate;
-        entityList[entityId].points = 1000;
+        entity->isGenerator = 1;
+        entity->entityTypeId = tile-TILE_GENERATOR_START;
+        entity->tileId = GENERATOR_TILE+entity->entityTypeId;
+        entity->health =  12;
+        entity->animationCount = 0;
+        entity->animationFrame = 0;
+        entity->spawnRate = level < 5 ? 60 : level < 10 ? 55 : level < 15 ? 50 : level < 20 ? 45 : level < 25 ? 40 : level < 30 ? 35 : 30;
+        entity->nextSpawn = entity->spawnRate;
+        entity->points = 1000;
     } else {
-        entityList[entityId].isGenerator = 0;
-        entityList[entityId].entityTypeId = tile-TILE_ENTITY_START;
-        entityList[entityId].stats = entityStatsByType[entityList[entityId].entityTypeId];
-        entityList[entityId].health =  entityList[entityId].stats->startingHealth;
-        entityList[entityId].tileId = isShot
-            ? MONSTER_PROJECTILE_TILE + (entityList[entityId].entityTypeId>>1)
-            : MONSTER_TILE+(4*entityList[entityId].entityTypeId);
-        entityList[entityId].hasTarget = 0;
-        entityList[entityId].animationCount = ANIMATION_FRAME_SPEED;
-        entityList[entityId].animationFrame = 0;
-        entityList[entityId].facingX = 0;
-        entityList[entityId].points = 50; // TODO: Vary by entity type
+        entity->isGenerator = 0;
+        entity->entityTypeId = tile-TILE_ENTITY_START;
+        entity->stats = entityStatsByType[entity->entityTypeId];
+        entity->health =  entity->stats->startingHealth;
+        entity->tileId = isShot
+            ? MONSTER_PROJECTILE_TILE + (entity->entityTypeId>>1)
+            : MONSTER_TILE+(4*entity->entityTypeId);
+        entity->hasTarget = 0;
+        entity->animationCount = ANIMATION_FRAME_SPEED;
+        entity->animationFrame = 0;
+        entity->facingX = 0;
+        entity->points = 50; // TODO: Vary by entity type
     }
 
-    entityList[entityId].statsId = 0;
-    entityList[entityId].spriteId = entityId+4; // First 4 sprites are guy and weapon
+    entity->statsId = 0;
+    entity->spriteId = entityId+4; // First 4 sprites are guy and weapon
 
-    addr = SPRITE_ADDR_START + (entityList[entityId].spriteId * 8);
+    addr = SPRITE_ADDR_START + (entity->spriteId * 8);
     
     // The sprite address is fixed...save it to avoid recalcing every time
-    entityList[entityId].spriteAddrLo = addr;
-    entityList[entityId].spriteAddrHi = addr>>16;
+    entity->spriteAddrLo = addr;
+    entity->spriteAddrHi = addr>>16;
 
     // Calculate the tile graphic address
     // Animations will change the frame (and the address) a tad and we can add that part later (still faster)
     // NOTE: Its possible that a frame increment could push this address beyond 64k and the "Hi" part would then be wrong
     // Let's deal with that by avoiding having animation frame cross that boundary!
-    addr = L0_TILEBASE_ADDR + (entityList[entityId].tileId*L0_TILE_SIZE);
-    entityList[entityId].spriteGraphicLo = addr>>5;
-    entityList[entityId].spriteGraphicHi = addr>>13;
+    addr = L0_TILEBASE_ADDR + (entity->tileId*L0_TILE_SIZE);
+    entity->spriteGraphicLo = addr>>5;
+    entity->spriteGraphicHi = addr>>13;
     
-    entityList[entityId].x = xTile * 16;
-    entityList[entityId].y = yTile * 16;
-    entityList[entityId].visible = 0;
-    entityList[entityId].currentTileX = xTile;
-    entityList[entityId].currentTileY = yTile;
+    entity->x = xTile * 16;
+    entity->y = yTile * 16;
+    entity->visible = 0;
+    entity->currentTileX = xTile;
+    entity->currentTileY = yTile;
 
-    entityList[entityId].animationChange = 1;
-    entityList[entityId].movedPrevTick = 0;
-    entityList[entityId].rangedTicks = entityList[entityId].stats->rangedRate;
-    entityList[entityId].isShot = isShot;
-    entityList[entityId].isLob = 0;
-    entityList[entityId].wasHit = 0;
+    entity->animationChange = 1;
+    entity->movedPrevTick = 0;
+    entity->rangedTicks = entity->stats->rangedRate;
+    entity->isShot = isShot;
+    entity->isLob = 0;
+    entity->wasHit = 0;
+}
+
+
+#pragma code-name (pop)
+
+void createEntity(unsigned char tile, unsigned char entityId, unsigned char xTile, unsigned char yTile, unsigned char isShot) {
+    Entity entity;
+
+    RAM_BANK = CODE_BANK;
+    createEntityFill(&entity, tile, entityId, xTile, yTile, isShot);
+    RAM_BANK = MAP_BANK;
+
+    memcpy(&entityList[entityId], &entity, sizeof(Entity));
 }
 
 #pragma code-name (push, "BANKRAM02")
@@ -121,7 +137,7 @@ void createMapStatus(unsigned char level) {
                 // Move the lastEntity to be this new entity (for the next iteration)
                 lastEntity = &entityList[i];
 
-                mapStatus[y][x] = ENTITY_TILE_START + entityList[i].spriteId;
+                mapStatus[y][x] = ENTITY_TILE_START + (entityList[i].spriteId-4);
                 i++;
             } else if (mapStatus[y][x] == TILE_GUY /* Guy Start*/) {
                 mapStatus[y][x] = 0;

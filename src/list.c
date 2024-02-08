@@ -2,6 +2,7 @@
 #include "list.h"
 #include "globals.h"
 #include "sprites.h"
+#include "tiles.h"
 
 // This file has a linked list implementation AND some entity functions that use it
 // I combined them because they all live in the same Banked RAM file
@@ -75,8 +76,9 @@ void deleteEntityFromList(Entity *entity, Entity **list) {
     }
 }
 
-Entity *getEntityById(unsigned char spriteId, Entity *list) {
+Entity *getEntityById(unsigned char tileId, Entity *list) {
     Entity *entity;
+    unsigned char spriteId = (tileId - ENTITY_TILE_START)+4;
 
     entity = list;
 

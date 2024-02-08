@@ -30,7 +30,8 @@ void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) 
             mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR;
 
             // Players can stomp on ENTITY_CLAIM tiles...so make sure it is still claimed before clearing it
-            if (mapStatus[entity->targetTileY][entity->targetTileX] == ENTITY_CLAIM) {
+            if (mapStatus[entity->targetTileY][entity->targetTileX] >= ENTITY_CLAIM_START &&
+                mapStatus[entity->targetTileY][entity->targetTileX] <= ENTITY_CLAIM_END) {
                 mapStatus[entity->targetTileY][entity->targetTileX] = TILE_FLOOR;
             }
         } else {
@@ -76,7 +77,7 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
     } else {
         genEntityId = destroyPlayer(playerId);
         // Update the map here because we switched banks
-        mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = ENTITY_TILE_START + entityList[genEntityId].spriteId;
+        mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = ENTITY_TILE_START + (entityList[genEntityId].spriteId - 4);
         
     }
 }
@@ -166,8 +167,9 @@ void moveEntity(Entity *entity) {
             entity->rangedTicks -= 1;
         } else {
             // See if shot hit something
-            if (mapStatus[entity->currentTileY][entity->currentTileX] > TILE_FLOOR &&
-                mapStatus[entity->currentTileY][entity->currentTileX] != ENTITY_CLAIM) {
+            if ((mapStatus[entity->currentTileY][entity->currentTileX] > TILE_FLOOR &&
+                mapStatus[entity->currentTileY][entity->currentTileX] < ENTITY_CLAIM_START) ||
+                mapStatus[entity->currentTileY][entity->currentTileX] > ENTITY_CLAIM_END) {
                 // See if guy is in this tile!
                 if (mapStatus[entity->currentTileY][entity->currentTileX] >= GUY_CLAIM) {
                     meleeAttackGuy(mapStatus[entity->currentTileY][entity->currentTileX]-GUY_CLAIM, entity->statsId, entity->stats->ranged, 1);   
@@ -299,7 +301,7 @@ void moveEntity(Entity *entity) {
                     if (entityList[i].health == 0) {
                         createEntity(TILE_ENTITY_START+entity->entityTypeId, i, newTileX, newTileY, 0);
                         addNewEntityToList(&entityList[i], &entitySleepList);
-                        mapStatus[newTileY][newTileX] = ENTITY_TILE_START + entityList[i].spriteId;
+                        mapStatus[newTileY][newTileX] = ENTITY_TILE_START + (entityList[i].spriteId-4);
                         break;
                     }
                 }
@@ -404,7 +406,7 @@ void moveEntity(Entity *entity) {
             entity->targetTilePixelY = entity->targetTileY * 16;
 
             // Claim the tile and now entity has a target
-            mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_CLAIM;
+            mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_CLAIM_START + (entityList[i].spriteId-4);
             entity->hasTarget = 1;
         }
     } else {
@@ -472,7 +474,7 @@ void moveEntity(Entity *entity) {
             } else {
                 // Clear the old tile and mark the new tile as blocked
                 mapStatus[entity->startTileY][entity->startTileX] = TILE_FLOOR; // Remove target blocker (can be diff) from actual new tile
-                mapStatus[entity->targetTileY][entity->targetTileX] = ENTITY_TILE_START + entity->spriteId; // Block new tile
+                mapStatus[entity->targetTileY][entity->targetTileX] = (ENTITY_TILE_START + entity->spriteId-4); // Block new tile
                 entity->hasTarget = 0; // Will need new target
 
                 // Update the current tile
