@@ -85,7 +85,7 @@ void updateCharacterTypeInOverlay(unsigned char playerId) {
     unsigned char x;
     unsigned long addr;
 
-    addr = L1_MAPBASE_ADDR + ((6+(playerId*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
+    addr = L1_MAPBASE_ADDR + ((8+(playerId*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X+1)*2);
     VERA.address = addr;
     VERA.address_hi = addr>>16;
     // Always set the Increment Mode, turn on bit 4
@@ -138,14 +138,14 @@ void drawOverlayBackground() {
     for (i=0; i<NUM_PLAYERS; i++) {
         if (!players[i].active) {
             // TODO: Remove the VERY SOON when player 2 code is ready
-            message(30, 6+(i*10), i == 0 ? "JOIN GAME!" : "VERY SOON!");
+            message(30, 8+(i*10), i == 0 ? "JOIN GAME!" : "VERY SOON!");
         } else {
-            message(30, 6+(i*10), "          "); // Clear out any previous text
+            message(30, 8+(i*10), "          "); // Clear out any previous text
             updateCharacterTypeInOverlay(i);
         }
 
         // Show SCORE and GOLD
-        addr = L1_MAPBASE_ADDR + ((7+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        addr = L1_MAPBASE_ADDR + ((9+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
@@ -165,7 +165,7 @@ void drawOverlayBackground() {
         }
 
         // Show HEALTH
-        addr = L1_MAPBASE_ADDR + ((9+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
+        addr = L1_MAPBASE_ADDR + ((11+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
@@ -302,11 +302,14 @@ void updateOverlay() {
     char buf[16];
 
     for (p=0; p<NUM_PLAYERS; p++) {
+        sprintf(buf, " LEVEL %u", level);
+        message(30, 6, buf);
+
         sprintf(buf, "% 5u % 4u", players[p].score, players[p].gold);
-        message(30, 8+(p*10), buf);
+        message(30, 10+(p*10), buf);
 
         sprintf(buf, "% 5u", players[p].health);
-        message(30, 10+(p*10), buf);
+        message(30, 12+(p*10), buf);
 
         // Set the buffer to all spaces to start
         for (i=0; i<INVENTORY_LIMIT; i++) {
@@ -322,14 +325,14 @@ void updateOverlay() {
         }
 
         buf[10] = 0;
-        message(30, 11+(p*10), buf);
+        message(30, 13+(p*10), buf);
 
         for (i=0; i<5; i++) {
             buf[i] = players[p].hasBoosts[i] ? 162+i : ' ';
         }
 
         buf[5] = 0;
-        message(30, 12+(p*10), buf);
+        message(30, 14+(p*10), buf);
     }
 }
 

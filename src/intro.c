@@ -267,7 +267,7 @@ void instructions() {
                 if (change) {
                     waitForRelease();
                     setupPlayer(i, players[i].characterType);
-                    message(30, 6+(i*10), "          "); // Clear out any previous text
+                    message(30, 8+(i*10), "          "); // Clear out any previous text
                     updateCharacterTypeInOverlay(i);
                     updateOverlay();
                 }
@@ -286,8 +286,7 @@ void instructions() {
     instructionsControls();
     waitForButtonPress();
 
-    clearLayer0();
-    drawOverlayBackground();
+    clearVisibleLayers();
 }
 
 void showLevelIntro() {
