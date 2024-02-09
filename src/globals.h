@@ -10,12 +10,15 @@
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 // Once the game passes this level, go back to 1
-#define LEVEL_COUNT 21
+#define LEVEL_COUNT 23
 
 #define ENTITY_COUNT 75
 
 // Don't spawn more entities if there are already this many on screen
 #define ENTITY_COUNT_LIMIT 17
+
+// All doors will open after some time
+#define OPEN_ALL_DOORS_TICKS 7200 // 2 mins * 60 ticks per second
 
 #define GUY_SPEED_1 1
 #define GUY_SPEED_2 2

@@ -7,5 +7,6 @@ void setupPlayer(unsigned char playerId, enum Character characterType);
 void moveWeapon(unsigned char playerId);
 unsigned char destroyPlayer(unsigned char playerId);
 void stopMove(unsigned char playerId);
+void openAllDoors(unsigned char fromX, unsigned char fromY);
 
 #endif

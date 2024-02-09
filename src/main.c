@@ -98,6 +98,7 @@ void prepPlayersForLevel() {
 
 void main() {
     unsigned char count = 0, load, exitLevel, gameOver, i, healthTicks, deadCount;
+    unsigned short doorTicks;
     unsigned char inputTicks = 0;
     Entity *entity;
 
@@ -189,6 +190,7 @@ void main() {
             
             exitLevel = 0;
             healthTicks = 0;
+            doorTicks = 0;
 
             RAM_BANK = CODE_BANK;
             prepPlayersForLevel();
@@ -298,6 +300,16 @@ void main() {
                         for (i=0; i<NUM_PLAYERS; i++) {
                             if (players[i].active && !players[i].exit) {
                                 meleeAttackGuy(i, 0, 1, 0);
+                            }
+                        }
+                    }
+
+                    doorTicks++;
+                    if (doorTicks == OPEN_ALL_DOORS_TICKS) {
+                        for (i=0; i<NUM_PLAYERS; i++) {
+                            if (players[i].active && !players[i].exit) {
+                                openAllDoors(players[i].currentTileX, players[i].currentTileY);
+                                break;
                             }
                         }
                     }

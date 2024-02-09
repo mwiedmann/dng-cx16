@@ -307,6 +307,19 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 
 #pragma code-name (push, "BANKRAM01")
 
+void openAllDoors(unsigned char fromX, unsigned char fromY) {
+    unsigned char x, y;
+
+    for (y=0; y<MAP_MAX; y++) {
+        for (x=0; x<MAP_MAX; x++) {
+            if (mapStatus[y][x] == TILE_DOOR) {
+                mapStatus[y][x] = TILE_FLOOR;
+                copyTile(fromX, fromY, x, y);
+            }
+        }
+    }
+}
+
 void teleportPlayer(unsigned char playerId) {
     unsigned char t=0, toTileX, toTileY, foundSpot, entityTileX=0, entityTileY=0;
     signed char ty, tx;
