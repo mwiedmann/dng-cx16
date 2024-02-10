@@ -144,7 +144,7 @@ void drawOverlayBackground() {
             updateCharacterTypeInOverlay(i);
         }
 
-        // Show SCORE and GOLD
+        // Show LIFE and GOLD
         addr = L1_MAPBASE_ADDR + ((9+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
@@ -152,7 +152,7 @@ void drawOverlayBackground() {
         VERA.address_hi |= 0b10000;
 
         for (x=0; x<5; x++) {
-            VERA.data0 = 208+x+(i*8);
+            VERA.data0 = 240+x+(i*8);
             VERA.data0 = 0;
         }
 
@@ -164,15 +164,15 @@ void drawOverlayBackground() {
             VERA.data0 = 0;
         }
 
-        // Show HEALTH
+        // Show SCORE
         addr = L1_MAPBASE_ADDR + ((11+(i*10))*L1_MAPBASE_TILE_WIDTH*2) + ((L1_OVERLAY_X)*2);
         VERA.address = addr;
         VERA.address_hi = addr>>16;
         // Always set the Increment Mode, turn on bit 4
         VERA.address_hi |= 0b10000;
 
-        for (x=0; x<6; x++) {
-            VERA.data0 = 240+x+(i*8);
+        for (x=0; x<8; x++) {
+            VERA.data0 = 208+x+(i*8);
             VERA.data0 = 0;
         }
     }
@@ -302,13 +302,13 @@ void updateOverlay() {
     char buf[16];
 
     for (p=0; p<NUM_PLAYERS; p++) {
-        sprintf(buf, " LEVEL %u", level);
+        sprintf(buf, " LEVEL %02u", level);
         message(30, 6, buf);
 
-        sprintf(buf, "% 5u % 4u", players[p].score, players[p].gold);
+        sprintf(buf, "% 5u % 4u", players[p].health, players[p].gold);
         message(30, 10+(p*10), buf);
 
-        sprintf(buf, "% 5u", players[p].health);
+        sprintf(buf, " % 8lu", players[p].score);
         message(30, 12+(p*10), buf);
 
         // Set the buffer to all spaces to start

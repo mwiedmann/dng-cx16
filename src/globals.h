@@ -10,18 +10,16 @@
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 // Once the game passes this level, go back to 1
-#define LEVEL_COUNT 25
+#define LEVEL_COUNT 30
 
 #define ENTITY_COUNT 75
 
 // Don't spawn more entities if there are already this many on screen
-#define ENTITY_COUNT_LIMIT 17
+#define ENTITY_COUNT_LIMIT 30
 
 // All doors will open after some time
 #define OPEN_ALL_DOORS_TICKS 7200 // 2 mins * 60 ticks per second
 
-#define GUY_SPEED_1 1
-#define GUY_SPEED_2 2
 #define WEAPON_SPEED 4
 #define WEAPON_ROTATION_SPEED 4
 
@@ -59,7 +57,6 @@
 #define MAP_MAX 32
 #define MAP_PIXEL_MAX MAP_MAX*16
 #define MAP_SCROLL_MAX MAP_PIXEL_MAX - SCROLL_PIXEL_SIZE
-#define GUY_MAX MAP_PIXEL_MAX-(16+GUY_SPEED_2) // Right edge - Sprite width and move speed
 
 #define WEAK_HEALTH 4
 #define NORMAL_HEALTH 8
@@ -165,7 +162,7 @@ typedef struct Guy {
     unsigned char currentTileX;
     unsigned char currentTileY;
     unsigned short health;
-    unsigned short score;
+    unsigned long score;
     unsigned short gold;
     unsigned char animationCount;
     unsigned char animationFrame;

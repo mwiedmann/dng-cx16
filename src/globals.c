@@ -21,6 +21,7 @@ Weapon weapons[NUM_PLAYERS];
 unsigned short maxMapX;
 unsigned short maxMapY;
 
+unsigned char entityBarelyMelee[4] = { 0, 0, 0, 1 };
 unsigned char entityWeakMelee[4] = { 0, 1, 1, 1 };
 unsigned char entityNormalMelee[4] = { 1, 1, 1, 1 };
 unsigned char entityStrongMelee[4] = { 2, 1, 1, 1 };
@@ -81,7 +82,7 @@ EntityStats demonStats = {
 
 // Ranged attackers
 EntityStats insectsStats = {
-    entityWeakMelee,
+    entityBarelyMelee,
     entityFastMove,
     5,
     WEAK_HEALTH,
@@ -89,7 +90,7 @@ EntityStats insectsStats = {
 };
 
 EntityStats dragonStats = {
-    entityNormalMelee,
+    entityBarelyMelee,
     entityMediumMove,
     10,
     NORMAL_HEALTH,
@@ -97,7 +98,7 @@ EntityStats dragonStats = {
 };
 
 EntityStats beholderStats = {
-    entityNormalMelee,
+    entityBarelyMelee,
     entityFastMove,
     15,
     STRONG_HEALTH,
@@ -106,7 +107,7 @@ EntityStats beholderStats = {
 
 // Lobbers
 EntityStats slimeStats = {
-    entityWeakMelee,
+    entityBarelyMelee,
     entityMediumMove,
     10,
     WEAK_HEALTH,
@@ -153,14 +154,14 @@ Armor      **        *       ****     **
 */
 
 PlayerStats barbarianStats = { {1, 1, 1, 1, 1, 1}, 4, 5  /* 12-sec */,  6, 14 /* 26-sec */,  4, 1000, 200, 100, { 0, 0, 0, 1 } };
-PlayerStats mageStats =      { {1, 1, 1, 1, 1, 2}, 2, 10 /* 6-sec */,   6, 12 /* 30-sec */, 12,  750, 125, 60, { 0, 0, 0, 0 } };
-PlayerStats druidStats =     { {1, 1, 1, 1, 1, 2}, 3, 7  /* 8.5-sec */, 4, 12 /* 20-sec */,  8,  900, 175, 85, { 0, 0, 1, 1 } };
-PlayerStats rangerStats =    { {1, 1, 2, 1, 1, 2}, 3, 6  /* 10-sec */,  4, 10 /* 24-sec */,  8,  800, 150, 75, { 0, 0, 0, 1 } };
+PlayerStats mageStats =      { {1, 1, 1, 1, 1, 2}, 2, 10 /* 6-sec */,   6, 12 /* 30-sec */, 12,  750, 150, 70, { 0, 0, 0, 0 } };
+PlayerStats druidStats =     { {1, 1, 1, 1, 1, 2}, 3, 7  /* 8.5-sec */, 4, 12 /* 20-sec */,  8,  900, 180, 80, { 0, 0, 1, 1 } };
+PlayerStats rangerStats =    { {1, 1, 2, 1, 1, 2}, 3, 6  /* 10-sec */,  4, 10 /* 24-sec */,  8,  800, 165, 90, { 0, 0, 0, 1 } };
 
-PlayerStats boostedBarbarianStats = { {1, 1, 1, 1, 1, 2}, 4, 5  /* 12-sec */, 8, 12 /* 40-sec */,  8, 1000, 150, 75, { 0, 0, 1, 1 } };
-PlayerStats boostedMageStats =      { {1, 1, 2, 1, 1, 2}, 3, 7 /* 8.5-sec */, 8, 10 /* 48-sec */, 12,  750, 100, 50, { 0, 0, 0, 1 } };
-PlayerStats boostedDruidStats =     { {1, 1, 2, 1, 1, 2}, 3, 5  /* 10-sec */, 6, 10 /* 36-sec */, 12,  900, 130, 65, { 0, 0, 1, 1 } };
-PlayerStats boostedRangerStats =    { {1, 1, 2, 1, 1, 2}, 3, 4  /* 12-sec */, 6, 8 /* 45-sec */, 12,  800, 110, 55, { 0, 0, 1, 1 } };
+PlayerStats boostedBarbarianStats = { {1, 1, 1, 1, 1, 2}, 4, 5  /* 12-sec */, 8, 12 /* 40-sec */,  8, 1000, 200, 100, { 0, 0, 1, 1 } };
+PlayerStats boostedMageStats =      { {1, 1, 2, 1, 1, 2}, 3, 7 /* 8.5-sec */, 8, 10 /* 48-sec */, 12,  750, 150, 70, { 0, 0, 0, 1 } };
+PlayerStats boostedDruidStats =     { {1, 1, 2, 1, 1, 2}, 3, 5  /* 10-sec */, 6, 10 /* 36-sec */, 12,  900, 180, 80, { 0, 0, 1, 1 } };
+PlayerStats boostedRangerStats =    { {1, 1, 2, 1, 1, 2}, 3, 4  /* 12-sec */, 6, 8 /* 45-sec */,  12,  800, 165, 90, { 0, 0, 1, 1 } };
 
 unsigned char playerMoveChunks[4] = { 6, 7, 7, 8 };
 

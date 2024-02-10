@@ -295,7 +295,7 @@ void showLevelIntro() {
 
     clearVisibleLayers();
 
-    sprintf(buf1, "LEVEL %u", level);
+    sprintf(buf1, "LEVEL %02u", level);
     msg[0] = buf1;
 
     strcpy(buf2, getLevelString((level-1)*2));
