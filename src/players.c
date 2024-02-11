@@ -69,12 +69,13 @@ void cannotAfford(unsigned char playerId) {
     stopMove(playerId);
 }
 
-unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char fromY, unsigned short toX, unsigned short toY) {
+unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char fromY, unsigned short toX, unsigned short toY, unsigned char *shot) {
     unsigned char toTileX = toX>>4;
     unsigned char toTileY = toY>>4;
     unsigned char tile = mapStatus[toTileY][toTileX];
     signed char i;
     unsigned char clearTile=0, id;
+    Entity *entity;
 
     // Scrolling is split between both players in 2 player game
     // Make sure players aren't leaving the scroll field
@@ -89,6 +90,19 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         return 0;
     } else if (tile == TILE_WALL) {
         // Walls, most common after floor
+        return 1;
+    } else if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
+        // Check if melee attacking
+        if (!players[playerId].pressedShoot && !players[playerId].ticksUntilNextMelee) {
+            entity = getEntityById(tile, entityActiveList);
+            if (entity) {
+                *shot = 1; // Just used to trigger attack animation
+                players[playerId].ticksUntilNextMelee = players[playerId].stats->ticksToMelee + 1;
+                attackEntity(playerId, entity, players[playerId].hasBoosts[BOOST_ID_MELEE]
+                    ? players[playerId].boostedStats->meleeDamage
+                    : players[playerId].stats->meleeDamage);
+            }
+        }
         return 1;
     } else if (tile == TILE_KEY && (players[playerId].keys + players[playerId].scrolls < INVENTORY_LIMIT)) {
         // There is an inventory limit on keys+scrolls
@@ -404,8 +418,8 @@ void teleportPlayer(unsigned char playerId) {
 #pragma code-name (pop)
 
 void moveGuy(unsigned char playerId, unsigned char speed) {
-    unsigned short prevX, prevY, shot = 0;
-    unsigned char tile, tempTileX, tempTileY;
+    unsigned short prevX, prevY;
+    unsigned char tile, tempTileX, tempTileY, shot = 0;
     signed char dirX = 0, dirY = 0;
     Entity *entity;
 
@@ -431,22 +445,22 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
 
     if (dirX == 1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y, &shot)) {
             dirX = 0;
             players[playerId].x = prevX;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y+15)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y+15, &shot)) {
                 dirX = 0;
                 players[playerId].x = prevX;
             }
         }
     } else if (dirX == -1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y, &shot)) {
             dirX = 0;
             players[playerId].x = prevX;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y+15)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y+15, &shot)) {
                 dirX = 0;
                 players[playerId].x = prevX;
             }
@@ -465,22 +479,22 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
 
     if (dirY == 1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y+15)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y+15, &shot)) {
             dirY = 0;
             players[playerId].y = prevY;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y+15)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y+15, &shot)) {
                 dirY = 0;
                 players[playerId].y = prevY;
             }
         }
     } else if (dirY == -1) {
         // Check if new tile is open...move back if not
-        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y)) {
+        if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x, players[playerId].y, &shot)) {
             dirY = 0;
             players[playerId].y = prevY;
         } else {
-            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y)) {
+            if (tryTile(playerId, players[playerId].currentTileX, players[playerId].currentTileY, players[playerId].x+15, players[playerId].y, &shot)) {
                 dirY = 0;
                 players[playerId].y = prevY;
             }
@@ -503,32 +517,6 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     // Some monsters use these to aim
     players[playerId].pressedX = dirX;
     players[playerId].pressedY = dirY;
-
-    // Check if melee attacking
-    if (!players[playerId].pressedShoot) {
-        tile = mapStatus[((players[playerId].y+8)+(dirY*8))>>4][((players[playerId].x+8)+(dirX*8))>>4];
-        if (tile >= ENTITY_TILE_START && tile <= ENTITY_TILE_END) {
-            if (players[playerId].ticksUntilNextMelee == 0) {
-                entity = getEntityById(tile, entityActiveList);
-                if (entity) {
-                    shot = 1; // Just used to trigger attack animation
-                    players[playerId].ticksUntilNextMelee = players[playerId].stats->ticksToMelee + 1;
-                    attackEntity(playerId, entity, players[playerId].hasBoosts[BOOST_ID_MELEE]
-                        ? players[playerId].boostedStats->meleeDamage
-                        : players[playerId].stats->meleeDamage);
-                    if (entity->health > 0) {
-                        // Entity not dead yet...guy doesn't move
-                        players[playerId].x = prevX;
-                        players[playerId].y = prevY;
-                    }
-                }
-            } else {
-                // Can't attack yet...move back
-                players[playerId].x = prevX;
-                players[playerId].y = prevY;
-            }
-        }
-    }
     
     if (players[playerId].ticksUntilNextMelee > 0) {
         players[playerId].ticksUntilNextMelee -= 1;
