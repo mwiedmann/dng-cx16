@@ -27,6 +27,7 @@
 #define TREASURE_CHEST_GOLD 150
 #define GOLD_PILE_GOLD 50
 #define SILVER_PILE_GOLD 25
+
 #define TREASURE_CHEST_SCORE 1500
 #define GOLD_PILE_SCORE 500
 #define SILVER_PILE_SCORE 250
@@ -40,10 +41,10 @@
 #define BIG_FOOD_PRICE 500
 #define SMALL_FOOD_PRICE 250
 
-#define KEY_SCORE 100
-#define SCROLL_SCORE 100
-#define BIG_FOOD_SCORE 100
-#define SMALL_FOOD_SCORE 50
+#define KEY_SCORE 250
+#define SCROLL_SCORE 1000
+#define BIG_FOOD_SCORE 1000
+#define SMALL_FOOD_SCORE 500
 
 // Player 2 coming soon!
 // It works but hasn't been tested much
@@ -92,6 +93,7 @@ typedef struct EntityStats {
     unsigned char startingHealth;
     unsigned char lob;
     unsigned char rangedRate;
+    unsigned char points;
 } EntityStats;
 
 // 47 bytes

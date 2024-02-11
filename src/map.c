@@ -37,7 +37,7 @@ void createEntityFill(Entity *entity, unsigned char tile, unsigned char entityId
         entity->animationCount = ANIMATION_FRAME_SPEED;
         entity->animationFrame = 0;
         entity->facingX = 0;
-        entity->points = 50; // TODO: Vary by entity type
+        entity->points = entity->stats->points;
     }
 
     entity->statsId = 0;
