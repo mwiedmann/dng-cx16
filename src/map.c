@@ -21,7 +21,7 @@ void createEntityFill(Entity *entity, unsigned char tile, unsigned char entityId
         entity->health =  12;
         entity->animationCount = 0;
         entity->animationFrame = 0;
-        entity->spawnRate = level < 5 ? 60 : level < 10 ? 55 : level < 15 ? 50 : level < 20 ? 45 : level < 25 ? 40 : level < 30 ? 35 : 30;
+        entity->spawnRate = level < 5 ? 60 : level < 10 ? 55 : level < 15 ? 50 : level < 25 ? 45 : 40;
         entity->nextSpawn = entity->spawnRate;
         entity->points = 1000;
         entity->stats = 0; // Generators don't have monster stats

@@ -24,46 +24,9 @@ unsigned char irqHandlerStack[IRQ_HANDLER_STACK_SIZE];
 unsigned char scrollMode = 0;
 
 unsigned char irqHandler() {
-    unsigned short x, y;
-
     if (!scrollMode) {
         waitStatus = 1;
         return IRQ_HANDLED;
-    }
-
-    if (activePlayers == 1) {
-        // If only 1 player active, use it
-        if (!players[1].active) {
-            x = players[0].x;
-            y = players[0].y;
-        } else {
-            x = players[1].x;
-            y = players[1].y;
-        }
-    } else if (activePlayers == 2) {
-        // Both players active, scroll around the midpoint
-        x = (players[0].x + players[1].x) >>1;
-        y = (players[0].y + players[1].y) >>1;
-    } else {
-        // Nobody active...just keep the scroll where it is
-        // Game is probably over
-        waitStatus = 1;
-        return IRQ_HANDLED;
-    }
-
-    // Just follow P0 for now
-    scrollX = x-112;
-    if (scrollX < 0) {
-        scrollX = 0;
-    } else if (scrollX > maxMapX) {
-        scrollX = maxMapX;
-    }
-
-    scrollY = y-112;
-    if (scrollY < 0) {
-        scrollY = 0;
-    } else if (scrollY > maxMapY) {
-        scrollY = maxMapY;
     }
     
     VERA.layer0.vscroll = scrollY;
@@ -95,6 +58,40 @@ void prepPlayersForLevel() {
 }
 
 #pragma code-name (pop)
+
+void setScroll() {
+    unsigned short x, y;
+
+    if (activePlayers == 1) {
+        // If only 1 player active, use it
+        if (!players[1].active) {
+            x = players[0].x;
+            y = players[0].y;
+        } else {
+            x = players[1].x;
+            y = players[1].y;
+        }
+    } else if (activePlayers == 2) {
+        // Both players active, scroll around the midpoint
+        x = (players[0].x + players[1].x) >>1;
+        y = (players[0].y + players[1].y) >>1;
+    }
+
+    // Just follow P0 for now
+    scrollX = x-112;
+    if (scrollX < 0) {
+        scrollX = 0;
+    } else if (scrollX > maxMapX) {
+        scrollX = maxMapX;
+    }
+
+    scrollY = y-112;
+    if (scrollY < 0) {
+        scrollY = 0;
+    } else if (scrollY > maxMapY) {
+        scrollY = maxMapY;
+    }
+}
 
 void main() {
     unsigned char count = 0, load, exitLevel, gameOver, i, healthTicks, deadCount;
@@ -218,6 +215,11 @@ void main() {
                     }
                     moveGuy(i, players[i].stats->speeds[count]);
                 }
+
+                // This will set the scrolling based on the player positions
+                // We want to set this before positioning the sprites because
+                // they are positioned relative to the final scroll position 
+                setScroll();
 
                 // Only set his animation frame if needed (this is more expensive)
                 // Otherwise just move him

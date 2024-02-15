@@ -14,6 +14,11 @@
 #include "sound.h"
 
 void attackEntity(unsigned char playerId, Entity *entity, unsigned char damage) {
+    // Can't attack shots
+    if (entity->isShot) {
+        return;
+    }
+
     if (entity->health > damage) {
         entity->health -= damage;
         if (!entity->wasHit) {

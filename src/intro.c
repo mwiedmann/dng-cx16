@@ -162,9 +162,9 @@ void instructionsSelect() {
     showMessageList(list, INSTR_SELECT_LENGTH, STRING_INSTR_SELECT_START);
 
     l0TileShow(7, 3, GUY_TILE_START);
-    l0TileShow(5, 4, GUY_TILE_START+5);
-    l0TileShow(9, 4, GUY_TILE_START+10);
-    l0TileShow(7, 5, GUY_TILE_START+15);
+    l0TileShow(5, 4, GUY_TILE_START+10);
+    l0TileShow(9, 4, GUY_TILE_START+15);
+    l0TileShow(7, 5, GUY_TILE_START+5);
 
     showStatSheet(15); 
 }
