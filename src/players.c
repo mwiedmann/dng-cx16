@@ -706,6 +706,10 @@ unsigned char destroyPlayer(unsigned char playerId) {
         entityList[i].hasTarget = 0;        
     }
 
+    // Hide their weapon
+    weapons[playerId].visible = 0;
+    toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
+
     soundPlayMusic(SOUND_MUSIC_LAUGH);
 
     return entityId;

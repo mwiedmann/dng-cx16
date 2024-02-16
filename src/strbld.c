@@ -74,8 +74,8 @@ char *stringTable[STRING_COUNT] = {
     "PLAYER 1: KEYBOARD OR JOY 1",
     "PLAYER 2: JOY 2",
 
-    "TWO AT ONCE MODE",
-    "KEYBOARD OR JOY 1",
+    "WEIRD TWO AT ONCE MODE!",
+    "KEYBOARD OR JOY 1 CONTROLS",
     "BOTH PLAYERS SIMULTANEOUSLY",
 
     // Character selection screen

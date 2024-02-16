@@ -267,12 +267,13 @@ void main() {
                     // Try to split the load a bit
                     entity = entityActiveList;
                     load=0;
-                    while(entity && load<15) {
+                    while(entity && (load < (activePlayers == 1 ? ENTITY_SPLIT_AMOUNT_1P : ENTITY_SPLIT_AMOUNT_2P))) {
                         moveEntity(entity);   
                         entity->movedPrevTick=1;
                         entity = entity->next;
                         load++;
                     };
+                    
                 } else {
                     // Move active entities phase
                     entity = entityActiveList;

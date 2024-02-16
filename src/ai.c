@@ -270,7 +270,7 @@ void moveEntity(Entity *entity) {
     if (entity->isGenerator) {
         if (entity->nextSpawn > 0) {
             entity->nextSpawn -= 1;
-        } else if (activeEntityCount < ENTITY_COUNT_LIMIT && totalEntityCount < ENTITY_COUNT) {
+        } else if ((activeEntityCount < (activePlayers == 1 ? ENTITY_SCREEN_COUNT_LIMIT_1P : ENTITY_SCREEN_COUNT_LIMIT_2P)) && totalEntityCount < ENTITY_COUNT) {
             entity->nextSpawn = entity->spawnRate;
             // Create an entity
             // Find an empty tile

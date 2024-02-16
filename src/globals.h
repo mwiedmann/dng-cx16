@@ -15,7 +15,8 @@
 #define ENTITY_COUNT 75
 
 // Don't spawn more entities if there are already this many on screen
-#define ENTITY_COUNT_LIMIT 30
+#define ENTITY_SCREEN_COUNT_LIMIT_1P 30
+#define ENTITY_SCREEN_COUNT_LIMIT_2P 20 // 2 players eats up more cycles, need to limit entities
 
 // All doors will open after some time
 #define OPEN_ALL_DOORS_TICKS 7200 // 2 mins * 60 ticks per second
@@ -75,6 +76,13 @@
 #define ENTITY_HIT_ANIM_FRAMES 4
 #define ENTITY_HIT_ANIM_FRAMES_STOP 2
 #define ENTITY_HIT_PAL_JUMP 5
+
+// How many entities are moved after the activation/deactivation phase.
+// There are a few cycles left so we call moveEntity for a few entities.
+// For 2 player games (due to the cycles eaten up by the 2nd player) there are
+// fewer cycles left, so we do a smaller amount.
+#define ENTITY_SPLIT_AMOUNT_1P 15
+#define ENTITY_SPLIT_AMOUNT_2P 5
 
 enum Character {
   BARBARIAN,
