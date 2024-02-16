@@ -11,11 +11,12 @@
 #include "config.h"
 #include "sound.h"
 #include "strtbl.h"
+#include "joy.h"
 
 void setGuyDirection(unsigned char playerId) {
     unsigned char joy;
 
-    joy = joy_read(0) | joy_read(1);
+    joy = getPlayerInput(playerId);
 
     players[playerId].pressedX = 0;
     players[playerId].pressedY = 0;
@@ -296,9 +297,15 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             i++;
         }
     } else if (tile == TILE_EXIT_1 || tile == TILE_EXIT_5 || tile == TILE_EXIT_10) {
-        players[playerId].exit = tile;
-        mapStatus[toTileY][toTileX+i] = TILE_FLOOR;
-        toggleSprite(players[playerId].spriteAddrLo, players[playerId].spriteAddrHi, 0);
+        // Make sure the player hasn't exited already
+        // This code may run twice
+        if (!players[playerId].exit) {
+            players[playerId].exit = tile;
+            mapStatus[fromY][fromX] = TILE_FLOOR;
+            toggleSprite(players[playerId].spriteAddrLo, players[playerId].spriteAddrHi, 0);
+            activePlayers-=1;
+        }
+        return 1;
     } else if (tile == TILE_TELEPORTER) { 
         players[playerId].teleportTileX = toTileX;
         players[playerId].teleportTileY = toTileY;
@@ -499,6 +506,11 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
                 players[playerId].y = prevY;
             }
         }
+    }
+
+    // If the player touched an exit, they are done
+    if (players[playerId].exit) {
+        return;
     }
 
     // Set the guy's aiming direction

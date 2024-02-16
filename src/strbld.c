@@ -60,7 +60,25 @@ char *stringTable[STRING_COUNT] = {
     "HEALTH **** *    ***   **",
     "ARMOR  **   *    ****  **",
 
-    // Selection screen
+    // Control selection Screen
+    // 0 = KB=player 1, Joy1=player 2
+    // 1 = KB/Joy1=player 1, Joy2=player 2
+    // 2 = Test Mode = KB/Joy1=control BOTH
+    "SELECT YOUR PLAYER CONTROLS",
+    "PRESS UP/DOWN TO CHANGE",
+    "PRESS A BUTTON TO CHOOSE",
+
+    "PLAYER 1: KEYBOARD",
+    "PLAYER 2: JOY 1",
+    
+    "PLAYER 1: KEYBOARD OR JOY 1",
+    "PLAYER 2: JOY 2",
+
+    "TWO AT ONCE MODE",
+    "KEYBOARD OR JOY 1",
+    "BOTH PLAYERS SIMULTANEOUSLY",
+
+    // Character selection screen
     "PLAYERS: PRESS A DIRECTION",
     "TO ACTIVATE YOUR HERO",
     "BARBARIAN",

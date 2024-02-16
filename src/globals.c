@@ -210,3 +210,8 @@ unsigned char level;
 unsigned char isShopLevel;
 unsigned char demonHitting = 0;
 unsigned char demonSoundOn = 0;
+
+// 0 = KB=player 1, Joy1=player 2
+// 1 = KB/Joy1=player 1, Joy2=player 2
+// 2 = Test Mode = KB/Joy1=control BOTH
+unsigned char controllerMode = 0;

@@ -99,6 +99,11 @@ Guy *getClosestPlayer(unsigned short x, unsigned short y) {
     }
 
     for (i=0, closest=0; i<NUM_PLAYERS; i++) {
+        // If the player has exited...skip them
+        if (players[i].exit) {
+            continue;
+        }
+
         tempA = abs(x - players[i].x);
         tempB = abs(y - players[i].y);
 

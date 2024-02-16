@@ -147,6 +147,60 @@ void instructions3() {
     l0TileShow(7, 11, 47); // Teleporter
 }
 
+void controlsSelect() {
+    unsigned char joy;
+    char *empty = "  ";
+    char *picked = "::";
+    
+    MessageList list[INSTR_CONTROL_SCHEME_LENGTH] = {
+        { 2, 2 },
+        { 2, 3 },
+        { 2, 4 },
+        { 3, 7 },
+        { 3, 8 },
+        { 3, 12 },
+        { 3, 13 },
+        { 3, 17 },
+        { 3, 18 },
+        { 3, 19 }
+    };
+
+    showMessageList(list, INSTR_CONTROL_SCHEME_LENGTH, STRING_INSTR_CONTROL_SCHEME_START);
+
+    while(1) {
+        joy = joy_read(0) | joy_read(1) | joy_read(2);
+
+        if (JOY_UP(joy)) {
+            if (controllerMode == 0) {
+                controllerMode = 2;
+            } else {
+                controllerMode-= 1;
+            }
+            waitForRelease();
+        } else if (JOY_DOWN(joy)) {
+            if (controllerMode == 2) {
+                controllerMode = 0;
+            } else {
+                controllerMode+= 1;
+            }
+            waitForRelease();
+        } else if (JOY_BTN_1(joy) || JOY_BTN_2(joy) || JOY_BTN_3(joy) || JOY_START(joy) || JOY_SELECT(joy)) {
+            waitForRelease();
+            break;
+        }
+
+        message(1, list[3].y, controllerMode == 0 ? picked : empty);
+        message(1, list[4].y, controllerMode == 0 ? picked : empty);
+
+        message(1, list[5].y, controllerMode == 1 ? picked : empty);
+        message(1, list[6].y, controllerMode == 1 ? picked : empty);
+
+        message(1, list[7].y, controllerMode == 2 ? picked : empty);
+        message(1, list[8].y, controllerMode == 2 ? picked : empty);
+        message(1, list[9].y, controllerMode == 2 ? picked : empty);
+    }
+}
+
 void instructionsSelect() {
     MessageList list[INSTR_SELECT_LENGTH] = {
         { 2, 2 },
@@ -212,7 +266,7 @@ unsigned char getCharacterChoice(Guy *guy, unsigned char joy) {
 }
 
 void instructions() {
-    unsigned char joy, change, i, screen=0;
+    unsigned char joy, change, i, screen=0, nextPick=0;
     unsigned short count;
 
     clearVisibleLayers();
@@ -232,12 +286,13 @@ void instructions() {
         }
 
         do {
-            joy = joy_read(0) | joy_read(1);
+            joy = joy_read(0) | joy_read(1) | joy_read(2);
             count+= 1;
             wait();
         } while(joy == 0 && count < SCREEN_CHANGE_COUNT); // go to next screen on button press or after some time
 
         if (JOY_BTN_1(joy) || JOY_BTN_2(joy) || JOY_BTN_3(joy) || JOY_START(joy) || JOY_SELECT(joy)) {
+            waitForRelease();
             break;
         } else {
             clearVisibleLayers();
@@ -253,25 +308,34 @@ void instructions() {
 #endif
 
     clearVisibleLayers();
+    controlsSelect();
+
+    clearVisibleLayers();
     instructionsSelect();
 
     while (1) {
-        // TODO: Remove when player 2 code is ready
-        for (i=0; i<1 /*NUM_PLAYERS*/; i++){
-            joy = joy_read(0) | joy_read(1);
-
-            // Hold button 3 for player 2
-            if ((i==0 && !JOY_BTN_3(joy)) || (i == 1 && JOY_BTN_3(joy))) {
-                change = getCharacterChoice(&players[i], joy);
-
-                if (change) {
-                    waitForRelease();
-                    setupPlayer(i, players[i].characterType);
-                    message(30, 8+(i*10), "          "); // Clear out any previous text
-                    updateCharacterTypeInOverlay(i);
-                    updateOverlay();
-                }
+        for (i=0; i<NUM_PLAYERS; i++){
+            if (controllerMode == 2 && nextPick != i) {
+                continue;
             }
+
+            joy = getPlayerInput(i);
+            change = getCharacterChoice(&players[i], joy);
+
+            if (change) {
+                waitForRelease();
+                setupPlayer(i, players[i].characterType);
+                message(30, 8+(i*10), "          "); // Clear out any previous text
+                updateCharacterTypeInOverlay(i);
+                updateOverlay();
+                nextPick = !nextPick;
+            }
+
+            // Is someone trying to start the game
+            if (JOY_START(joy)) {
+                break;
+            }
+
             wait();
         }
 

@@ -138,7 +138,7 @@ void drawOverlayBackground() {
     for (i=0; i<NUM_PLAYERS; i++) {
         if (!players[i].active) {
             // TODO: Remove the VERY SOON when player 2 code is ready
-            message(30, 8+(i*10), i == 0 ? "JOIN GAME!" : "VERY SOON!");
+            message(30, 8+(i*10), "JOIN GAME!");
         } else {
             message(30, 8+(i*10), "          "); // Clear out any previous text
             updateCharacterTypeInOverlay(i);

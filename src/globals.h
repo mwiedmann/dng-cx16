@@ -46,9 +46,6 @@
 #define BIG_FOOD_SCORE 1000
 #define SMALL_FOOD_SCORE 500
 
-// Player 2 coming soon!
-// It works but hasn't been tested much
-// Character selection code has a hard coded 1
 #define NUM_PLAYERS 2
 
 #define SCROLL_TILE_SIZE 15
@@ -256,4 +253,5 @@ extern unsigned char isShopLevel;
 extern unsigned char demonHitting;
 extern unsigned char demonSoundOn;
 
+extern unsigned char controllerMode;
 #endif

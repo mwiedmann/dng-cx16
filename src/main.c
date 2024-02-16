@@ -64,7 +64,7 @@ void setScroll() {
 
     if (activePlayers == 1) {
         // If only 1 player active, use it
-        if (!players[1].active) {
+        if (players[0].active && !players[0].exit) {
             x = players[0].x;
             y = players[0].y;
         } else {
@@ -152,16 +152,16 @@ void main() {
 
         instructions();
 
-        activePlayers=0;
-        for (i=0; i<NUM_PLAYERS; i++) {
-            if (players[i].active) {
-                activePlayers+= 1;
-            }
-        }
-
         soundStopChannel(SOUND_PRIORITY_MUSIC);
         
         while(!gameOver) {
+            activePlayers=0;
+            for (i=0; i<NUM_PLAYERS; i++) {
+                if (players[i].active) {
+                    activePlayers+= 1;
+                }
+            }
+
             // Shop levels are every 5 levels
             // Items must be purchased on these levels
             isShopLevel = level % 5 == 0;
