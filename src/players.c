@@ -268,6 +268,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
     } else if (tile == TILE_DOOR && players[playerId].keys > 0) {
         players[playerId].keys -= 1;
         clearTile = 1;
+        soundPlaySFX(SOUND_SFX_DOOR, playerId);
 
         i=1;
         while(mapStatus[toTileY-i][toTileX] == TILE_DOOR) {
@@ -329,15 +330,20 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
 #pragma code-name (push, "BANKRAM01")
 
 void openAllDoors(unsigned char fromX, unsigned char fromY) {
-    unsigned char x, y;
+    unsigned char x, y, gotOne=0;
 
     for (y=0; y<MAP_MAX; y++) {
         for (x=0; x<MAP_MAX; x++) {
             if (mapStatus[y][x] == TILE_DOOR) {
+                gotOne = 1;
                 mapStatus[y][x] = TILE_FLOOR;
                 copyTile(fromX, fromY, x, y);
             }
         }
+    }
+
+    if (gotOne) {
+        soundPlaySFX(SOUND_SFX_DOOR, 0);
     }
 }
 

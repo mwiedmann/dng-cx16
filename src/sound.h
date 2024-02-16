@@ -24,6 +24,7 @@
 #define SOUND_SFX_DAMAGE 5
 #define SOUND_SFX_DEMON 6
 #define SOUND_SFX_TELEPORT 7
+#define SOUND_SFX_DOOR 8
 
 #define NIGH_HEALTH 100
 

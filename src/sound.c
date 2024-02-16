@@ -11,7 +11,7 @@
 #include <cbm.h>
 #include <cx16.h>
 
-unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8, 0xaa, 0xac, 0xae};
+unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8, 0xaa, 0xac, 0xae, 0xb0};
 
 unsigned char currentMusic = SOUND_MUSIC_NONE;
 unsigned char loadedMusic = SOUND_MUSIC_NONE;
@@ -30,7 +30,8 @@ char * musicNames[] = {
 	"scrolls.zsm",
 	"food.zsm",
 	"nigh.zsm",
-	"laugh.zsm"
+	"laugh.zsm",
+	"door.zsm"
 };
 
 unsigned char musicBanks[] = {
@@ -86,8 +87,9 @@ void soundInit() {
 	loadSound("hit.zsm", SOUND_SFX_DAMAGE);
 	loadSound("demon.zsm", SOUND_SFX_DEMON);
 	loadSound("teleport.zsm", SOUND_SFX_TELEPORT);
+	loadSound("door.zsm", SOUND_SFX_DOOR);
 
-	for (i=1; i<=8; i++) {
+	for (i=1; i<=9; i++) {
 		soundLoadMusic(i);
 	}
 }
