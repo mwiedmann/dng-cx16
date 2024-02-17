@@ -10,7 +10,7 @@
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 // Once the game passes this level, go back to 1
-#define LEVEL_COUNT 36
+#define LEVEL_COUNT 40
 
 #define ENTITY_COUNT 75
 
