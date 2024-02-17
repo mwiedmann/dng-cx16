@@ -111,7 +111,7 @@ void main() {
     showTitle();
     soundInit();
 
-#ifndef TEST_MODE    
+#ifndef TEST_MODE
     waitCount(60);
     soundPlayMusic(SOUND_MUSIC_TITLE);
 
@@ -380,6 +380,11 @@ void main() {
             scrollMode = 0;
             VERA.layer0.vscroll = scrollY;
             VERA.layer0.hscroll = scrollX;
+
+            // Stop any lingering sound
+            for (i=0; i<4; i++) {
+                soundStopChannel(i);
+            }
         }
     }
 }
