@@ -132,7 +132,10 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += KEY_SCORE;
         }
 
-        soundPlaySFX(SOUND_SFX_KEY_GET, playerId);
+        if (!demonSoundOn) {
+            soundPlaySFX(SOUND_SFX_KEY_GET, SOUND_PRIORITY_COMMON);
+        }
+
         players[playerId].keys += 1;
         clearTile = 1;
     } else if (tile == TILE_TREASURE_CHEST || tile == TILE_TREASURE_GOLD || tile == TILE_TREASURE_SILVER) {
@@ -143,7 +146,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             RAM_BANK = MAP_BANK;
         }
 
-        soundPlaySFX(SOUND_SFX_KEY_GET, playerId);
+        if (!demonSoundOn) {
+            soundPlaySFX(SOUND_SFX_KEY_GET, SOUND_PRIORITY_COMMON);
+        }
         players[playerId].gold += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_GOLD : tile == TILE_TREASURE_GOLD ? GOLD_PILE_GOLD : SILVER_PILE_GOLD;
         players[playerId].score += tile == TILE_TREASURE_CHEST ? TREASURE_CHEST_SCORE : tile == TILE_TREASURE_GOLD ? GOLD_PILE_SCORE : SILVER_PILE_SCORE;
         clearTile = 1;
@@ -173,7 +178,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += SCROLL_SCORE;
         }
 
-        soundPlaySFX(SOUND_SFX_WEAPON_SWOOSH, playerId);
+        soundPlaySFX(SOUND_SFX_WEAPON_SWOOSH_P1 + playerId, playerId);
         players[playerId].scrolls += 1;
         clearTile = 1;
     } else if (tile >= TILE_BOOST_START && tile <= TILE_BOOST_END) {
@@ -215,7 +220,9 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += BOOST_SCORE;
         }
 
-        soundPlaySFX(SOUND_SFX_KEY_GET, playerId);
+        if (!demonSoundOn) {
+            soundPlaySFX(SOUND_SFX_KEY_GET, SOUND_PRIORITY_COMMON);
+        }
         players[playerId].hasBoosts[id] = 1;
         clearTile = 1;
     } else if (tile == TILE_FOOD_BIG || tile == TILE_FOOD_SMALL) {
@@ -262,13 +269,17 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += tile == TILE_FOOD_BIG ? 250 : 100;
         }
 
-        soundPlaySFX(SOUND_SFX_EATING, playerId);
+        if (!demonSoundOn) {
+            soundPlaySFX(SOUND_SFX_EATING, SOUND_PRIORITY_COMMON);
+        }
         players[playerId].health += tile == TILE_FOOD_BIG ? players[playerId].stats->foodHealthBig : players[playerId].stats->foodHealthSmall;
         clearTile = 1;
     } else if (tile == TILE_DOOR && players[playerId].keys > 0) {
         players[playerId].keys -= 1;
         clearTile = 1;
-        soundPlaySFX(SOUND_SFX_DOOR, playerId);
+        if (!demonSoundOn) {
+            soundPlaySFX(SOUND_SFX_DOOR, SOUND_PRIORITY_COMMON);
+        }
 
         i=1;
         while(mapStatus[toTileY-i][toTileX] == TILE_DOOR) {
@@ -343,7 +354,7 @@ void openAllDoors(unsigned char fromX, unsigned char fromY) {
     }
 
     if (gotOne) {
-        soundPlaySFX(SOUND_SFX_DOOR, 0);
+        soundPlaySFX(SOUND_SFX_DOOR, SOUND_PRIORITY_COMMON);
     }
 }
 
@@ -425,7 +436,7 @@ void teleportPlayer(unsigned char playerId) {
     players[playerId].teleportTileX = 0;
     players[playerId].teleportTileY = 0;
 
-    soundPlaySFX(SOUND_SFX_TELEPORT, playerId);
+    soundPlaySFX(SOUND_SFX_TELEPORT, SOUND_PRIORITY_COMMON);
 }
 
 #pragma code-name (pop)
@@ -750,7 +761,7 @@ void setupPlayer(unsigned char playerId, enum Character characterType) {
     players[playerId].animationChange = 1; // Trigger immediate animation
     players[playerId].wasHit = 0;
     players[playerId].weaponSound = characterType == BARBARIAN || characterType == RANGER
-        ? SOUND_SFX_WEAPON_SWOOSH : SOUND_SFX_WEAPON_BLAST;
+        ? SOUND_SFX_WEAPON_SWOOSH_P1 + playerId : SOUND_SFX_WEAPON_BLAST_P1 + playerId;
 
     for (i=0; i<5; i++) {
         players[playerId].hasBoosts[i] = 0;

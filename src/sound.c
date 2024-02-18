@@ -11,7 +11,7 @@
 #include <cbm.h>
 #include <cx16.h>
 
-unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8, 0xaa, 0xac, 0xae, 0xb0};
+unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8, 0xaa, 0xac, 0xae, 0xb0, 0xb2, 0xb4};
 
 unsigned char currentMusic = SOUND_MUSIC_NONE;
 unsigned char loadedMusic = SOUND_MUSIC_NONE;
@@ -79,8 +79,10 @@ void soundInit() {
 
 	RAM_BANK = SFX_BANK_1;
 
-	loadSound("wpnswsh.zsm", SOUND_SFX_WEAPON_SWOOSH);
-	loadSound("wpnblast.zsm", SOUND_SFX_WEAPON_BLAST);
+	loadSound("wpnswp1.zsm", SOUND_SFX_WEAPON_SWOOSH_P1);
+	loadSound("wpnswp2.zsm", SOUND_SFX_WEAPON_SWOOSH_P2);
+	loadSound("wpnblp1.zsm", SOUND_SFX_WEAPON_BLAST_P1);
+	loadSound("wpnblp2.zsm", SOUND_SFX_WEAPON_BLAST_P2);
 	loadSound("scroll.zsm", SOUND_SFX_SCROLL);
 	loadSound("keyget.zsm", SOUND_SFX_KEY_GET);
 	loadSound("eating.zsm", SOUND_SFX_EATING);
@@ -100,7 +102,7 @@ void soundPlaySFX(unsigned char effect, unsigned char priority) {
 	if (!sfxOn) {
 		return;
 	}
-
+	
 	RAM_BANK = SFX_BANK_1;
 
 	param1 = sfxAddressHigh[effect];
