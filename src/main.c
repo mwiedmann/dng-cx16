@@ -113,7 +113,7 @@ void main() {
 
 #ifndef TEST_MODE
     waitCount(60);
-    soundPlayMusic(SOUND_MUSIC_TITLE);
+    soundPlayMusic(SOUND_INDEX_TITLE);
 
     // Sound switches the bank...switch back
     RAM_BANK = CODE_BANK;
@@ -128,7 +128,7 @@ void main() {
 
     while(1) {
 #ifndef TEST_MODE        
-        soundPlayMusic(SOUND_MUSIC_TITLE);
+        soundPlayMusic(SOUND_INDEX_TITLE);
 #endif
         RAM_BANK = CODE_BANK;
 
@@ -152,6 +152,7 @@ void main() {
 
         instructions();
 
+        // TODO: Remove this and replace with game music when its ready
         soundStopChannel(SOUND_PRIORITY_MUSIC);
         
         while(!gameOver) {
@@ -181,7 +182,7 @@ void main() {
 
 #ifndef TEST_MODE
             if (level == STARTING_LEVEL) {
-                soundPlayVoice(SOUND_MUSIC_WELCOME);
+                soundPlayVoice(SOUND_INDEX_WELCOME);
             }
 #endif
             
@@ -382,7 +383,7 @@ void main() {
             VERA.layer0.hscroll = scrollX;
 
             // Stop any lingering sound (except music)
-            for (i=0; i<3; i++) {
+            for (i=1; i<4; i++) {
                 soundStopChannel(i);
             }
         }

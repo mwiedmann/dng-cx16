@@ -75,7 +75,7 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
         newHealth = players[playerId].health - adjustedDmg;
 
         if (players[playerId].health >= NIGH_HEALTH && newHealth < NIGH_HEALTH) {
-            soundPlayVoice(SOUND_MUSIC_NIGH);
+            soundPlayVoice(SOUND_INDEX_NIGH);
         }
 
         players[playerId].health = newHealth;

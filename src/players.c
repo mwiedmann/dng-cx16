@@ -112,7 +112,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.keys) {
             hints.keys = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(STRING_GAME_MSG_COLLECT_KEYS, SOUND_MUSIC_KEYS);
+            gameMessage(STRING_GAME_MSG_COLLECT_KEYS, SOUND_INDEX_KEYS);
             RAM_BANK = MAP_BANK;
         }
         
@@ -144,7 +144,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.treasure) {
             hints.treasure = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(STRING_GAME_MSG_COLLECT_TREASURE, SOUND_MUSIC_TREASURE);
+            gameMessage(STRING_GAME_MSG_COLLECT_TREASURE, SOUND_INDEX_TREASURE);
             RAM_BANK = MAP_BANK;
         }
 
@@ -158,7 +158,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.scrolls) {
             hints.scrolls = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(STRING_GAME_MSG_USE_SCROLLS, SOUND_MUSIC_SCROLLS);
+            gameMessage(STRING_GAME_MSG_USE_SCROLLS, SOUND_INDEX_SCROLLS);
             RAM_BANK = MAP_BANK;
         }
 
@@ -180,7 +180,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
             players[playerId].score += SCROLL_SCORE;
         }
 
-        soundPlaySFX(SOUND_SFX_WEAPON_SWOOSH_P1 + playerId, playerId);
+        soundPlaySFX(SOUND_SFX_WEAPON_SWOOSH_P1, SOUND_PRIORITY_COMMON);
         players[playerId].scrolls += 1;
         clearTile = 1;
     } else if (tile >= TILE_BOOST_START && tile <= TILE_BOOST_END) {
@@ -231,7 +231,7 @@ unsigned char tryTile(unsigned char playerId, unsigned char fromX, unsigned char
         if (!hints.food) {
             hints.food = 1;
             RAM_BANK = CODE_BANK;
-            gameMessage(STRING_GAME_MSG_EAT_FOOD, SOUND_MUSIC_FOOD);
+            gameMessage(STRING_GAME_MSG_EAT_FOOD, SOUND_INDEX_FOOD);
             RAM_BANK = MAP_BANK;
         }
 
@@ -583,7 +583,7 @@ void moveGuy(unsigned char playerId, unsigned char speed) {
     mapStatus[players[playerId].currentTileY][players[playerId].currentTileX] = GUY_CLAIM+playerId;
 
     if (players[playerId].pressedShoot && !weapons[playerId].visible && players[playerId].ticksUntilNextShot == 0) {
-        soundPlaySFX(players[playerId].weaponSound, playerId);
+        soundPlaySFX(players[playerId].weaponSound, playerId+1);
         players[playerId].ticksUntilNextShot = players[playerId].stats->ticksToRanged;
         weapons[playerId].x = players[playerId].x;
         weapons[playerId].y = players[playerId].y;
@@ -729,7 +729,7 @@ unsigned char destroyPlayer(unsigned char playerId) {
     weapons[playerId].visible = 0;
     toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
 
-    soundPlayVoice(SOUND_MUSIC_LAUGH);
+    soundPlayVoice(SOUND_INDEX_LAUGH);
 
     return entityId;
 }

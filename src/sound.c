@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+// To convert raw sound to a .ZCM
+// ./raw2zcm -q 8000 ../sound/welcome.raw ../sound/welcome.zcm
+
 #include "sound.h"
 #include "config.h"
 #include "utils.h"
@@ -13,38 +16,52 @@
 
 unsigned char sfxAddressHigh[] = {0xa0, 0xa2, 0xa4, 0xa6, 0xa8, 0xaa, 0xac, 0xae, 0xb0, 0xb2, 0xb4};
 
-unsigned char currentMusic = SOUND_MUSIC_NONE;
-unsigned char loadedMusic = SOUND_MUSIC_NONE;
+unsigned char currentMusic = SOUND_INDEX_NONE;
+unsigned char loadedMusic = SOUND_INDEX_NONE;
 
 unsigned char musicOn = 1;
 unsigned char sfxOn = 1;
 
 unsigned char param1, param2;
 
-char * musicNames[] = {
+char * soundFileNames[] = {
 	"",
 	"title.zsm",
-	"welcome.zsm",
-	"keys.zsm",
-	"treasure.zsm",
-	"scrolls.zsm",
-	"food.zsm",
-	"nigh.zsm",
-	"laugh.zsm",
-	"door.zsm"
+	"welcome.zcm",
+	"keys.zcm",
+	"treasure.zcm",
+	"scrolls.zcm",
+	"food.zcm",
+	"nigh.zcm",
+	"laugh.zcm"
 };
 
-unsigned char musicBanks[] = {
-	MUSIC_BANK_START,
-	MUSIC_BANK_TITLE,
-	MUSIC_BANK_WELCOME,
-	MUSIC_BANK_KEYS,
-	MUSIC_BANK_TREASURE,
-	MUSIC_BANK_SCROLLS,
-	MUSIC_BANK_FOOD,
-	MUSIC_BANK_NIGH,
-	MUSIC_BANK_LAUGH
+unsigned char soundBanks[] = {
+	SOUND_BANK_START,
+	SOUND_BANK_TITLE,
+	SOUND_BANK_WELCOME,
+	SOUND_BANK_KEYS,
+	SOUND_BANK_TREASURE,
+	SOUND_BANK_SCROLLS,
+	SOUND_BANK_FOOD,
+	SOUND_BANK_NIGH,
+	SOUND_BANK_LAUGH
 };
+
+void loadZCM(unsigned char index) {
+	unsigned char bank;
+	unsigned char prevBank = RAM_BANK;
+
+	bank = soundBanks[index];
+
+	RAM_BANK = bank;
+
+	cbm_k_setlfs(0, 8, 2);
+	cbm_k_setnam(soundFileNames[index]);
+	cbm_k_load(0, 0xa000);
+
+	RAM_BANK = prevBank;
+}
 
 void loadSound(char* name, unsigned char index) {
 	cbm_k_setlfs(0, 8, 2);
@@ -52,7 +69,7 @@ void loadSound(char* name, unsigned char index) {
 	cbm_k_load(0, ((unsigned short)sfxAddressHigh[index])<<8);
 }
 
-void soundLoadMusic(unsigned char music) {
+void soundLoadMusic(unsigned char index) {
 	unsigned char bank;
 	unsigned char prevBank = RAM_BANK;
 	param2 = SOUND_PRIORITY_MUSIC;
@@ -60,14 +77,14 @@ void soundLoadMusic(unsigned char music) {
 	asm volatile ("ldx %v", param2);
 	asm volatile ("jsr zsm_stop");
 
-	bank = musicBanks[music];
+	bank = soundBanks[index];
 
 	RAM_BANK = bank;
 
 	cbm_k_setlfs(0, 8, 2);
-	cbm_k_setnam(musicNames[music]);
+	cbm_k_setnam(soundFileNames[index]);
 	cbm_k_load(0, 0xa000);
-	loadedMusic = music;
+	loadedMusic = index;
 	RAM_BANK = prevBank;
 }
 
@@ -91,9 +108,44 @@ void soundInit() {
 	loadSound("teleport.zsm", SOUND_SFX_TELEPORT);
 	loadSound("door.zsm", SOUND_SFX_DOOR);
 
-	for (i=1; i<=9; i++) {
-		soundLoadMusic(i);
+	soundLoadMusic(SOUND_INDEX_TITLE);
+
+	for (i=2; i<=8; i++) {
+		loadZCM(i);
 	}
+}
+
+void soundStopChannel(unsigned char priority) {
+	if (priority == SOUND_PRIORITY_MUSIC) {
+		currentMusic = 0;
+	}
+	
+	param2 = priority;
+	asm volatile ("ldx %v", param2);
+	asm volatile ("jsr zsm_stop");
+}
+
+void soundPlayVoice(unsigned char index) {
+	unsigned char bank;
+	unsigned char prevBank = RAM_BANK;
+
+	bank = soundBanks[index];
+
+	param1 = 0xa0;
+	param2 = 0; // Slot
+
+	RAM_BANK = bank;
+
+	asm volatile ("lda #$00");
+	asm volatile ("ldx %v", param2); // Slot
+	asm volatile ("ldy %v", param1); //address hi to Y
+	asm volatile ("jsr zcm_setmem");
+
+	asm volatile ("lda #$0f");
+	asm volatile ("ldx %v", param2);
+	asm volatile ("jsr zcm_play");
+
+	RAM_BANK = prevBank;
 }
 
 void soundPlaySFX(unsigned char effect, unsigned char priority) {
@@ -122,47 +174,17 @@ void soundPlaySFX(unsigned char effect, unsigned char priority) {
 	RAM_BANK = prevBank;
 }
 
-void soundStopChannel(unsigned char priority) {
-	currentMusic = 0;
-	param2 = priority;
-	asm volatile ("ldx %v", param2);
-	asm volatile ("jsr zsm_stop");
-}
-
-void soundPlayVoice(unsigned char music) {
+void soundPlayMusic(unsigned char index) {
 	unsigned char bank;
 	unsigned char prevBank = RAM_BANK;
 
-	bank = musicBanks[music];
-
-	param1 = 0xa0;
-	param2 = SOUND_PRIORITY_COMMON;
-
-	RAM_BANK = bank;
-
-	asm volatile ("lda #$00");
-	asm volatile ("ldx %v", param2);
-	asm volatile ("ldy %v", param1); //address hi to Y
-	asm volatile ("jsr zsm_setmem");
-
-
-	asm volatile ("ldx %v", param2);
-	asm volatile ("jsr zsm_play");
-
-	RAM_BANK = prevBank;
-}
-
-void soundPlayMusic(unsigned char music) {
-	unsigned char bank;
-	unsigned char prevBank = RAM_BANK;
-
-	if (!musicOn || music == currentMusic) {
+	if (!musicOn || index == currentMusic) {
 		return;
 	}
 
-	bank = musicBanks[music];
+	bank = soundBanks[index];
 
-	currentMusic = music;
+	currentMusic = index;
 
 	param1 = 0xa0;
 	param2 = SOUND_PRIORITY_MUSIC;
@@ -170,11 +192,11 @@ void soundPlayMusic(unsigned char music) {
 	asm volatile ("ldx %v", param2);
 	asm volatile ("jsr zsm_stop");
 
-	if (!music) {
+	if (!index) {
 		return;
 	}
 
-	loadedMusic = music;
+	loadedMusic = index;
 	RAM_BANK = bank;
 
 	asm volatile ("lda #$00");

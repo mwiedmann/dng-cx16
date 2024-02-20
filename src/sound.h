@@ -1,20 +1,20 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-#define SOUND_PRIORITY_PL1 0
-#define SOUND_PRIORITY_PL2 1
-#define SOUND_PRIORITY_COMMON 2
-#define SOUND_PRIORITY_MUSIC 3
+#define SOUND_PRIORITY_MUSIC 0
+#define SOUND_PRIORITY_PL1 1
+#define SOUND_PRIORITY_PL2 2
+#define SOUND_PRIORITY_COMMON 3
 
-#define SOUND_MUSIC_NONE 0
-#define SOUND_MUSIC_TITLE 1
-#define SOUND_MUSIC_WELCOME 2
-#define SOUND_MUSIC_KEYS 3
-#define SOUND_MUSIC_TREASURE 4
-#define SOUND_MUSIC_SCROLLS 5
-#define SOUND_MUSIC_FOOD 6
-#define SOUND_MUSIC_NIGH 7
-#define SOUND_MUSIC_LAUGH 8
+#define SOUND_INDEX_NONE 0
+#define SOUND_INDEX_TITLE 1
+#define SOUND_INDEX_WELCOME 2
+#define SOUND_INDEX_KEYS 3
+#define SOUND_INDEX_TREASURE 4
+#define SOUND_INDEX_SCROLLS 5
+#define SOUND_INDEX_FOOD 6
+#define SOUND_INDEX_NIGH 7
+#define SOUND_INDEX_LAUGH 8
 
 #define SOUND_SFX_WEAPON_SWOOSH_P1 0
 #define SOUND_SFX_WEAPON_SWOOSH_P2 1
@@ -33,9 +33,8 @@
 void soundInit();
 void soundPlaySFX(unsigned char effect, unsigned char priority) ;
 void soundStopChannel(unsigned char priority);
-void soundLoadMusic(unsigned char music);
-void soundPlayMusic(unsigned char music);
-void soundPlayVoice(unsigned char music);
+void soundPlayMusic(unsigned char index);
+void soundPlayVoice(unsigned char index);
 void toggleMusic();
 
 extern unsigned char currentMusic;
