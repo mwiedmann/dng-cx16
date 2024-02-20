@@ -6,7 +6,6 @@
 
 #include "sound.h"
 #include "config.h"
-#include "utils.h"
 
 #include <cbm.h>
 #include <cx16.h>
