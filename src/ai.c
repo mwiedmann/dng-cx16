@@ -75,7 +75,7 @@ void meleeAttackGuy(unsigned char playerId, unsigned char statsId, unsigned char
         newHealth = players[playerId].health - adjustedDmg;
 
         if (players[playerId].health >= NIGH_HEALTH && newHealth < NIGH_HEALTH) {
-            soundPlayMusic(SOUND_MUSIC_NIGH);
+            soundPlayVoice(SOUND_MUSIC_NIGH);
         }
 
         players[playerId].health = newHealth;
@@ -542,7 +542,7 @@ void useScrollOnEntities(unsigned char playerId) {
 
     entity = entityActiveList;
 
-    soundPlaySFX(SOUND_SFX_SCROLL, playerId);
+    soundPlaySFX(SOUND_SFX_SCROLL, SOUND_PRIORITY_COMMON);
     RAM_BANK = CODE_BANK;
     flashLayer1();
     RAM_BANK = MAP_BANK;

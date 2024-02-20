@@ -22,10 +22,12 @@ void setGuyDirection(unsigned char playerId) {
     players[playerId].pressedY = 0;
     players[playerId].pressedShoot = 0;
 
-    // Button 3 controls which player is moving. A hack for now since I don't have a joypad (that works!)
-    // if (playerId == 0 && JOY_BTN_3(joy) || (playerId == 1 && !JOY_BTN_3(joy))) {
-    //     return;
-    // }
+    if (JOY_START(joy)) {
+        toggleMusic();
+        RAM_BANK = CODE_BANK;
+        waitForRelease();
+        RAM_BANK = MAP_BANK;
+    }
 
     if (JOY_SELECT(joy)) {
         RAM_BANK = CODE_BANK;
@@ -727,7 +729,7 @@ unsigned char destroyPlayer(unsigned char playerId) {
     weapons[playerId].visible = 0;
     toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);
 
-    soundPlayMusic(SOUND_MUSIC_LAUGH);
+    soundPlayVoice(SOUND_MUSIC_LAUGH);
 
     return entityId;
 }

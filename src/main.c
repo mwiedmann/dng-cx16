@@ -181,7 +181,7 @@ void main() {
 
 #ifndef TEST_MODE
             if (level == STARTING_LEVEL) {
-                soundPlayMusic(SOUND_MUSIC_WELCOME);
+                soundPlayVoice(SOUND_MUSIC_WELCOME);
             }
 #endif
             
@@ -381,8 +381,8 @@ void main() {
             VERA.layer0.vscroll = scrollY;
             VERA.layer0.hscroll = scrollX;
 
-            // Stop any lingering sound
-            for (i=0; i<4; i++) {
+            // Stop any lingering sound (except music)
+            for (i=0; i<3; i++) {
                 soundStopChannel(i);
             }
         }

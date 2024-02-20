@@ -103,6 +103,9 @@ char *stringTable[STRING_COUNT] = {
     "PAUSE",
     "KEYBOARD: SHIFT",
     "  JOYPAD: SELECT",
+    "MUTE MUSIC",
+    "KEYBOARD: RETURN",
+    "  JOYPAD: START",
     "PRESS A BUTTON TO BEGIN",
 
     // Boosts

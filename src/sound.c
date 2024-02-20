@@ -129,6 +129,29 @@ void soundStopChannel(unsigned char priority) {
 	asm volatile ("jsr zsm_stop");
 }
 
+void soundPlayVoice(unsigned char music) {
+	unsigned char bank;
+	unsigned char prevBank = RAM_BANK;
+
+	bank = musicBanks[music];
+
+	param1 = 0xa0;
+	param2 = SOUND_PRIORITY_COMMON;
+
+	RAM_BANK = bank;
+
+	asm volatile ("lda #$00");
+	asm volatile ("ldx %v", param2);
+	asm volatile ("ldy %v", param1); //address hi to Y
+	asm volatile ("jsr zsm_setmem");
+
+
+	asm volatile ("ldx %v", param2);
+	asm volatile ("jsr zsm_play");
+
+	RAM_BANK = prevBank;
+}
+
 void soundPlayMusic(unsigned char music) {
 	unsigned char bank;
 	unsigned char prevBank = RAM_BANK;
@@ -168,4 +191,10 @@ void soundPlayMusic(unsigned char music) {
 	asm volatile ("jsr zsm_setloop");
 
 	RAM_BANK = prevBank;
+}
+
+void toggleMusic() {
+	soundStopChannel(SOUND_PRIORITY_MUSIC);
+
+	musicOn = !musicOn;
 }

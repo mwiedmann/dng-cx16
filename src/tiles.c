@@ -288,7 +288,7 @@ void gameMessage(unsigned char stringId, unsigned char sound) {
     msg[1] = getString(stringId+1);
 
     if (sound) {
-        soundPlayMusic(sound);
+        soundPlayVoice(sound);
     }
 
     messageCenter(msg);

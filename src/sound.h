@@ -1,10 +1,10 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-#define SOUND_PRIORITY_MUSIC 2
 #define SOUND_PRIORITY_PL1 0
 #define SOUND_PRIORITY_PL2 1
-#define SOUND_PRIORITY_COMMON 3
+#define SOUND_PRIORITY_COMMON 2
+#define SOUND_PRIORITY_MUSIC 3
 
 #define SOUND_MUSIC_NONE 0
 #define SOUND_MUSIC_TITLE 1
@@ -35,6 +35,8 @@ void soundPlaySFX(unsigned char effect, unsigned char priority) ;
 void soundStopChannel(unsigned char priority);
 void soundLoadMusic(unsigned char music);
 void soundPlayMusic(unsigned char music);
+void soundPlayVoice(unsigned char music);
+void toggleMusic();
 
 extern unsigned char currentMusic;
 

@@ -10,7 +10,7 @@
 #define PLAYER_STARTING_GOLD 0 // Should be 0 except for testing
 
 // Once the game passes this level, go back to 1
-#define LEVEL_COUNT 41
+#define LEVEL_COUNT 45
 
 #define ENTITY_COUNT 75
 
@@ -26,11 +26,11 @@
 
 // Gold/Score values
 #define TREASURE_CHEST_GOLD 150
-#define GOLD_PILE_GOLD 50
+#define GOLD_PILE_GOLD 75
 #define SILVER_PILE_GOLD 25
 
 #define TREASURE_CHEST_SCORE 1500
-#define GOLD_PILE_SCORE 500
+#define GOLD_PILE_SCORE 750
 #define SILVER_PILE_SCORE 250
 
 // Shop Prices
