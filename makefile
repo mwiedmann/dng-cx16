@@ -11,6 +11,9 @@ run:
 	cd build && \
 	$(EMU) -prg DNG.PRG -run
 
+emu:
+	$(EMU)
+
 strings:
 	$(CC) --cpu 65C02 -Or -Cl -o ./tools/STRBLD.PRG -t cx16 src/strbld.c src/strtbl.c
 	cd tools && \
@@ -28,10 +31,12 @@ img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/GMTILES.BIN 16 16 128 8 14
 	node tools/gimp-img-convert.js gfx/tiles.data build/OVTILES.BIN 8 8 960 16 16
 	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 0 1 1
+	node tools/gimp-img-convert.js gfx/titlecmp.data build/TITLECMP.BIN 320 240 0 1 1
 
 pal:
 	node tools/gimp-pal-convert.js gfx/tiles.data.pal build/TILES.PAL
 	node tools/gimp-pal-convert.js gfx/title.data.pal build/TITLE.PAL
+	node tools/gimp-pal-convert.js gfx/titlecmp.data.pal build/TITLECMP.PAL
 
 snd:
 	tools/raw2zcm -q 8000 sound/welcome.raw build/WELCOME.ZCM

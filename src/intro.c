@@ -268,10 +268,126 @@ unsigned char getCharacterChoice(Guy *guy, unsigned char joy) {
     return change;
 }
 
+void screenAdjust() {
+    // Note we need a `short` here because there are more than 255 tiles
+    unsigned short x,y;
+    unsigned char joy;
+    MessageList list[COMPOSITE_ADJUST_LENGTH] = {
+        { 8, 4 },
+        { 5, 7 },
+        { 6, 8 },
+        { 5, 11 },
+        { 8, 12 },
+        { 4, 15 },
+        { 5, 16 },
+        { 5, 17 },
+        { 8, 21 }
+    };
+
+    // Squish the screen for composite mode
+    // Set some defaults, then the user can adjust
+    if (VERA.display.video & 0b10) {
+        hscale = 74;
+        vscale = 71;
+        compositeScrollXOffset=-25;
+        compositeScrollYOffset=-13;
+    } else {
+        // No screen adjustment for VGA mode?
+        return;
+    }
+
+    toggleLayers(1);
+
+    // Tile layer 1
+    VERA.address = L1_MAPBASE_ADDR;
+    VERA.address_hi = L1_MAPBASE_ADDR>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    // Empty tiles
+    for (y=0; y<L1_MAPBASE_TILE_COUNT; y++) {    
+        VERA.data0 = 43;
+        VERA.data0 = 0;
+    }
+
+    // Tile layer 0
+    VERA.address = L0_MAPBASE_ADDR;
+    VERA.address_hi = L0_MAPBASE_ADDR>>16;
+    // Always set the Increment Mode, turn on bit 4
+    VERA.address_hi |= 0b10000;
+
+    // Empty tiles
+    for (y=0; y<L0_MAPBASE_TILE_HEIGHT; y++) {
+        for (x=0; x<L0_MAPBASE_TILE_WIDTH; x++) {
+            VERA.data0 = ((x==0 || x == 19) && y<15) || ((y==0 || y==14) && x<20) ? 47 : 24;
+            VERA.data0 = 0;
+        }
+    }
+
+    showMessageList(list, COMPOSITE_ADJUST_LENGTH, STRING_COMPOSITE_START);
+
+    while(1) {
+        joy = joy_read(0) | joy_read(1) | joy_read(2);
+
+        if (JOY_START(joy)) {
+            break;
+        }
+
+        if (JOY_BTN_1(joy) || JOY_BTN_2(joy)) {
+            if (JOY_UP(joy)) {
+                compositeScrollYOffset+= 1;
+                
+            } else if (JOY_DOWN(joy)) {
+                compositeScrollYOffset-= 1;
+            }
+
+            if (JOY_LEFT(joy)) {
+                compositeScrollXOffset+= 1;
+            } else if (JOY_RIGHT(joy)) {
+                compositeScrollXOffset-= 1;
+            }
+        } else {
+            if (JOY_UP(joy)) {
+                vscale+= 1;
+            } else if (JOY_DOWN(joy)) {
+                vscale-= 1;
+            }
+
+            if (JOY_LEFT(joy)) {
+                hscale+= 1;
+            } else if (JOY_RIGHT(joy)) {
+                hscale-= 1;
+            }
+        }
+
+        VERA.layer1.vscroll = compositeScrollYOffset;
+        VERA.layer1.hscroll = compositeScrollXOffset;
+        VERA.layer0.vscroll = compositeScrollYOffset;
+        VERA.layer0.hscroll = compositeScrollXOffset;
+        VERA.display.hscale = hscale;
+        VERA.display.vscale = vscale;
+
+        waitCount(15);
+
+        // sprintf(buf0, "XOFFSET %i", compositeScrollXOffset);
+        // msg[0] = buf0;
+        // sprintf(buf1, "YOFFSET %i", compositeScrollYOffset);
+        // msg[1] = buf1;
+        // sprintf(buf2, "HSCALE %i", hscale);
+        // msg[2] = buf2;
+        // sprintf(buf3, "VSCALE %i", vscale);
+        // msg[3] = buf3;
+
+        //messageCenter(msg);
+
+    }
+}
+
 void instructions() {
     unsigned char joy, change, i, screen=0, nextPick=0;
     unsigned short count;
 
+    screenAdjust();
     clearVisibleLayers();
     drawOverlayBackground();
     updateOverlay();

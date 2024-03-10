@@ -48,7 +48,8 @@
 
 #define MAP_BANK 1
 #define CODE_BANK 2
-#define STRING_BANK 3
+#define CONFIG_BANK 3
+#define STRING_BANK 4
 
 #define ZSM_BANK 10
 #define SFX_BANK_1 11

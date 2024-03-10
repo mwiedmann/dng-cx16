@@ -203,13 +203,15 @@ unsigned char playerCanBoostByType[4][5] = {
 Hints hints = { 0, 0, 0, 0, {0,0,0,0,0} };
 
 unsigned char weaponRotation[4] = {0, 1, 3, 2};
-signed short scrollX, scrollY, currentScrollX, currentScrollY;
+signed short scrollX, scrollY, compositeScrollXOffset = 0, compositeScrollYOffset = 0;
 unsigned char overlayChanged = 0;
 unsigned char activePlayers=0;
 unsigned char level;
 unsigned char isShopLevel;
 unsigned char demonHitting = 0;
 unsigned char demonSoundOn = 0;
+unsigned char hscale = 64;
+unsigned char vscale = 64;
 
 // 0 = KB=player 1, Joy1=player 2
 // 1 = KB/Joy1=player 1, Joy2=player 2

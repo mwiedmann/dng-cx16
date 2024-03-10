@@ -249,8 +249,12 @@ extern unsigned char playerMoveChunks[4];
 extern Hints hints;
 
 extern unsigned char weaponRotation[4];
-extern short scrollX;
-extern short scrollY;
+extern signed short scrollX;
+extern signed short scrollY;
+extern signed short compositeScrollXOffset;
+extern signed short compositeScrollYOffset;
+extern unsigned char hscale;
+extern unsigned char vscale;
 
 extern unsigned char overlayChanged;
 extern unsigned char activePlayers;

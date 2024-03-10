@@ -113,7 +113,7 @@ void activateEntities() {
         nextEntity = entity->next;
 
         // Activate this entity if it is on the screen
-        if (entity->x >= scrollX + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX || entity->y >= scrollY + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY) {
+        if (entity->x >= (scrollX-compositeScrollXOffset) + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX-compositeScrollXOffset || entity->y >= (scrollY-compositeScrollYOffset) + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY-compositeScrollYOffset) {
             // Off screen
         } else {
             entity->visible = 1;
@@ -143,7 +143,7 @@ void deactivateEntities() {
         nextEntity = entity->next;
 
         // Deactivate this entity if it is out of range
-        if (entity->x >= scrollX + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX || entity->y >= scrollY + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY) {
+        if (entity->x >= (scrollX-compositeScrollXOffset) + SCROLL_PIXEL_SIZE || entity->x+16 <= scrollX-compositeScrollXOffset || entity->y >= (scrollY-compositeScrollYOffset) + SCROLL_PIXEL_SIZE || entity->y+16 <= scrollY-compositeScrollYOffset) {
             // Off screen
             toggleSprite(entity->spriteAddrLo, entity->spriteAddrHi, 0);
             entity->visible = 0;

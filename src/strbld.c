@@ -60,6 +60,18 @@ char *stringTable[STRING_COUNT] = {
     "HEALTH **** *    ***   **",
     "ARMOR  **   *    ****  **",
 
+    // Composite Adjustment Screen
+    "COMPOSITE MODE DETECTED",
+    "SCREEN HAS BEEN AUTO ADJUSTED",
+    "FINE TUNE IT TO YOUR LIKING",
+    "ALL TELEPORTER SQAURES SHOULD",
+    "BE IN THE VISIBLE AREA",
+    "USE JOYPAD TO ADJUST SCREEN SIZE",
+    "HOLD A BUTTON WHILE ADJUSTING",
+    "TO CHANGE THE SCREEN POSITION",
+    "PRESS START TO CONTINUE",
+
+    // message (8, 14, "PRESS START TO CONTINUE");
     // Control selection Screen
     // 0 = KB=player 1, Joy1=player 2
     // 1 = KB/Joy1=player 1, Joy2=player 2
@@ -183,4 +195,6 @@ void main() {
     for (i=0; i<STRING_COUNT; i++) {
         printf("%s\n", getString(i));
     }
+
+    printf("\n\n%u total strings\n\n", STRING_COUNT);
 }

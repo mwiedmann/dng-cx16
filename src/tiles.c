@@ -23,23 +23,6 @@ void loadDungeonTiles() {
     loadFileToVRAM(buf, L0_TILEBASE_DNG_ADDR);
 }
 
-void clearLayer0() {
-    // Note we need a `short` here because there are more than 255 tiles
-    unsigned short i;
-    
-    // Clear layer 0
-    VERA.address = L0_MAPBASE_ADDR;
-    VERA.address_hi = L0_MAPBASE_ADDR>>16;
-    // Always set the Increment Mode, turn on bit 4
-    VERA.address_hi |= 0b10000;
-
-    // Empty tiles
-    for (i=0; i<L0_MAPBASE_TILE_COUNT; i++) {
-        VERA.data0 = TILE_TRANS;
-        VERA.data0 = 0;
-    }
-}
-
 void clearLayer1VisibleArea() {
     // Note we need a `short` here because there are more than 255 tiles
     unsigned short x, y;
@@ -345,7 +328,7 @@ void message(unsigned char x, unsigned char y, char *msg) {
     // Always set the Increment Mode, turn on bit 4
     VERA.address_hi |= 0b10000;
 
-    while(msg[i] != 0 || i > 30) {
+    while(msg[i] != 0 && i<40) {
         VERA.data0 = letterToTile(msg[i]);
         VERA.data0 = 0;
         i++;

@@ -674,7 +674,7 @@ void moveWeapon(unsigned char playerId) {
         weapons[playerId].y += weapons[playerId].dirY * WEAPON_SPEED;
 
         // See if weapon is off screen
-        if (weapons[playerId].x >= scrollX + SCROLL_PIXEL_SIZE || weapons[playerId].x+16 <= scrollX || weapons[playerId].y >= scrollY + SCROLL_PIXEL_SIZE || weapons[playerId].y+16 <= scrollY) {
+        if (weapons[playerId].x >= (scrollX-compositeScrollXOffset) + SCROLL_PIXEL_SIZE || weapons[playerId].x+16 <= scrollX-compositeScrollXOffset || weapons[playerId].y >= (scrollY-compositeScrollYOffset) + SCROLL_PIXEL_SIZE || weapons[playerId].y+16 <= scrollY-compositeScrollYOffset) {
             // Hide it for now
             weapons[playerId].visible = 0;
             toggleSprite(weapons[playerId].spriteAddrLo, weapons[playerId].spriteAddrHi, 0);

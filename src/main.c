@@ -36,7 +36,7 @@ unsigned char irqHandler() {
     return IRQ_HANDLED;
 }
 
-#pragma code-name (push, "BANKRAM02")
+#pragma code-name (push, "BANKRAM03")
 
 void prepPlayersForLevel() {
     unsigned char i,j;
@@ -56,8 +56,6 @@ void prepPlayersForLevel() {
         }
     }
 }
-
-#pragma code-name (pop)
 
 void setScroll() {
     unsigned short x, y;
@@ -84,6 +82,7 @@ void setScroll() {
     } else if (scrollX > maxMapX) {
         scrollX = maxMapX;
     }
+    scrollX+=compositeScrollXOffset;
 
     scrollY = y-112;
     if (scrollY < 0) {
@@ -91,7 +90,11 @@ void setScroll() {
     } else if (scrollY > maxMapY) {
         scrollY = maxMapY;
     }
+
+    scrollY+=compositeScrollYOffset;
 }
+
+#pragma code-name (pop)
 
 void main() {
     unsigned char count = 0, load, exitLevel, gameOver, i, healthTicks, deadCount;
@@ -107,7 +110,9 @@ void main() {
     loadStrings();
     loadBankedCode();
 
-    RAM_BANK = CODE_BANK;
+    RAM_BANK = CONFIG_BANK;
+    // FOR TESTING ONLY - Turn on composite
+    // VERA.display.video = 0b10100010;
     showTitle();
     soundInit();
 
@@ -123,8 +128,10 @@ void main() {
 #endif
 
     toggleLayers(0);
+    RAM_BANK = CONFIG_BANK;
     init();
     initTiles();
+    RAM_BANK = CODE_BANK;
 
     while(1) {
 #ifndef TEST_MODE        
@@ -136,8 +143,8 @@ void main() {
         deadCount=0;
         level=STARTING_LEVEL;
 
-        scrollX=0;
-        scrollY=0;
+        scrollX=compositeScrollXOffset;
+        scrollY=compositeScrollYOffset;
         VERA.layer0.vscroll = scrollY;
         VERA.layer0.hscroll = scrollX;
         
@@ -145,7 +152,9 @@ void main() {
         entitySleepList = 0;
 
         loadDungeonTiles();
+        RAM_BANK = CONFIG_BANK;
         spritesConfig();
+        RAM_BANK = CODE_BANK;
 
         players[0].active = 0;
         players[1].active = 0;
@@ -190,7 +199,7 @@ void main() {
             healthTicks = 0;
             doorTicks = 0;
 
-            RAM_BANK = CODE_BANK;
+            RAM_BANK = CONFIG_BANK;
             prepPlayersForLevel();
             RAM_BANK = MAP_BANK;
 
@@ -220,7 +229,9 @@ void main() {
                 // This will set the scrolling based on the player positions
                 // We want to set this before positioning the sprites because
                 // they are positioned relative to the final scroll position 
+                RAM_BANK = CONFIG_BANK;
                 setScroll();
+                RAM_BANK = MAP_BANK;
 
                 // Only set his animation frame if needed (this is more expensive)
                 // Otherwise just move him
@@ -376,8 +387,8 @@ void main() {
             entityTempActiveList = 0;
 
             // Reset scrolling
-            scrollX=0;
-            scrollY=0;
+            scrollX=compositeScrollXOffset;
+            scrollY=compositeScrollYOffset;
             scrollMode = 0;
             VERA.layer0.vscroll = scrollY;
             VERA.layer0.hscroll = scrollX;
