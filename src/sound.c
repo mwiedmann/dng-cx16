@@ -27,6 +27,10 @@ unsigned char param1, param2;
 char * soundFileNames[] = {
 	"",
 	"title.zsm",
+	"game1.zsm",
+	"game2.zsm",
+	"game3.zsm",
+	"game4.zsm",
 	"welcome.zcm",
 	"keys.zcm",
 	"treasure.zcm",
@@ -38,7 +42,11 @@ char * soundFileNames[] = {
 
 unsigned char soundBanks[] = {
 	SOUND_BANK_START,
-	SOUND_BANK_TITLE,
+	SOUND_BANK_MUSIC, // Title
+	SOUND_BANK_MUSIC, // Game1,2,3,4
+	SOUND_BANK_MUSIC,
+	SOUND_BANK_MUSIC,
+	SOUND_BANK_MUSIC,
 	SOUND_BANK_WELCOME,
 	SOUND_BANK_KEYS,
 	SOUND_BANK_TREASURE,
@@ -47,6 +55,15 @@ unsigned char soundBanks[] = {
 	SOUND_BANK_NIGH,
 	SOUND_BANK_LAUGH
 };
+
+void volume(unsigned char volume, unsigned char priority) {
+	param1 = priority;
+	param2 = volume; // 0=FULL - 63=MUTE
+
+	asm volatile ("ldx %v", param1);
+	asm volatile ("lda %v", param2);
+	asm volatile ("jsr zsm_setatten");
+}
 
 void loadZCM(unsigned char index) {
 	unsigned char bank;
@@ -110,7 +127,7 @@ void soundInit() {
 
 	soundLoadMusic(SOUND_INDEX_TITLE);
 
-	for (i=2; i<=8; i++) {
+	for (i=6; i<=12; i++) {
 		loadZCM(i);
 	}
 }
@@ -182,6 +199,11 @@ void soundPlayMusic(unsigned char index) {
 		return;
 	}
 
+	asm volatile ("lda #%b", ZSM_BANK);
+	asm volatile ("jsr zsm_init_engine");
+
+	soundLoadMusic(index);
+
 	bank = soundBanks[index];
 
 	currentMusic = index;
@@ -204,9 +226,10 @@ void soundPlayMusic(unsigned char index) {
 	asm volatile ("ldy %v", param1); //address hi to Y
 	asm volatile ("jsr zsm_setmem");
 
-
 	asm volatile ("ldx %v", param2);
 	asm volatile ("jsr zsm_play");
+
+	volume(54, SOUND_PRIORITY_MUSIC);
 
 	asm volatile ("ldx %v", param2); //music loops
 	asm volatile ("sec");
@@ -215,8 +238,12 @@ void soundPlayMusic(unsigned char index) {
 	RAM_BANK = prevBank;
 }
 
-void toggleMusic() {
-	soundStopChannel(SOUND_PRIORITY_MUSIC);
-
+void toggleMusic(unsigned char trackIndex) {
 	musicOn = !musicOn;
+
+	if (musicOn) {
+		soundPlayMusic(trackIndex);
+	} else {
+		soundStopChannel(SOUND_PRIORITY_MUSIC);
+	}
 }

@@ -160,9 +160,6 @@ void main() {
         players[1].active = 0;
 
         instructions();
-
-        // TODO: Remove this and replace with game music when its ready
-        soundStopChannel(SOUND_PRIORITY_MUSIC);
         
         while(!gameOver) {
             activePlayers=0;
@@ -179,9 +176,14 @@ void main() {
             RAM_BANK = CODE_BANK;
             loadDungeonTiles();
 
+            soundStopChannel(SOUND_PRIORITY_MUSIC);
 #ifndef TEST_MODE
             showLevelIntro();
 #endif
+            // This will play the title music on shop levels
+            // and cycle through GAME1,2,3,4 for the other levels
+            soundPlayMusic(SOUND_INDEX_TITLE + level % 5);
+
             clearBank(MAP_BANK, MAP_BANK_CODE_SIZE);
             createMapStatus(level);
 

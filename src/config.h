@@ -54,9 +54,7 @@
 #define ZSM_BANK 10
 #define SFX_BANK_1 11
 
-#define SOUND_BANK_TITLE 12 
-
-#define SOUND_BANK_WELCOME 13
+#define SOUND_BANK_WELCOME 12
 #define SOUND_WELCOME_SIZE 2
 
 #define SOUND_BANK_KEYS SOUND_BANK_WELCOME + SOUND_WELCOME_SIZE
@@ -78,6 +76,8 @@
 #define SOUND_LAUGH_SIZE 5
 
 #define SOUND_BANK_START SOUND_BANK_LAUGH + SOUND_LAUGH_SIZE
+
+#define SOUND_BANK_MUSIC SOUND_BANK_START
 
 void toggleLayers(unsigned char show);
 void showTitle();

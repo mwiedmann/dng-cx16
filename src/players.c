@@ -23,7 +23,7 @@ void setGuyDirection(unsigned char playerId) {
     players[playerId].pressedShoot = 0;
 
     if (JOY_START(joy)) {
-        toggleMusic();
+        toggleMusic(SOUND_INDEX_TITLE + level % 5);
         RAM_BANK = CODE_BANK;
         waitForRelease();
         RAM_BANK = MAP_BANK;
